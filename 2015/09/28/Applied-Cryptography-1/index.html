@@ -27,7 +27,8 @@
 <meta property="og:image" content="http://eastl.github.io/Blog/images/skc1.jpg">
 <meta property="og:image" content="http://eastl.github.io/Blog/images/skc2.jpg">
 <meta property="og:image" content="http://eastl.github.io/Blog/images/skc3.jpg">
-<meta property="og:updated_time" content="2015-09-28T12:17:32.000Z">
+<meta property="og:image" content="http://eastl.github.io/Blog/images/pkc.jpg">
+<meta property="og:updated_time" content="2015-09-28T13:42:52.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Applied_Cryptography_1">
 <meta name="twitter:description" content="來源 ： 投影片(1~23)
@@ -137,11 +138,18 @@ ga('send', 'pageview');
 <p>這邊提出一個問題：兩個人拿到的Z是一樣的嗎?<br>proof : ${Y_A}^{X_B} \ \ mod \ \ p \ \ = \ \ {Y_B}^{X_A} \ \ mod \ \ p$</p>
 <center> ${Y_A}^{X_B} \ \ mod \ \ p \ \ = \ \ ({g^{X_A} \ \ mod \ \ p})^{X_B} \ \ mod \ \ p$ </center><br><center> 令$g^{X_A} \ \ mod \ \ p \ \ = \ \ a$，利用餘式定理$a = g^{X_A} - pK$ </center><br><center> 則 ： $({g^{X_A} - pK})^{X_B} \ \ = \ \ g^{X_A X_B}\ \ + \ \ C^{X_B}_1 g^{({X_B}-1) b}pK +…+({pK})^{X_B}$ </center><br><center> $= g^{X_A X_B} + pK(m)$ </center><br><center> 由此可知$({g^{X_A} \ \ mod \ \ p})^{X_B} \ \ mod \ \ p \ \ = \ \ g^{X_A X_B} \ \ mod \ \ p$</center><br><center> 同理可推得$({g^{X_B} \ \ mod \ \ p})^{X_A} \ \ mod \ \ p \ \ = \ \ g^{X_A X_B} \ \ mod \ \ p$</center><br><center> 故$({g^{X_A} \ \ mod \ \ p})^{X_B} \ \ mod \ \ p \ \ = \ \ g^{X_A X_B} \ \ mod \ \ p \ \ = \ \ ({g^{X_B} \ \ mod \ \ p})^{X_A} \ \ mod \ \ p$</center><br><center> 得證${Y_A}^{X_B} \ \ mod \ \ p \ \ = \ \ {Y_B}^{X_A} \ \ mod \ \ p$ </center>
 
-<h2 id="公開金鑰加密系統(Public_Key_Cryptography,_PKC)">公開金鑰加密系統(Public Key Cryptography, PKC)</h2>
+<h2 id="公開金鑰加密系統(Public_Key_Cryptography,_PKC)">公開金鑰加密系統(Public Key Cryptography, PKC)</h2><p><img src="/images/pkc.jpg" alt=""></p>
+<p>公開金鑰特點在於加解密所用的Key是不同把，加密的鑰匙能夠透過公開頻道傳送。<br>PKC利用質因數分解與離散對數難題來產生鑰匙。<br>最典型的例子為RSA加密：<br>收方選取兩個大質數1933和2131，算出兩個的乘積<br>n=p×q=1933×2131=4119223<br>選取一數e當作加密金匙K (公開金鑰)<br>$K_{er}  \ \ : \ \ e \ \ = \ \ 11$<br>計算e之乘法反元素d，作為解密金匙$K_dr$(私密金鑰)<br>使得 e×d=1 mod 1932×2130<br>$K_dr  \ \ : \ \ d \ \ = \ \ 748211$<br>加密時將明文M=2245613 轉換成密文 C<br>$C \ \ = \ \ 2245613^{11} \ \ mod \ \ 4119223 \ \ = \ \ 771889$<br>解密時將密文C轉換回明文<br>$M \ \ = \ \ 7718897482^{11} \ \ mod \ \ 4119223 \ \ = \ \ 2245613$  </p>
+<p>##金鑰管理 (Key Management)</p>
+<p>所有在系統上運作的key能夠在用一個master key來加密，但此master key該如何保管？<br>秘密分享 (secret sharing)<br>令 master key 值為三次方程式與y軸交點，再把方程式上的六個點交給不同人保管<br>之後要還原方程式時只需要四個點就夠了（防止意外，能夠允許其中兩點不見）  </p>
+<h2 id="A_Cryptographic_Game">A Cryptographic Game</h2><center>在牆上有一個寶箱，上面有兩道鎖，這兩道鎖的鑰匙分別由Alice與Bob保管，這兩把鑰匙只能開啟屬於自己的那到鎖，令一道鎖不能開。</center><br><center>有一天Alice將月餅放入寶箱裡面，並且用他的鑰匙將寶箱鎖上，人就走了。</center><br><center>過了一天後，Bob來到寶箱前看到上面有一到鎖，於是也用自己的鑰匙鎖上第二到鎖。</center><br><center>又過了一天，Alice看到Bob鎖上後變把自己的那到鎖解開。</center><br><center>最後，Bob用他的鎖將寶箱打開後，開心的吃著他的月餅。</center><br><center>請問：這是SKC還是PKC？</center>
+
+<p>我個人覺得這是SKC，我把這寶箱的兩道鎖看成兩種加密演算法，這樣一來Alice與Bob就分別用他們的key對月餅加解密，然後Alice解開他自己的鎖，之後Bob在解開自己的鎖。</p>
+
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/Blog/2015/09/28/Applied-Cryptography-1/" data-id="cif3x9udp0000d4onkeobvs3d" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/Blog/2015/09/28/Applied-Cryptography-1/" data-id="cif3y12lm0000j1onlkm7gri9" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a></li></ul>
@@ -150,20 +158,6 @@ ga('send', 'pageview');
   </div>
   
     
-<nav id="article-nav">
-  
-    <a href="/2015/09/28/hello-world/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          Hello World
-        
-      </div>
-    </a>
-  
-  
-</nav>
-
   
 </article>
 
@@ -195,7 +189,7 @@ ga('send', 'pageview');
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a><span class="archive-list-count">2</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a><span class="archive-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -205,10 +199,6 @@ ga('send', 'pageview');
     <h3 class="widget-title">Recents</h3>
     <div class="widget">
       <ul>
-        
-          <li>
-            <a href="/2015/09/28/hello-world/">Hello World</a>
-          </li>
         
           <li>
             <a href="/2015/09/28/Applied-Cryptography-1/">Applied_Cryptography_1</a>
