@@ -3,17 +3,27 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Justice Shadower</title>
+  <title>Applied-Cryptography-2 | Justice Shadower</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Justice Shadower">
-<meta property="og:url" content="http://eastl.github.io/Blog/index.html">
+  <meta name="description" content="來源 ： chapter 1 (24~28)，chapter 2 (1~21)，wiki(Lagrange polynomial)
+在前一篇提到金鑰管理，是利用方程式上的點來分散管理，那麼要如何將點還原成方程式呢？
+Lagrange polynomial interpolation定義：給定一集合，此集合有k+1個不重複的點 
+ $(x_0,y_0) \ \ , \ \ … \ \ , \ \ (">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Applied-Cryptography-2">
+<meta property="og:url" content="http://eastl.github.io/Blog/2015/09/29/Applied-Cryptography-2/index.html">
 <meta property="og:site_name" content="Justice Shadower">
-<meta property="og:description">
+<meta property="og:description" content="來源 ： chapter 1 (24~28)，chapter 2 (1~21)，wiki(Lagrange polynomial)
+在前一篇提到金鑰管理，是利用方程式上的點來分散管理，那麼要如何將點還原成方程式呢？
+Lagrange polynomial interpolation定義：給定一集合，此集合有k+1個不重複的點 
+ $(x_0,y_0) \ \ , \ \ … \ \ , \ \ (">
+<meta property="og:updated_time" content="2015-09-29T00:22:14.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Justice Shadower">
-<meta name="twitter:description">
+<meta name="twitter:title" content="Applied-Cryptography-2">
+<meta name="twitter:description" content="來源 ： chapter 1 (24~28)，chapter 2 (1~21)，wiki(Lagrange polynomial)
+在前一篇提到金鑰管理，是利用方程式上的點來分散管理，那麼要如何將點還原成方程式呢？
+Lagrange polynomial interpolation定義：給定一集合，此集合有k+1個不重複的點 
+ $(x_0,y_0) \ \ , \ \ … \ \ , \ \ (">
 <meta name="twitter:creator" content="@coolwuxing">
   
     <link rel="alternative" href="/atom.xml" title="Justice Shadower" type="application/atom+xml">
@@ -78,9 +88,7 @@ ga('send', 'pageview');
   </div>
 </div>
       <div class="outer">
-        <section id="main">
-  
-    <article id="post-Applied-Cryptography-2" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-Applied-Cryptography-2" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2015/09/29/Applied-Cryptography-2/" class="article-date">
   <time datetime="2015-09-28T21:56:36.000Z" itemprop="datePublished">2015-09-29</time>
@@ -93,8 +101,8 @@ ga('send', 'pageview');
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/29/Applied-Cryptography-2/">Applied-Cryptography-2</a>
+    <h1 class="article-title" itemprop="name">
+      Applied-Cryptography-2
     </h1>
   
 
@@ -122,69 +130,20 @@ ga('send', 'pageview');
     </footer>
   </div>
   
-</article>
-
-
+    
+<nav id="article-nav">
   
-    <article id="post-Applied-Cryptography-1" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/09/28/Applied-Cryptography-1/" class="article-date">
-  <time datetime="2015-09-28T03:21:06.000Z" itemprop="datePublished">2015-09-28</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/28/Applied-Cryptography-1/">Applied_Cryptography_1</a>
-    </h1>
+    <a href="/2015/09/28/Applied-Cryptography-1/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Applied_Cryptography_1</div>
+    </a>
   
+</nav>
 
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>來源 ： <a href="http://staff.csie.ncu.edu.tw/yensm/lecture/Cryptography/Chapter-1%20Introduction%20to%20Cryptography.pdf" target="_blank" rel="external">chapter 1 (1~23 and 29)</a>, <a href="http://math.stackexchange.com/questions/61358/prove-equivalence-of-diffie-hellman-shared-secret" target="_blank" rel="external">Prove equivalence of Diffie-Hellman shared secret</a></p>
-<h2 id="對稱式加密系統(Symmetric_Key_Cryptography,_SKC)">對稱式加密系統(Symmetric Key Cryptography, SKC)</h2><p>此加密系統特點是加解密所用的key為同一把，所以又稱為對稱式加密。</p>
-<p><img src="/images/skc.jpg" alt=""></p>
-<p>對稱式加密系統主要加密方式有兩種：取代與重排</p>
-<p><img src="/images/skc1.jpg" alt=""></p>
-<p>問題：<br>(1)疊了很多個取代後，能否只用一個取代器來達到相同效果?<br>(2)重排與取代相互使用多次後，能否兜出一套電路來代替?  </p>
-<p>實作：因64bit都要取代實作上有困難，所以每8個bit取代一次，最後64bit進行重排</p>
-<p><img src="/images/skc2.jpg" alt=""></p>
-<p>SKC的對稱式金鑰造成了一個嚴重的問題：當傳送方要使用SKC時，必須先把Key傳給接收方，而要如何把Key傳給接收方為一大問題，Diffie-Hellman這對師生提出了Public Key Exchange解決此問題。</p>
-<p><img src="/images/skc3.jpg" alt=""></p>
-<p>如圖所示，Alice與Bob首先溝通好公開的g與p，然後各自選擇了$X_A$與$X_B$，依照上圖式子計算出Y之後互相交換，這邊以Alice的角度講解：決定好$X_A$後，計算出$Y_A$並將$Y_A$告訴Bob(透過公開頻道)，此時Bob也會將他算出來的$Y_B$告訴Alice，Alice收到$Y_B$後，利用 Z = ${Y_B}^{X_A}$ mod p 算出Z，Bob收到$Y_A$後同理算出Z，此時雙方接拿到共同的key。<br>*能夠公開$Y_A$與$Y_B$，是利用離散對數難題，讓得知Y,g,p的人無法計算出X</p>
-<p>這邊提出一個問題：兩個人拿到的Z是一樣的嗎?<br>proof : ${Y_A}^{X_B} \ \ mod \ \ p \ \ = \ \ {Y_B}^{X_A} \ \ mod \ \ p$</p>
-<center> ${Y_A}^{X_B} \ \ mod \ \ p \ \ = \ \ ({g^{X_A} \ \ mod \ \ p})^{X_B} \ \ mod \ \ p$ </center><br><center> 令$g^{X_A} \ \ mod \ \ p \ \ = \ \ a$，利用餘式定理$a = g^{X_A} - pK$ </center><br><center> 則 ： $({g^{X_A} - pK})^{X_B} \ \ = \ \ g^{X_A X_B}\ \ + \ \ C^{X_B}_1 g^{({X_B}-1) b}pK +…+({pK})^{X_B}$ </center><br><center> $= g^{X_A X_B} + pK(m)$ </center><br><center> 由此可知$({g^{X_A} \ \ mod \ \ p})^{X_B} \ \ mod \ \ p \ \ = \ \ g^{X_A X_B} \ \ mod \ \ p$</center><br><center> 同理可推得$({g^{X_B} \ \ mod \ \ p})^{X_A} \ \ mod \ \ p \ \ = \ \ g^{X_A X_B} \ \ mod \ \ p$</center><br><center> 故$({g^{X_A} \ \ mod \ \ p})^{X_B} \ \ mod \ \ p \ \ = \ \ g^{X_A X_B} \ \ mod \ \ p \ \ = \ \ ({g^{X_B} \ \ mod \ \ p})^{X_A} \ \ mod \ \ p$</center><br><center> 得證${Y_A}^{X_B} \ \ mod \ \ p \ \ = \ \ {Y_B}^{X_A} \ \ mod \ \ p$ </center>
-
-<h2 id="公開金鑰加密系統(Public_Key_Cryptography,_PKC)">公開金鑰加密系統(Public Key Cryptography, PKC)</h2><p><img src="/images/pkc.jpg" alt=""></p>
-<p>公開金鑰特點在於加解密所用的Key是不同把，加密的鑰匙能夠透過公開頻道傳送。<br>PKC利用質因數分解與離散對數難題來產生鑰匙。<br>最典型的例子為RSA加密：<br>收方選取兩個大質數1933和2131，算出兩個的乘積<br>n=p×q=1933×2131=4119223<br>選取一數e當作加密金匙K (公開金鑰)<br>$K_{er}  \ \ : \ \ e \ \ = \ \ 11$<br>計算e之乘法反元素d，作為解密金匙<span>$K_{dr}$</span><!-- Has MathJax -->(私密金鑰)<br>使得 e×d=1 mod 1932×2130<br><span>$K_{dr}  \ \ : \ \ d \ \ = \ \ 748211$</span><!-- Has MathJax --><br>加密時將明文M=2245613 轉換成密文 C<br>$C \ \ = \ \ 2245613^{11} \ \ mod \ \ 4119223 \ \ = \ \ 771889$<br>解密時將密文C轉換回明文<br>$M \ \ = \ \ 7718897482^{11} \ \ mod \ \ 4119223 \ \ = \ \ 2245613$  </p>
-<h2 id="金鑰管理_(Key_Management)">金鑰管理 (Key Management)</h2><p>所有在系統上運作的key能夠在用一個master key來加密，但此master key該如何保管？<br>秘密分享 (secret sharing)<br>令 master key 值為三次方程式與y軸交點，再把方程式上的六個點交給不同人保管<br>之後要還原方程式時只需要四個點就夠了（防止意外，能夠允許其中兩點不見）  </p>
-<h2 id="A_Cryptographic_Game">A Cryptographic Game</h2><center>在牆上有一個寶箱，上面有兩道鎖，這兩道鎖的鑰匙分別由Alice與Bob保管，這兩把鑰匙只能開啟屬於自己的那到鎖，令一道鎖不能開。</center><br><center>有一天Alice將月餅放入寶箱裡面，並且用他的鑰匙將寶箱鎖上，人就走了。</center><br><center>過了一天後，Bob來到寶箱前看到上面有一到鎖，於是也用自己的鑰匙鎖上第二到鎖。</center><br><center>又過了一天，Alice看到Bob鎖上後變把自己的那到鎖解開。</center><br><center>最後，Bob用他的鎖將寶箱打開後，開心的吃著他的月餅。</center><br><center>請問：這是SKC還是PKC？</center>
-
-<p>我個人覺得這是SKC，我把這寶箱的兩道鎖看成兩種加密演算法，這樣一來Alice與Bob就分別用他們的key對月餅加解密，然後Alice解開他自己的鎖，之後Bob在解開自己的鎖。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://eastl.github.io/Blog/2015/09/28/Applied-Cryptography-1/" data-id="cif4htqoo0000nqonq7le80s3" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a></li></ul>
-
-    </footer>
-  </div>
   
 </article>
 
-
-  
-  
 </section>
         
           <aside id="sidebar">
