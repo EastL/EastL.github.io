@@ -16,7 +16,7 @@ Lagrange polynomial interpolation定義：給定一集合，此集合有k+1個�
 在前一篇提到金鑰管理，是利用方程式上的點來分散管理，那麼要如何將點還原成方程式呢？
 Lagrange polynomial interpolation定義：給定一集合，此集合有k+1個不">
 <meta property="og:image" content="http://eastl.github.io/Blog/images/key.jpg">
-<meta property="og:updated_time" content="2015-09-30T13:10:56.000Z">
+<meta property="og:updated_time" content="2015-09-30T13:34:53.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Applied Cryptography-2">
 <meta name="twitter:description" content="來源 ： chapter 1 (24~28)，chapter 2 (1~21)，wiki(Lagrange polynomial)，Cracking a linear congruential generator
@@ -116,14 +116,14 @@ ga('send', 'pageview');
 <p>證明：</p>
 <center><span>$t_i \ \ = [(ax_i - b) \ \ - \ \ (ax_{i-1}-b)] \ \ mod \ \ m \ \ = \ \ a(x_i-x_{i-1}) \ \ mod \ \ m \ \ = \ \ at_{i-1} \ \ mod \ \ m$</span><!-- Has MathJax --></center><br><center>因此<span>$t_{i+1} \ \ = \ \ at_n \ \ mod \ \ m$</span><!-- Has MathJax -->，<span>$t_{i+2} \ \ = \ \ a^2t_n \ \ mod \ \ m$</span><!-- Has MathJax --></center><br><center><span>$\Rightarrow \ \ u_i \ \ = \ \ |t_{i+2} t_i \ \ - \ \ t_{i+1}^2| \ \ = \ \ a^2t_i^2 \ \ - \ \ a^2t_i^2 \ \ mod \ \ m \ \ = \ \ 0 \ \ mod \ \ m$</span><!-- Has MathJax --></center>
 
-<p>$u_i$為$m$的倍數，這邊探討一個問題，任意兩個$m$的倍數的最大公因數為$m$的機率是多少？這邊有個有趣的想法，任意兩個$m$的倍數可以看成$ma$、$mb$，而這兩個數又要最大公因數為$m$，意思不就是$a$與$b$要互質嗎？所以這個問題可以轉變成：任意兩個正整數互質的機率是多少？想必一些數學系的都知道答案了，這邊提供<a href="http://classes.yale.edu/fractals/CalcTutorials/PowerSer/PrimeTheorems/PrimeTheorem2.pdf" target="_blank" rel="external">Prime Theorem 2</a>、<a href="http://beaver.ncnu.edu.tw/projects/emag/article/200512/%E4%BA%92%E8%B3%AA%E7%9A%84%E6%A9%9F%E7%8E%87.pdf" target="_blank" rel="external">互質的機率</a>兩個連結讓大家參考，裡面有證明任意兩正整數互質的機率為<span>$(\sum_{k=1}^\infty \frac{1}{k^2})^{-1}$</span><!-- Has MathJax -->，其值等於<span>$\frac{6}{\pi^2}$</span><!-- Has MathJax -->，大概是0.6079(關於尤拉證明的平方倒數和可以參考<a href="http://www5.hwsh.tc.edu.tw/web/fan/8" target="_blank" rel="external">從調和級數到平方倒數和的意外</a>)，而任意$n$個正整數互質的機率為<span>$(\sum_{k=1}^\infty \frac{1}{k^n})^{-1}$</span><!-- Has MathJax -->，當$n$越大時其機率越接近1，所以在計算$m$時，$u_k$越多$m$值正確機率越高。</p>
-<p>這邊再分享另外一種解法：1968年George Marsagglia提出了<a href="http://www.ics.uci.edu/~fowlkes/class/cs177/marsaglia.pdf" target="_blank" rel="external">Random numbers fall mainly in the planes</a>，指出linear congruential generator所產生的亂數在n維度空間下會落在少數的超平面上，Haldir運用此觀念利用linear congruential generator產生的連續四個亂數便能計算出$m$，假設此四個亂數為$a$、$b$、$c$、$d$，$m$計算方法為：</p>
-<p><center><span>$m \ \ = \ \ \begin{vmatrix} a &amp; b &amp; 1 \\ b &amp; c &amp; 1 \\ c &amp; d &amp; 1 \\ \end{vmatrix}$</span><!-- Has MathJax --></center><br>有關此種方法可以參考<a href="http://www.reteam.org/papers/e59.pdf" target="_blank" rel="external">How to crack a Linear Congruential Generator</a>。</p>
+<p>$u_i$為$m$的倍數，這邊探討一個問題，任意兩個$m$的倍數的最大公因數為$m$的機率是多少？這邊有個有趣的想法，任意兩個$m$的倍數可以看成$ma$、$mb$，而這兩個數又要最大公因數為$m$，意思不就是$a$與$b$要互質嗎？所以這個問題可以轉變成：任意兩個正整數互質的機率是多少？想必一些數學系的都知道答案了，這邊提供<a href="/papers/PrimeTheorem2.pdf">Prime Theorem 2</a>、<a href="/papers/related_p.pdf">互質的機率</a>兩個連結讓大家參考，裡面有證明任意兩正整數互質的機率為<span>$(\sum_{k=1}^\infty \frac{1}{k^2})^{-1}$</span><!-- Has MathJax -->，其值等於<span>$\frac{6}{\pi^2}$</span><!-- Has MathJax -->，大概是0.6079(關於尤拉證明的平方倒數和可以參考<a href="http://www5.hwsh.tc.edu.tw/web/fan/8" target="_blank" rel="external">從調和級數到平方倒數和的意外</a>)，而任意$n$個正整數互質的機率為<span>$(\sum_{k=1}^\infty \frac{1}{k^n})^{-1}$</span><!-- Has MathJax -->，當$n$越大時其機率越接近1，所以在計算$m$時，$u_k$越多$m$值正確機率越高。</p>
+<p>這邊再分享另外一種解法：1968年George Marsagglia提出了<a href="/papers/marsaglia.pdf">Random numbers fall mainly in the planes</a>，指出linear congruential generator所產生的亂數在n維度空間下會落在少數的超平面上，Haldir運用此觀念利用linear congruential generator產生的連續四個亂數便能計算出$m$，假設此四個亂數為$a$、$b$、$c$、$d$，$m$計算方法為：</p>
+<p><center><span>$m \ \ = \ \ \begin{vmatrix} a &amp; b &amp; 1 \\ b &amp; c &amp; 1 \\ c &amp; d &amp; 1 \\ \end{vmatrix}$</span><!-- Has MathJax --></center><br>有關此種方法可以參考<a href="/papers/crack_LCG.pdf">How to crack a Linear Congruential Generator</a>。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/Blog/2015/09/29/Applied-Cryptography-2/" data-id="cif6l9ljc00033ionxxm7p9hv" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/Blog/2015/09/29/Applied-Cryptography-2/" data-id="cif6ts3ny0003snonzrp25bhm" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a></li></ul>
