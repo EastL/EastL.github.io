@@ -17,7 +17,8 @@ Lagrange polynomial interpolation定義：給定一集合，此集合有k+1個�
 Lagrange polynomial interpolation定義：給定一集合，此集合有k+1個不">
 <meta property="og:image" content="http://eastl.github.io/Blog/images/key.jpg">
 <meta property="og:image" content="http://eastl.github.io/Blog/images/lfsr.gif">
-<meta property="og:updated_time" content="2015-10-01T05:40:38.000Z">
+<meta property="og:image" content="http://eastl.github.io/Blog/images/LFSR.jpg">
+<meta property="og:updated_time" content="2015-10-02T08:06:14.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Applied Cryptography-2">
 <meta name="twitter:description" content="來源 ： chapter 1 (24~28)，chapter 2 (1~21)，wiki(Lagrange polynomial)，Cracking a linear congruential generator
@@ -121,12 +122,17 @@ ga('send', 'pageview');
 <p>這邊再分享另外一種解法：1968年George Marsagglia提出了<a href="/papers/marsaglia.pdf">Random numbers fall mainly in the planes</a>，指出linear congruential generator所產生的亂數在n維度空間下會落在少數的超平面上，Haldir運用此觀念利用linear congruential generator產生的連續四個亂數便能計算出$m$，假設此四個亂數為$a$、$b$、$c$、$d$，$m$計算方法為：</p>
 <center><span>$m \ \ = \ \ \begin{vmatrix} a &amp; b &amp; 1 \\ b &amp; c &amp; 1 \\ c &amp; d &amp; 1 \\ \end{vmatrix}$</span><!-- Has MathJax --></center><br>有關此種方法可以參考<a href="/papers/crack_LCG.pdf">How to crack a Linear Congruential Generator</a>。<br><br><hr><br><br><h4> Linear feedback shift register(LFSR) </h4><br><br><img src="/images/lfsr.gif" alt=""><br><center><a href="https://en.wikipedia.org/wiki/Linear_feedback_shift_register" target="_blank" rel="external">from wiki</a></center>
 
-<p>如上圖所示，這是一個4bit的LFSR，右邊電路的4bit暫存器就是我們要的亂數，他每次把右邊兩個bit拉出來做xor後，將暫存器往右shift一個bit，並將xor結果放到最左邊的bit，注意左邊的15個狀態，除了0000其餘都有在上面，因為只要出現全0之後狀態就都是0了 (0 xor 0 = 0)。</p>
+<p>如上圖所示，這是一個4bit的LFSR，右邊電路的4bit暫存器就是我們要的亂數，他每次把右邊兩個bit拉出來做xor後，將暫存器往右shift一個bit，並將xor結果放到最左邊的bit，注意左邊的15個狀態，除了0000其餘都有在上面，因為只要出現全0之後狀態就都是0了 (0 xor 0 = 0)。在這張圖上是拉最後兩bit，那要如何知道拉哪些bit會讓亂數最亂呢？</p>
+<p>The max period of LFSR</p>
+<p>當一串數為亂數時，代表此串亂數不可預測，既然不可預測那這串數就沒有週期，換句話說這串數的週期為無限大。所以這邊要討論如何讓LFSR的週期最大。設定<span>$b_n$</span><!-- Has MathJax -->為二進位數，當第n個bit要拉下來作xor時，<span>$b_n$</span><!-- Has MathJax -->為1，反之不拉下來時<span>$b_n$</span><!-- Has MathJax -->為0，<span>$b(x) \ \ = \ \ b_4x^4 \ \ + \ \ b_3x^3 \ \ + \ \ b_2x^2 \ \ + \ \ b_1x \ \ + \ \ 1$</span><!-- Has MathJax -->，如果<span>$b(x)$</span><!-- Has MathJax -->是primitive多項式，則此LFSR週期最大，可產生m-sequence。<br>(Primitive polynomial之後上課會證明)   </p>
+<p>cryptanalysis(可預測)：LFSR若長度為n，則已知2n個連續output就可以得知後續所有(2n-1-2n)個output，解N元一次方程式。</p>
+<p>由於有上述預測攻擊，後來就有利用Nonlinear mapping的方法產生PN sequence。</p>
+<p><img src="/images/LFSR.jpg" alt="PN Sequence Generator"></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/Blog/2015/09/29/Applied-Cryptography-2/" data-id="cif7re6pj0003y0ontol4t2lb" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/Blog/2015/09/29/Applied-Cryptography-2/" data-id="cif9da6ts0003m9on5zzin1e9" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a></li></ul>
