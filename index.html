@@ -142,16 +142,17 @@ ga('send', 'pageview');
 <p><img src="/images/CFB_error.jpg" alt=""></p>
 <hr>
 
-<p></p><h2> Question ： Message Feedback Mode 能夠自我同步嗎？<h2><p></p>
+<h2> Question ： Message Feedback Mode 能夠自我同步嗎？</h2>
+
 <p>既然cipher是depend on message，那message feedback mode應該也可以自我同步囉？</p>
 <p><img src="/images/MFB.jpg" alt="Message Feedback Mode"></p>
 <p>當然不行！仔細想想，如果拿message來當作feedback，那麼傳送途中發生任何錯誤，解出來的message也會是錯誤的，此時register會在繼續解下一個進來的cipher，但就算下一次的cipher是正確的，register已經錯誤了，故解回來的message並不會是正確的，因此只要錯了一個bit後，基本上以後的所有bit都毀了。下圖為message feedback mode 的實際例子。</p>
 <p><img src="/images/MFB_example.jpg" alt=""></p>
-</h2></h2>
+
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/09/29/Applied-Cryptography-2/" data-id="cifkwj18t0003rgonery449p3" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/09/29/Applied-Cryptography-2/" data-id="cifkyxl5i000386on8wxde88r" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a></li></ul>
@@ -209,7 +210,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/09/28/Applied-Cryptography-1/" data-id="cifkwj12u0000rgon8ye6m77y" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/09/28/Applied-Cryptography-1/" data-id="cifkyxl4t000086onkp6rgay2" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a></li></ul>

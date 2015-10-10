@@ -26,7 +26,7 @@ Lagrange polynomial interpolation定義：給定一集合，此集合有k+1個�
 <meta property="og:image" content="http://eastl.github.io/images/CFB_error.jpg">
 <meta property="og:image" content="http://eastl.github.io/images/MFB.jpg">
 <meta property="og:image" content="http://eastl.github.io/images/MFB_example.jpg">
-<meta property="og:updated_time" content="2015-10-10T10:54:07.000Z">
+<meta property="og:updated_time" content="2015-10-10T10:55:11.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Applied Cryptography-2">
 <meta name="twitter:description" content="來源 ： chapter 1 (24~28)，chapter 2 (1~21)，wiki(Lagrange polynomial)，Cracking a linear congruential generator
@@ -158,16 +158,17 @@ ga('send', 'pageview');
 <p><img src="/images/CFB_error.jpg" alt=""></p>
 <hr>
 
-<p></p><h2> Question ： Message Feedback Mode 能夠自我同步嗎？<h2><p></p>
+<h2> Question ： Message Feedback Mode 能夠自我同步嗎？</h2>
+
 <p>既然cipher是depend on message，那message feedback mode應該也可以自我同步囉？</p>
 <p><img src="/images/MFB.jpg" alt="Message Feedback Mode"></p>
 <p>當然不行！仔細想想，如果拿message來當作feedback，那麼傳送途中發生任何錯誤，解出來的message也會是錯誤的，此時register會在繼續解下一個進來的cipher，但就算下一次的cipher是正確的，register已經錯誤了，故解回來的message並不會是正確的，因此只要錯了一個bit後，基本上以後的所有bit都毀了。下圖為message feedback mode 的實際例子。</p>
 <p><img src="/images/MFB_example.jpg" alt=""></p>
-</h2></h2>
+
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/09/29/Applied-Cryptography-2/" data-id="cifkwj18t0003rgonery449p3" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/09/29/Applied-Cryptography-2/" data-id="cifkyxl5i000386on8wxde88r" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a></li></ul>
