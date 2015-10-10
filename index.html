@@ -105,7 +105,7 @@ ga('send', 'pageview');
         <p>來源 ： <a href="http://staff.csie.ncu.edu.tw/yensm/lecture/Cryptography/Chapter-1%20Introduction%20to%20Cryptography.pdf" target="_blank" rel="external">chapter 1 (24~28)</a>，<a href="http://staff.csie.ncu.edu.tw/yensm/lecture/Cryptography/Chapter-2%20Secret-Key%20Cryptography.pdf" target="_blank" rel="external">chapter 2 (1~21)</a>，<a href="https://en.wikipedia.org/wiki/Lagrange_polynomial" target="_blank" rel="external">wiki(Lagrange polynomial)</a>，<a href="http://security.stackexchange.com/questions/4268/cracking-a-linear-congruential-generator" target="_blank" rel="external">Cracking a linear congruential generator</a></p>
 <p>在前一篇提到金鑰管理，是利用方程式上的點來分散管理，那麼要如何將點還原成方程式呢？</p>
 <h2 id="Lagrange_polynomial_interpolation">Lagrange polynomial interpolation</h2><p>定義：<br>給定一集合，此集合有k+1個不重複的點 </p>
-<center> <span>$(x_0,y_0) \ \ , \ \ ... \ \ , \ \ (x_i,y_i) \ \ , \ \ ... \ \ , \ \ (x_k,y_k)$</span><!-- Has MathJax --> </center><br>我們定義Lagrange form為：<br><center> <span>$L(x) \ \ := \ \ \sum_{j=0}^k y_j l_j(x)$</span><!-- Has MathJax --> </center><br><center> <span>$l_j(x) \ \ := \ \ \prod_{0 \leq m \leq k,m \neq j} \ \ \frac{x-x_m}{x_j-x_m}$</span><!-- Has MathJax --> </center><br>L(x)即為此k+1個點的方程式。由於<span>$l_j(x)$</span><!-- Has MathJax -->在<span>$x=x_j$</span><!-- Has MathJax -->時等於1，其餘值時等於0，故：<br><br><center>  <span>$l_j(x_i) \ \ = \ \ \delta_{ij} \ \ = \ \ \{^{1, \ \ if \ \ j=i}_{0, \ \ if \ \ j \neq i}$</span><!-- Has MathJax --> </center><br>所以：<br><center> <span>$L(x_i) \ \ = \ \ \sum_{j=0}^k y_j l_j(x_i) \ \ = \ \ \sum_{j=0}^k y_j \delta_{ij} \ \ = \ \ y_i$</span><!-- Has MathJax --> </center><br>故得到<span>$L(x_i) \ \ = \ \ y_i$</span><!-- Has MathJax -->，此k+1個點為L(x)上的點。<br><br><hr><br><br><h2>Stream Cipher and Block Cipher</h2><br><h3>Methods to generate key stream (Pseudo Random Number)</h3><br><br>傳統的SKC是利用xor來進行加密，這種加密方式key要夠亂，1跟0出現的機率要差不多，才能讓密文變的不可預測<br><br><img src="/images/key.jpg" alt=""><br><br><hr><br>這邊將會介紹產生亂數的方法：<br><h4>Linear congruence method</h4><br><center> <span>$x_i \ \ \equiv \ \ ax_i \ \ + \ \ b \ \ mod \ \ m$</span><!-- Has MathJax --> </center><br>決定好$a$,$b$,$m$,$x_0$後，代入上述式子，{$x_i$}即為亂數。<br><br>此方法雖然看起來真的是亂數而且也無法預測，不過卻有辦法拿到亂數後計算出$a$,$b$,$m$值，進而推算出所有亂數。觀察上述式子，如果先不看$m$，而且亂數為已知的話，這是一個二元一次式，若攻擊者拿到$m$與連續3個亂數，便能計算出$a$、$b$值，因此如何拿$m$便是此攻擊的重要目標，以下介紹如何計算出$m$：<br><br><center>令<span>$\   \ t_i \ \ = \ \ x_{i+1} \ \ - \ \ x_i$</span><!-- Has MathJax --></center><br><center>令<span>$\   \ u_i \ \ = \ \ |t_{i+2} t_i \ \ - \ \ t_{i+1}^2|$</span><!-- Has MathJax --></center><br><center>m = gcd($u_0$, $u_1$,…, $u_k$)</center><br><center>當$k$越大成功$m$值正確機率越高。</center>
+<center> <span>$(x_0,y_0) \ \ , \ \ ... \ \ , \ \ (x_i,y_i) \ \ , \ \ ... \ \ , \ \ (x_k,y_k)$</span><!-- Has MathJax --> </center><br>我們定義Lagrange form為：<br><center> <span>$L(x) \ \ := \ \ \sum_{j=0}^k y_j l_j(x)$</span><!-- Has MathJax --> </center><br><center> <span>$l_j(x) \ \ := \ \ \prod_{0 \leq m \leq k,m \neq j} \ \ \frac{x-x_m}{x_j-x_m}$</span><!-- Has MathJax --> </center><br>L(x)即為此k+1個點的方程式。由於<span>$l_j(x)$</span><!-- Has MathJax -->在<span>$x=x_j$</span><!-- Has MathJax -->時等於1，其餘值時等於0，故：<br><br><center>  <span>$l_j(x_i) \ \ = \ \ \delta_{ij} \ \ = \ \ \{^{1, \ \ if \ \ j=i}_{0, \ \ if \ \ j \neq i}$</span><!-- Has MathJax --> </center><br>所以：<br><center> <span>$L(x_i) \ \ = \ \ \sum_{j=0}^k y_j l_j(x_i) \ \ = \ \ \sum_{j=0}^k y_j \delta_{ij} \ \ = \ \ y_i$</span><!-- Has MathJax --> </center><br>故得到<span>$L(x_i) \ \ = \ \ y_i$</span><!-- Has MathJax -->，此k+1個點為L(x)上的點。<br><br><hr><br><br><h2>Stream Cipher and Block Cipher</h2><br><center> 接下來就要進到傳統加密可怕的一堆cipher…</center><br><img src="/images/Q__Q.gif" alt=""><br><br><h3>Methods to generate key stream (Pseudo Random Number)</h3><br><br>傳統的SKC是利用xor來進行加密，這種加密方式key要夠亂，1跟0出現的機率要差不多，才能讓密文變的不可預測<br><br><img src="/images/key.jpg" alt=""><br><br><hr><br>這邊將會介紹產生亂數的方法：<br><h4>Linear congruence method</h4><br><center> <span>$x_i \ \ \equiv \ \ ax_i \ \ + \ \ b \ \ mod \ \ m$</span><!-- Has MathJax --> </center><br>決定好$a$,$b$,$m$,$x_0$後，代入上述式子，{$x_i$}即為亂數。<br><br>此方法雖然看起來真的是亂數而且也無法預測，不過卻有辦法拿到亂數後計算出$a$,$b$,$m$值，進而推算出所有亂數。觀察上述式子，如果先不看$m$，而且亂數為已知的話，這是一個二元一次式，若攻擊者拿到$m$與連續3個亂數，便能計算出$a$、$b$值，因此如何拿$m$便是此攻擊的重要目標，以下介紹如何計算出$m$：<br><br><center>令<span>$\   \ t_i \ \ = \ \ x_{i+1} \ \ - \ \ x_i$</span><!-- Has MathJax --></center><br><center>令<span>$\   \ u_i \ \ = \ \ |t_{i+2} t_i \ \ - \ \ t_{i+1}^2|$</span><!-- Has MathJax --></center><br><center>m = gcd($u_0$, $u_1$,…, $u_k$)</center><br><center>當$k$越大成功$m$值正確機率越高。</center>
 
 <p>證明：</p>
 <center><span>$t_i \ \ = [(ax_i - b) \ \ - \ \ (ax_{i-1}-b)] \ \ mod \ \ m \ \ = \ \ a(x_i-x_{i-1}) \ \ mod \ \ m \ \ = \ \ at_{i-1} \ \ mod \ \ m$</span><!-- Has MathJax --></center><br><center>因此<span>$t_{i+1} \ \ = \ \ at_n \ \ mod \ \ m$</span><!-- Has MathJax -->，<span>$t_{i+2} \ \ = \ \ a^2t_n \ \ mod \ \ m$</span><!-- Has MathJax --></center><br><center><span>$\Rightarrow \ \ u_i \ \ = \ \ |t_{i+2} t_i \ \ - \ \ t_{i+1}^2| \ \ = \ \ a^2t_i^2 \ \ - \ \ a^2t_i^2 \ \ mod \ \ m \ \ = \ \ 0 \ \ mod \ \ m$</span><!-- Has MathJax --></center>
@@ -120,11 +120,14 @@ ga('send', 'pageview');
 <p>cryptanalysis(可預測)：LFSR若長度為n，則已知2n個連續output就可以得知後續所有(2n-1-2n)個output，解N元一次方程式。</p>
 <p>由於有上述預測攻擊，後來就有利用Nonlinear mapping的方法產生PN sequence。</p>
 <p><img src="/images/LFSR.jpg" alt="PN Sequence Generator"></p>
+<hr>
+
+<h4>  </h4>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/09/29/Applied-Cryptography-2/" data-id="cifdbow5f00034bongmnchnu5" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/09/29/Applied-Cryptography-2/" data-id="cifkto0ul0003tzonmzfouz0i" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a></li></ul>
@@ -182,7 +185,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/09/28/Applied-Cryptography-1/" data-id="cifdbow4t00004bon3ewki686" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/09/28/Applied-Cryptography-1/" data-id="cifkto0to0000tzon4x30d06o" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a></li></ul>
