@@ -3,17 +3,26 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Archives: 2015/9 | Justice Shadower</title>
+  <title>Applied Cryptography-3 | Justice Shadower</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Justice Shadower">
-<meta property="og:url" content="http://eastl.github.io/archives/2015/09/index.html">
+  <meta name="description" content="來源：chapter 2 (23~51)
+在進入Block Cipher之前，先來思考一個問題：
+ Question: 加解密，錯誤更正碼，壓縮先後順序 假設今天你要將資料m透過網路傳給別人，但資料量太大必須壓縮，而且資料必須保密不能讓第三者看到因此要加密，並且需要保證接收方收到的資料正確無誤所以你希望加個錯誤更正碼降低接收方的錯誤率，問題來了，這三道程序的先後順序要如何排列呢？如果不按照”正確”">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Applied Cryptography-3">
+<meta property="og:url" content="http://eastl.github.io/2015/10/10/Applied-Cryptography-3/index.html">
 <meta property="og:site_name" content="Justice Shadower">
-<meta property="og:description">
+<meta property="og:description" content="來源：chapter 2 (23~51)
+在進入Block Cipher之前，先來思考一個問題：
+ Question: 加解密，錯誤更正碼，壓縮先後順序 假設今天你要將資料m透過網路傳給別人，但資料量太大必須壓縮，而且資料必須保密不能讓第三者看到因此要加密，並且需要保證接收方收到的資料正確無誤所以你希望加個錯誤更正碼降低接收方的錯誤率，問題來了，這三道程序的先後順序要如何排列呢？如果不按照”正確”">
+<meta property="og:image" content="http://eastl.github.io/images/QAQ.gif">
+<meta property="og:image" content="http://eastl.github.io/images/AC3_Q.jpg">
+<meta property="og:updated_time" content="2015-10-10T16:30:17.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Justice Shadower">
-<meta name="twitter:description">
+<meta name="twitter:title" content="Applied Cryptography-3">
+<meta name="twitter:description" content="來源：chapter 2 (23~51)
+在進入Block Cipher之前，先來思考一個問題：
+ Question: 加解密，錯誤更正碼，壓縮先後順序 假設今天你要將資料m透過網路傳給別人，但資料量太大必須壓縮，而且資料必須保密不能讓第三者看到因此要加密，並且需要保證接收方收到的資料正確無誤所以你希望加個錯誤更正碼降低接收方的錯誤率，問題來了，這三道程序的先後順序要如何排列呢？如果不按照”正確”">
 <meta name="twitter:creator" content="@coolwuxing">
   
     <link rel="alternative" href="/atom.xml" title="Justice Shadower" type="application/atom+xml">
@@ -78,58 +87,58 @@ ga('send', 'pageview');
   </div>
 </div>
       <div class="outer">
-        <section id="main">
-  
-  
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2015" class="archive-year">2015</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2015/09/29/Applied-Cryptography-2/" class="archive-article-date">
-  <time datetime="2015-09-28T21:56:36.000Z" itemprop="datePublished">Sep 29</time>
+        <section id="main"><article id="post-Applied-Cryptography-3" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/10/10/Applied-Cryptography-3/" class="article-date">
+  <time datetime="2015-10-10T15:38:40.000Z" itemprop="datePublished">2015-10-10</time>
 </a>
-      
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2015/09/29/Applied-Cryptography-2/">Applied Cryptography-2</a>
+    <h1 class="article-title" itemprop="name">
+      Applied Cryptography-3
     </h1>
   
 
-    </header>
-  </div>
-</article>
-  
+      </header>
     
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2015/09/28/Applied-Cryptography-1/" class="archive-article-date">
-  <time datetime="2015-09-28T03:21:06.000Z" itemprop="datePublished">Sep 28</time>
-</a>
+    <div class="article-entry" itemprop="articleBody">
       
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2015/09/28/Applied-Cryptography-1/">Applied Cryptography-1</a>
-    </h1>
-  
+        <p>來源：<a href="/papers/Chapter2.pdf">chapter 2 (23~51)</a></p>
+<p>在進入Block Cipher之前，先來思考一個問題：<br><img src="/images/QAQ.gif" alt=""></p>
+<p></p><h5> Question: 加解密，錯誤更正碼，壓縮先後順序 </h5><br>假設今天你要將資料m透過網路傳給別人，但資料量太大必須壓縮，而且資料必須保密不能讓第三者看到因此要加密，並且需要保證接收方收到的資料正確無誤所以你希望加個錯誤更正碼降低接收方的錯誤率，問題來了，這三道程序的先後順序要如何排列呢？如果不按照”正確”的程序進行會發生什麼事呢？<p></p>
+<p><img src="/images/AC3_Q.jpg" alt=""></p>
 
-    </header>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://eastl.github.io/2015/10/10/Applied-Cryptography-3/" data-id="cifl9nvmp00035kond6gahjcs" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a></li></ul>
+
+    </footer>
   </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2015/09/29/Applied-Cryptography-2/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Applied Cryptography-2</div>
+    </a>
+  
+</nav>
+
+  
 </article>
-  
-  
-    </div></section>
-  
+
 </section>
         
           <aside id="sidebar">
