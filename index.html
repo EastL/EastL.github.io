@@ -115,12 +115,18 @@ ga('send', 'pageview');
 <p>為了避免上述情況發生，我們增加了2n+1個bit的更正碼來增加正確資料的距離，避免錯誤更正範圍重疊。如下圖，只要錯誤的點不要落在錯誤更正範圍外，都能夠正確的解回來。</p>
 <p><img src="/images/err_3.jpg" alt="A與B距離為2n+1"></p>
 <p>有了錯誤更正碼的概念後，我們可以發現：錯誤更正碼能力是有限的，他只能容許錯誤在一定範圍內，因此如果錯誤更正碼要搭配加密，那麼必須是在加密之後再來加錯誤更正碼，因為加密後只要錯了一個bit，解回來時肯定不只錯一個bit，所以如果你用了方法b，原本只錯了一個bit的密文解密後錯更多，在進行錯誤更正碼就大亂了，因此應該要使用方法a。</p>
-<p>接下來我們來看看加解密與壓縮：</p>
+<p>接下來我們來看看加解密與壓縮，一樣分為兩種方法：</p>
+<p><img src="/images/cry_comp.jpg" alt=""></p>
+<p>這邊可以用效能來看，傳統加解密會需要耗費許多時間，因此需要被加解密的資料越小越好，當然選擇先壓縮再加密。而另一個角度是這兩種演算法的特性：資料壓縮的原理是將重複的pattern用特定的符號來取代，所以重複的pattern越多壓縮效果越好；而加密演算法特性是將資料打得越亂越好，因此不太有機會出現重複的pattern，所以如果先加密再壓縮的話，壓縮的效果可能不佳，甚至可能壓縮後檔案會變大。</p>
+<p>綜合以上推論，正確順序應該為：壓縮→加解密→錯誤更正碼。</p>
+<hr>
+
+<h3> Block Cipher </h3>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/10/Applied-Cryptography-3/" data-id="ciflxfqiq0003qmon96wh1w40" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/10/Applied-Cryptography-3/" data-id="cifly4hvq0003y0ongrtouwyf" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a></li></ul>
@@ -204,7 +210,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/09/29/Applied-Cryptography-2/" data-id="ciflxfqiw0005qmonof2gqzbi" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/09/29/Applied-Cryptography-2/" data-id="cifly4hvu0005y0onmuiwsny1" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a></li></ul>
@@ -262,7 +268,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/09/28/Applied-Cryptography-1/" data-id="ciflxfqhw0000qmonr6qjdz19" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/09/28/Applied-Cryptography-1/" data-id="cifly4huw0000y0on2p2p59k2" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a></li></ul>
