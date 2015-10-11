@@ -123,10 +123,31 @@ ga('send', 'pageview');
 
 <h3> Block Cipher </h3>
 
+<p>一開始先介紹Block Cipher的概念，如下圖所示，將訊息切割成n段後，每一段訊息(block)都進入加密器加密，最後再merge回完整cipher。</p>
+<p><img src="/images/block_cipher.jpg" alt="Block Cipher"></p>
+<p>接下來將利用典型的DES(Data Encryption Standard)來帶領大家進入Block Cipher的世界。首先DES每次取的block為64bit，而DES的key也是64個bit，那DES是如何將這64bit明文加密的呢?可以參考下圖：</p>
+<p><img src="/images/DES.jpg" alt=""></p>
+<p>我們可以看到明文會經過16回合後變成cipher，key會每回合shift、permuted後進來，接下來我們來看這16回合實際運作。</p>
+<p><img src="/images/Feistel_cipher.jpg" alt=""></p>
+<center> <a href="https://en.wikipedia.org/wiki/Feistel_cipher" target="_blank" rel="external">Feistel cipher from wiki</a> </center>
+
+<p>DES這16回合是來自於Feistel cipher，它的概念是這樣：將明文分為左右兩部分，左半邊為<span>$L_n$</span><!-- Has MathJax -->右半邊為<span>$R_n$</span><!-- Has MathJax -->，n為回合數。首先把<span>$R_0$</span><!-- Has MathJax -->與<span>$K_0$</span><!-- Has MathJax -->當作input，丟進F後的output與<span>$L_0$</span><!-- Has MathJax -->做<span>$\bigoplus$</span><!-- Has MathJax -->，此為第一回合，第二回合開始將第一回合<span>$\bigoplus$</span><!-- Has MathJax -->結果與<span>$K_1$</span><!-- Has MathJax -->當作input再丟入F，得到output再與第一回合的<span>$R_0$</span><!-- Has MathJax -->做<span>$\bigoplus$</span><!-- Has MathJax -->，以此類推至16回合結束。解密的部分稍後再詳細說明。</p>
+<p>接下來介紹F裡面做了什麼事情，在介紹之前先介紹第一堂課探討過的取代跟重排。取代跟重排不管你單獨重複多次或者交叉使用多次，都能夠化減為單一回合的取代。為了解決此問題，<a href="https://en.wikipedia.org/wiki/Substitution-permutation_network" target="_blank" rel="external">Substitution-permutation network</a>利用了不同size的S-box與P-box進行重排與取代，此方法經過重複多次後無法用單一回合的取代來代替。</p>
+<p><img src="/images/SP.jpg" alt="S-P Network"></p>
+<p>Substitution-permutation network一開始的8bit substitution為key，故每次的key不一樣導致替換的結果不同，後面的64bit permutation會造成<a href="https://en.wikipedia.org/wiki/Avalanche_effect" target="_blank" rel="external">Avalanche effect 雪崩效應</a>，所以不同input只差一個bit會導致ciphertext完全不一樣。</p>
+<p>有了Substitution-permutation network概念後接下來看F做的事情，如下圖所示：</p>
+<p><img src="/images/DES1.jpg" alt=""></p>
+<p>圖中可以看到它把右邊的32bit先做Expansion以及permutation成48bit，實作如下圖：</p>
+<p><img src="/images/expper.jpg" alt="Expansion/Permutation"></p>
+<p>得到48bit後與key做<span>$\bigoplus$</span><!-- Has MathJax -->，XOR完之後就是S-box變形與P-box，下圖為P-box實作：</p>
+<p><img src="/images/DES_pbox.jpg" alt="P-box"></p>
+<p>上面兩個permutation的圖都是代表第幾個位置為原本位置的值，例如Expansion/Permutation的圖，第一個bit的值被替代後變成了原本的第32bit的值。<br>而這邊的S-box比較特殊，它是8個6bit轉4bit的替換器，替換方式如下：<span>$b_1$</span><!-- Has MathJax -->與<span>$b_6$</span><!-- Has MathJax -->代表第幾列，<span>$b_2$</span><!-- Has MathJax -->到<span>$b_5$</span><!-- Has MathJax -->代表第幾行。舉個例子：假設今天送進<span>$S_1$</span><!-- Has MathJax -->的訊息為000001，則替換的數字為第01列第0000行，所以output為0010(4)。</p>
+<p><img src="/images/DES_sbox.jpg" alt="S-box"></p>
+
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/10/Applied-Cryptography-3/" data-id="cifly4hvq0003y0ongrtouwyf" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/10/Applied-Cryptography-3/" data-id="cifm4edha0003jdon1g2qky5a" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a></li></ul>
@@ -210,7 +231,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/09/29/Applied-Cryptography-2/" data-id="cifly4hvu0005y0onmuiwsny1" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/09/29/Applied-Cryptography-2/" data-id="cifm4edhf0005jdonj42mztho" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a></li></ul>
@@ -268,7 +289,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/09/28/Applied-Cryptography-1/" data-id="cifly4huw0000y0on2p2p59k2" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/09/28/Applied-Cryptography-1/" data-id="cifm4edgh0000jdon3yzsapmq" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a></li></ul>
