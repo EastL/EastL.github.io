@@ -104,13 +104,23 @@ ga('send', 'pageview');
       
         <p>來源：<a href="/papers/Chapter2.pdf">chapter 2 (23~51)</a></p>
 <p>在進入Block Cipher之前，先來思考一個問題：<br><img src="/images/QAQ.gif" alt=""></p>
-<p></p><h5> Question: 加解密，錯誤更正碼，壓縮先後順序 </h5><br>假設今天你要將資料m透過網路傳給別人，但資料量太大必須壓縮，而且資料必須保密不能讓第三者看到因此要加密，並且需要保證接收方收到的資料正確無誤所以你希望加個錯誤更正碼降低接收方的錯誤率，問題來了，這三道程序的先後順序要如何排列呢？如果不按照”正確”的程序進行會發生什麼事呢？<p></p>
+<p></p><h5> Question: 加解密，錯誤更正碼(encoder、decoder)，壓縮先後順序 </h5><br>假設今天你要將資料m透過網路傳給別人，但資料量太大必須壓縮，而且資料必須保密不能讓第三者看到因此要加密，並且需要保證接收方收到的資料正確無誤所以你希望加個錯誤更正碼降低接收方的錯誤率，問題來了，這三道程序的先後順序要如何排列呢？如果不按照”正確”的程序進行會發生什麼事呢？<p></p>
 <p><img src="/images/AC3_Q.jpg" alt=""></p>
+<p>一次要看三道程序的話不免過於複雜，學資工的應要有資工的解法，這邊我們利用divide and conquer的想法(誤XDD<br>首先我們先來看看加解密與錯誤更正碼哪個應該優先做，分別為下兩a、b兩種方法：</p>
+<p><img src="/images/cry_coder.jpg" alt=""></p>
+<p>如果你的更正碼用的是linear block code，若你想要code自動錯誤更正n個bit，你至少要增加2n+1個bit的更正碼，不然更正碼可能會更正到另一組更正碼認為是正確的coset。這邊用簡單的圖來幫助理解，先想像一下，你今天收到的資料與原本資料假設有k個bit不一樣，也就是錯了k個bit，這樣就代表著你收到的資料與正確資料距離為k，ok，再來理解錯誤更正碼，假設你今天送的資料加了錯誤更正碼，它能夠自動錯誤更正n個bit，也就是我今天收到的資料如果錯的bit數小於n的話，他就有辦法自己更正成正確的，那也就是在方圓半徑n以內的我都有辦法將他拉到原點，如下圖所示：A點為正確資料，半徑為n，<span>$r_1$</span><!-- Has MathJax -->能夠自動更正回來，<span>$r_2$</span><!-- Has MathJax -->無法。</p>
+<p><img src="/images/err_1.jpg" alt=""></p>
+<p>OK，問題來了，假設今天只有一個圓，也就是只有一組正確資料，那沒什麼問題，但現實情況不可能只有傳一筆資料吧….所以當你有兩筆以上的資料時，如果每筆資料靠的太近，那就可能會發生相交甚至重疊，此時如果你剛好錯誤的地點發生在重疊部分，錯誤更正碼就可能將你導向”另一筆”正確資料。如下圖所示，<span>$r_1$</span><!-- Has MathJax -->點落在A與B重疊處，原本正確資料為A，錯誤更正完後可能會變成B。</p>
+<p><img src="/images/err_2.jpg" alt=""></p>
+<p>為了避免上述情況發生，我們增加了2n+1個bit的更正碼來增加正確資料的距離，避免錯誤更正範圍重疊。如下圖，只要錯誤的點不要落在錯誤更正範圍外，都能夠正確的解回來。</p>
+<p><img src="/images/err_3.jpg" alt="A與B距離為2n+1"></p>
+<p>有了錯誤更正碼的概念後，我們可以發現：錯誤更正碼能力是有限的，他只能容許錯誤在一定範圍內，因此如果錯誤更正碼要搭配加密，那麼必須是在加密之後再來加錯誤更正碼，因為加密後只要錯了一個bit，解回來時肯定不只錯一個bit，所以如果你用了方法b，原本只錯了一個bit的密文解密後錯更多，在進行錯誤更正碼就大亂了，因此應該要使用方法a。</p>
+<p>接下來我們來看看加解密與壓縮：</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/10/Applied-Cryptography-3/" data-id="cifl9nvmp00035kond6gahjcs" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/10/Applied-Cryptography-3/" data-id="ciflxfqiq0003qmon96wh1w40" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a></li></ul>
@@ -194,7 +204,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/09/29/Applied-Cryptography-2/" data-id="cifl9nvmu00055kon1v8v9y16" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/09/29/Applied-Cryptography-2/" data-id="ciflxfqiw0005qmonof2gqzbi" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a></li></ul>
@@ -252,7 +262,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/09/28/Applied-Cryptography-1/" data-id="cifl9nvly00005konieppas66" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/09/28/Applied-Cryptography-1/" data-id="ciflxfqhw0000qmonr6qjdz19" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a></li></ul>
