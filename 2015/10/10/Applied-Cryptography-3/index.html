@@ -34,7 +34,8 @@
 <meta property="og:image" content="http://eastl.github.io/images/key_schedule.jpg">
 <meta property="og:image" content="http://eastl.github.io/images/PC1and2.jpg">
 <meta property="og:image" content="http://eastl.github.io/images/DES_decrypt.jpg">
-<meta property="og:updated_time" content="2015-10-11T09:34:02.000Z">
+<meta property="og:image" content="http://eastl.github.io/images/CBC.jpg">
+<meta property="og:updated_time" content="2015-10-11T09:54:33.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Applied Cryptography-3">
 <meta name="twitter:description" content="來源：chapter 2 (23~51)
@@ -135,11 +136,19 @@ ga('send', 'pageview');
 <p>4bit轉6bit代表你要1對多，在一對多的狀況時你要如何知道哪個才是你真正要的原文呢？因此此方法行不通。那麼該如何解密呢？觀察一下下面這張圖：</p>
 <p><img src="/images/DES_decrypt.jpg" alt=""></p>
 <p>首先先看左邊加密時的狀況，在最後一個回合時，右邊的藍色跟黃色做XOR後得到紅色，然後被拉到左邊；而左邊的黑色根紫色做XOR後變成綠色，被拉到右邊。而右邊的黃色是原本的左邊綠色經過F後得到的，而左邊的紫色是右邊的藍色經過F所得到的。左邊加密看完後接下來看右邊的解密，假如我直接把得到的密文再丟入DES一次會發生什麼事情呢？右邊的綠色往上丟，經過F會變成黃色(由左邊加密時得知)，而左邊紅色也往上丟，與剛剛出爐的黃色做XOR得到藍色(藍XOR黃=紅，so黃XOR紅=藍)，有沒有發現一件神奇的事情，我剛剛做的事情就是原本加密時的第16回合，也就是說，照原本DES的加密上式進行下去，key只要倒著排，就能夠把密文還原回明文，酷吧！</p>
+<hr>
+
+<h4> Cipher Block Chaining (CBC) </h4>
+
+<p>由於DES有個致命的缺點，一樣的明文送進DES第二次會出現與上一次一模一樣的密文，這樣攻擊者只要蒐集密文並分析就有可能推測出明文，為了避免像是ciphertext searching這種攻擊，block cipher有一種模式叫做cipher block chaining，它是在每次要進行加密前，多XOR一串vector，這樣就不會使每次的明文加密完後都一樣。</p>
+<p><img src="/images/CBC.jpg" alt=""></p>
+<p>如上圖，第一個block會XOR一個Initial Vector(IV)，之後的block都會XOR前一個block的cipher，這麼做的好處是cipher是加密過後的，所以他的值非常難預測，幾乎是亂數值。而CBC的最後一個cipher也能拿來當作Message Authentication Code (MAC)，由於你要拿到最後一個cipher一定要將整個明文做一次CBC mode的加密才有辦法拿到，所以此cipher能拿來當作MAC，MAC概念類似於checksum或者是parity check。<a href="https://en.wikipedia.org/wiki/Message_authentication_code" target="_blank" rel="external">wiki在此</a></p>
+<p>最後老師講了一個CBC的攻擊，不過我看投影片還有其他的攻擊，這部分就保留到下次在一起寫吧。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/10/Applied-Cryptography-3/" data-id="cifma3p2900034konzku9nuaq" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/10/Applied-Cryptography-3/" data-id="cifmc3ygx0003etonygme95xf" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a></li></ul>
