@@ -84,6 +84,67 @@ ga('send', 'pageview');
       <div class="outer">
         <section id="main">
   
+    <article id="post-Linux-Operating-System-1" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/10/14/Linux-Operating-System-1/" class="article-date">
+  <time datetime="2015-10-14T12:02:44.000Z" itemprop="datePublished">2015-10-14</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/10/14/Linux-Operating-System-1/">Linux Operating System-1</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>來源：<a href="http://www.csie.ncu.edu.tw/~hsufh/COURSES/FALL2015/linuxLecture_3_9-1.ppt" target="_blank" rel="external">Introduction (1~52)</a>，<a href="https://zh.wikipedia.org/wiki/X86-64" target="_blank" rel="external">x86-64</a>，<a href="https://zh.wikipedia.org/wiki/X86" target="_blank" rel="external">x86</a></p>
+<h2> Intel x86 Architecture </h2>
+
+<p>講x86之前當然要先講一下它的由來，x86是intel的指令集架構，Intel這家公司成立於1968年，他最早創造了全球第一顆微處理器4004，然後演變成了8位元的CPU 8008，到了1978年x86架構正式誕生，第一款x86架構的處理器是8086，它是一個16位元的處理器，直到80386之後變成了32位元的cpu，也許是因為都是86結尾所以才叫做x86?到了2003年AMD這家公司針對x86架構開發了64位元的CPU，取名叫做AMD64，這AMD64可以相容之前的16、20、32位元的程式，所以廣受大家歡迎，Intel就採用了AMD64，並且把它叫做”Intel 64”，也就是現在統稱的x86-64或簡稱x64，「IA-32e」及「EM64T」也是指相同的東西，唯一要注意的是IA-64並不是指現在的x64，IA-64是在AMD64之前Intel與其他公司合作開發出來的架構，但他跟x86架構不相容，所以市場比較冷淡。下圖是老師投影片中的微處理器進化史：</p>
+<p><img src="/images/microprocessors.jpg" alt="Evolution of Intel Microprocessors"></p>
+<p>接下來的x86跟x64暫存器這邊就不介紹了…..</p>
+<h2> Real Mode vs. Protected Mode </h2>
+
+<p>在x86架構的處理器有好幾種mode，這邊介紹IA-32的real mode跟protected mode。IA32的CPU開機後，會先執行BIOS的程式，BIOS檢查程序執行完後會將執行權交給boot loader，然後boot loader才會將OS從硬碟中拉到記憶體，控制權再交給OS。在剛開機時，IA32 CPU是在real mode，real mode最大只能存取1MB的記憶體，而protected mode最大能存取4GB的記憶體，這是因為兩種mode的Addressing方式不一樣。  </p>
+<p>real mode addressing 是直接將logical address轉換成physical address，logical address表示方式為segment:offset，轉換過程其實很簡單，就把segment往左shift 4 bit然後加上offset就是physical address了。<br>protected mode addressing感覺非常麻煩，他要先將logical address轉成linear address，然後再從linear address轉成physical address，這邊之後上課會詳細的介紹paging unit的memory addressing。</p>
+<p><img src="/images/protected_mode.jpg" alt="Addressing in Protected Mode"></p>
+<h5> Interrupts </h5>
+
+<p>Interrupt是指某樣事件發生後會去觸發某個動作，而處理相對應動作的稱做Interrupt Service Routine簡稱ISR，或者叫Interrup Handler。在real mode底下有一個Interrupt Vector Table(IVT)，裡面總共有256個entry，每一個emtry會指向ISR，如下圖：</p>
+<p><img src="/images/IVT.jpg" alt="Interrupt Vector Table"></p>
+<p>而在protected mode下做法其實類似於real mode，它是將ISR存在Interrupt Descriptor Table(IDT)當中，而IDT的base address存在於Interrupt Descriptor Table Register(IDTR)，IDT裡存放的是8 byte的descriptor陣列，而descriptor又分為三種：task-gate descriptor、interrupt-gate descriptor、和 trap-gate descriptor。詳細可以看<a href="http://www.csie.ntu.edu.tw/~wcchen/asm98/asm/proj/b85506061/chap4/idt.html" target="_blank" rel="external">這裡</a>。</p>
+<p><img src="/images/interrupt_pro.jpg" alt="Interrupts in Protected Mode"></p>
+<p>這邊注意一下CR0或MSW的PE flag是決定processor現在是real mode還是protected mode。</p>
+<h3> Endian Order </h3>
+
+<p>根據byte存放順序可分為Little Endian跟Big Endian，Little Endian會將排序較後面的byte放在較低的address，Big Endian會將排序較前面的byte放在較低的address。而Intel processors是little endian。舉個例子，有一個4byte的int為：Byte3, Byte2, Byte1, Byte0，則：</p>
+<p><img src="/images/little_endian.jpg" alt="Little Endian"></p>
+<p><img src="/images/big_endian.jpg" alt="Big Endian"></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://eastl.github.io/2015/10/14/Linux-Operating-System-1/" data-id="cifqtmjdm0006qoonqrywx5q4" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux-Operating-System/">Linux Operating System</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-The-Attack-and-Defense-of-Computers-1-3" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2015/10/12/The-Attack-and-Defense-of-Computers-1-3/" class="article-date">
@@ -129,7 +190,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/12/The-Attack-and-Defense-of-Computers-1-3/" data-id="ciforzyj00003noonw6clqhad" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/12/The-Attack-and-Defense-of-Computers-1-3/" data-id="cifqtmjdh0003qoongjlmfdou" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/The-Attack-and-Defense-of-Computers/">The Attack and Defense of Computers</a></li></ul>
@@ -184,7 +245,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/10/Applied-Cryptography-3/" data-id="ciforzyj50006noon7kupenns" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/10/Applied-Cryptography-3/" data-id="cifqtmjds0009qoontu5j7nph" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a></li></ul>
@@ -268,7 +329,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/09/29/Applied-Cryptography-2/" data-id="ciforzyja0008noonh5wgru73" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/09/29/Applied-Cryptography-2/" data-id="cifqtmjdx000bqoonbj06oi68" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a></li></ul>
@@ -326,7 +387,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/09/28/Applied-Cryptography-1/" data-id="ciforzyhy0000noon7gsjun5u" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/09/28/Applied-Cryptography-1/" data-id="cifqtmjcf0000qoon7hpsohex" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a></li></ul>
@@ -349,7 +410,7 @@ ga('send', 'pageview');
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/The-Attack-and-Defense-of-Computers/">The Attack and Defense of Computers</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux-Operating-System/">Linux Operating System</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/The-Attack-and-Defense-of-Computers/">The Attack and Defense of Computers</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -358,7 +419,7 @@ ga('send', 'pageview');
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Applied-Cryptography/" style="font-size: 20px;">Applied Cryptography</a> <a href="/tags/The-Attack-and-Defense-of-Computers/" style="font-size: 10px;">The Attack and Defense of Computers</a>
+      <a href="/tags/Applied-Cryptography/" style="font-size: 20px;">Applied Cryptography</a> <a href="/tags/Linux-Operating-System/" style="font-size: 10px;">Linux Operating System</a> <a href="/tags/The-Attack-and-Defense-of-Computers/" style="font-size: 10px;">The Attack and Defense of Computers</a>
     </div>
   </div>
 
@@ -367,7 +428,7 @@ ga('send', 'pageview');
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a><span class="archive-list-count">2</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a><span class="archive-list-count">2</span></li></ul>
     </div>
   </div>
 
@@ -377,6 +438,10 @@ ga('send', 'pageview');
     <h3 class="widget-title">Recents</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2015/10/14/Linux-Operating-System-1/">Linux Operating System-1</a>
+          </li>
         
           <li>
             <a href="/2015/10/12/The-Attack-and-Defense-of-Computers-1-3/">The Attack and Defense of Computers (1~3)</a>
