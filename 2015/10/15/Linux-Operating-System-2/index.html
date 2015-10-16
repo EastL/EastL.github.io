@@ -24,7 +24,8 @@ Linux Source Code Tree Overview跟System Boot up我就跳過了…
 <meta property="og:image" content="http://eastl.github.io/images/x64_callee.jpg">
 <meta property="og:image" content="http://eastl.github.io/images/x64_calleestack.jpg">
 <meta property="og:image" content="http://eastl.github.io/images/IA32_address_space.jpg">
-<meta property="og:updated_time" content="2015-10-16T14:55:56.000Z">
+<meta property="og:image" content="http://eastl.github.io/images/cannonical.jpg">
+<meta property="og:updated_time" content="2015-10-16T15:54:40.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Linux Operating System-2">
 <meta name="twitter:description" content="來源：Introduction (64~98)
@@ -128,13 +129,16 @@ ga('send', 'pageview');
 <p><img src="/images/IA32_address_space.jpg" alt="IA32 Linux Process Address Space Layout"></p>
 <h2> x64 Process Address Space Layout </h2>
 
-
-
+<p>x64的address space比較特別，由於他有<span>$2^64$</span><!-- Has MathJax -->bit的address，相當於16EB，如果要將這麼大的virtual address都implement到實際的記憶體上的話，會造成page table複雜度提升，況且正常作業系統也用不到這麼龐大的記憶體空間，於是AMD決定只用前48bit的address，使用空間大概是256TB，創造了一個叫做canonical form的規則。</p>
+<p><img src="/images/cannonical.jpg" alt="canonical form"></p>
+<p>這規則其實還蠻人性化的(?  看一下目前48bit的設計，整個address space分為兩大區塊，一邊從底部長另一邊從頂部長，先說明一下canonical form的規則，它除了規定只能用前48個bit之外還外加了一個規定，就是沒用到的bit，從第49個bit開始往後都要跟第48個bit一樣，也就是說如果第48個bit為0之後就全部都要是0，如果第48個bit為1之後就都要是1，有了這個規則後，如果你的記憶體是單向長的話，當你長到00008000 00000000的時候，你的第48個bit為1，但第49bit後卻全都是0，這樣就違反了canonical form。</p>
+<p>而user space跟kernel space剛好一人一半(從kernel 2.6.11版本後)，高位址的部分是kernel address，另一半低位址則是user space。下面的位址分部是參考<a href="https://www.kernel.org/doc/Documentation/x86/x86_64/mm.txt" target="_blank" rel="external">這邊</a>。</p>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0000000000000000</span> - <span class="number">00007</span>fffffffffff (<span class="number">=47</span> <span class="keyword">bits) </span>user <span class="preprocessor">space</span>, different per mm</span><br><span class="line"><span class="label">hole</span> caused <span class="keyword">by </span>[<span class="number">48</span>:<span class="number">63</span>] sign extension</span><br><span class="line"><span class="label">ffff800000000000</span> - ffff87ffffffffff (<span class="number">=43</span> <span class="keyword">bits) </span>guard hole, reserved for hypervisor</span><br><span class="line"><span class="label">ffff880000000000</span> - ffffc7ffffffffff (<span class="number">=64</span> TB) direct mapping of all phys. memory</span><br><span class="line"><span class="label">ffffc80000000000</span> - ffffc8ffffffffff (<span class="number">=40</span> <span class="keyword">bits) </span>hole</span><br><span class="line"><span class="label">ffffc90000000000</span> - ffffe8ffffffffff (<span class="number">=45</span> <span class="keyword">bits) </span>vmalloc/ioremap <span class="preprocessor">space</span></span><br><span class="line"><span class="label">ffffe90000000000</span> - ffffe9ffffffffff (<span class="number">=40</span> <span class="keyword">bits) </span>hole</span><br><span class="line"><span class="label">ffffea0000000000</span> - ffffeaffffffffff (<span class="number">=40</span> <span class="keyword">bits) </span>virtual memory <span class="preprocessor">map</span> (<span class="number">1</span>TB)</span><br><span class="line"><span class="label">...</span> unused hole ...</span><br><span class="line"><span class="label">ffffec0000000000</span> - fffffc0000000000 (<span class="number">=44</span> <span class="keyword">bits) </span>kasan shadow memory (<span class="number">16</span>TB)</span><br><span class="line"><span class="label">...</span> unused hole ...</span><br><span class="line"><span class="label">ffffff0000000000</span> - ffffff7fffffffff (<span class="number">=39</span> <span class="keyword">bits) </span>%esp fixup stacks</span><br><span class="line"><span class="label">...</span> unused hole ...</span><br><span class="line"><span class="label">ffffffff80000000</span> - ffffffffa0000000 (<span class="number">=512</span> MB)  kernel text mapping, from phys <span class="number">0</span></span><br><span class="line"><span class="label">ffffffffa0000000</span> - ffffffffff5fffff (<span class="number">=1525</span> MB) module mapping <span class="preprocessor">space</span></span><br><span class="line"><span class="label">ffffffffff600000</span> - ffffffffffdfffff (<span class="number">=8</span> MB) vsyscalls</span><br><span class="line"><span class="label">ffffffffffe00000</span> - ffffffffffffffff (<span class="number">=2</span> MB) unused hole</span><br></pre></td></tr></table></figure>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/15/Linux-Operating-System-2/" data-id="cifts66tm0006weong4j80u5c" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/15/Linux-Operating-System-2/" data-id="ciftu8fxv000642onra8m234d" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/15/Linux-Operating-System-2/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -275,5 +279,35 @@ ga('send', 'pageview');
 <script src="/js/script.js" type="text/javascript"></script>
 
   </div>
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
 </body>
 </html>
