@@ -120,11 +120,21 @@ ga('send', 'pageview');
 <p>由於我程式裡面做的事情是i = b - 3，可以看到compiler將ebp+8的位置載入eax，接著再將它減去3。看完caller如何傳參數給callee後，接下來我們看callee如何將參數return給caller，其實很簡單，caller只要把要return的值塞進去eax暫存器就好了：</p>
 <p><img src="/images/return_conv.jpg" alt=""></p>
 <p>看一下剛剛G function，我直接將傳進來的參數a return回去，所以assembler就直接將ebp + 8位置的值丟進eax了。</p>
+<p></p><h2> x64 Calling Conventions </h2><br>x64與x32不一樣的是，如果傳遞的參數在六個以下時，它是利用暫存器去傳送的，看一下下面程式：<p></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">G</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b, <span class="keyword">int</span> c, <span class="keyword">int</span> d, <span class="keyword">int</span> e, <span class="keyword">int</span> f, <span class="keyword">int</span> g, <span class="keyword">int</span> h)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> g;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">()</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> a;</span><br><span class="line">    a = G(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我把上面的程式碼丟到64 bit ubuntu編譯後，objdump如下圖：</p>
+<p><img src="/images/x64_call.jpg" alt=""></p>
+<p>可以看到紅色框的部分6個參數都移到了暫存器當中，而當到第七個參數時，compiler是把它放到了rsp的位置，從stack底端往上放。</p>
+<p><img src="/images/x64_callerstack.jpg" alt=""></p>
+<p>而callee要拿參數時，前六個當然是從暫存器拿，第七個開始就從rbp + 16開始：</p>
+<p><img src="/images/x64_callee.jpg" alt=""></p>
+<p>由於我是return g，它是第七個參數，所以將rbp + 10(hex)移到eax。</p>
+<p><img src="/images/x64_calleestack.jpg" alt=""></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/15/Linux-Operating-System-2/" data-id="cifs935310006vvone6dqxm5p" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/15/Linux-Operating-System-2/" data-id="ciftp0yy20006kron3po2gvv5" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/15/Linux-Operating-System-2/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -187,7 +197,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/14/Linux-Operating-System-1/" data-id="cifs935390009vvon5s4baj1r" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/14/Linux-Operating-System-1/" data-id="ciftp0yy70009kron160dp96t" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/14/Linux-Operating-System-1/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -246,7 +256,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/12/The-Attack-and-Defense-of-Computers-1-3/" data-id="cifs935140003vvonw462ka09" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/12/The-Attack-and-Defense-of-Computers-1-3/" data-id="ciftp0yxw0003kron035b7t1i" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/12/The-Attack-and-Defense-of-Computers-1-3/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -303,7 +313,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/10/Applied-Cryptography-3/" data-id="cifs9353d000bvvonaielvpvv" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/10/Applied-Cryptography-3/" data-id="ciftp0yyc000bkronw087yvhs" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/10/Applied-Cryptography-3/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -389,7 +399,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/09/29/Applied-Cryptography-2/" data-id="cifs9353i000dvvona4wtn7eo" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/09/29/Applied-Cryptography-2/" data-id="ciftp0yyh000dkrondodsst49" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/09/29/Applied-Cryptography-2/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -449,7 +459,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/09/28/Applied-Cryptography-1/" data-id="cifs934sy0000vvons30v04f3" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/09/28/Applied-Cryptography-1/" data-id="ciftp0ywj0000kronfat8sap0" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/09/28/Applied-Cryptography-1/#disqus_thread" class="article-comment-link">Comments</a>
       
