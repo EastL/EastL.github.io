@@ -25,7 +25,7 @@ Linux Source Code Tree Overview跟System Boot up我就跳過了…
 <meta property="og:image" content="http://eastl.github.io/images/x64_calleestack.jpg">
 <meta property="og:image" content="http://eastl.github.io/images/IA32_address_space.jpg">
 <meta property="og:image" content="http://eastl.github.io/images/cannonical.jpg">
-<meta property="og:updated_time" content="2015-10-16T15:54:40.000Z">
+<meta property="og:updated_time" content="2015-10-17T04:41:18.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Linux Operating System-2">
 <meta name="twitter:description" content="來源：Introduction (64~98)
@@ -129,7 +129,7 @@ ga('send', 'pageview');
 <p><img src="/images/IA32_address_space.jpg" alt="IA32 Linux Process Address Space Layout"></p>
 <h2> x64 Process Address Space Layout </h2>
 
-<p>x64的address space比較特別，由於他有<span>$2^64$</span><!-- Has MathJax -->bit的address，相當於16EB，如果要將這麼大的virtual address都implement到實際的記憶體上的話，會造成page table複雜度提升，況且正常作業系統也用不到這麼龐大的記憶體空間，於是AMD決定只用前48bit的address，使用空間大概是256TB，創造了一個叫做canonical form的規則。</p>
+<p>x64的address space比較特別，由於他有<span>$2^{64}$</span><!-- Has MathJax -->bit的address，相當於16EB，如果要將這麼大的virtual address都implement到實際的記憶體上的話，會造成page table複雜度提升，況且正常作業系統也用不到這麼龐大的記憶體空間，於是AMD決定只用前48bit的address，使用空間大概是256TB，創造了一個叫做canonical form的規則。</p>
 <p><img src="/images/cannonical.jpg" alt="canonical form"></p>
 <p>這規則其實還蠻人性化的(?  看一下目前48bit的設計，整個address space分為兩大區塊，一邊從底部長另一邊從頂部長，先說明一下canonical form的規則，它除了規定只能用前48個bit之外還外加了一個規定，就是沒用到的bit，從第49個bit開始往後都要跟第48個bit一樣，也就是說如果第48個bit為0之後就全部都要是0，如果第48個bit為1之後就都要是1，有了這個規則後，如果你的記憶體是單向長的話，當你長到00008000 00000000的時候，你的第48個bit為1，但第49bit後卻全都是0，這樣就違反了canonical form。</p>
 <p>而user space跟kernel space剛好一人一半(從kernel 2.6.11版本後)，高位址的部分是kernel address，另一半低位址則是user space。下面的位址分部是參考<a href="https://www.kernel.org/doc/Documentation/x86/x86_64/mm.txt" target="_blank" rel="external">這邊</a>。</p>
@@ -138,7 +138,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/15/Linux-Operating-System-2/" data-id="ciftu8fxv000642onra8m234d" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/15/Linux-Operating-System-2/" data-id="cifulfhtp0006t8onok17br6c" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/15/Linux-Operating-System-2/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -150,6 +150,15 @@ ga('send', 'pageview');
   
     
 <nav id="article-nav">
+  
+    <a href="/2015/10/17/Applied-Cryptography-4/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Applied Cryptography-4
+        
+      </div>
+    </a>
   
   
     <a href="/2015/10/14/Linux-Operating-System-1/" id="article-nav-older" class="article-nav-link-wrap">
@@ -178,7 +187,7 @@ ga('send', 'pageview');
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux-Operating-System/">Linux Operating System</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/The-Attack-and-Defense-of-Computers/">The Attack and Defense of Computers</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux-Operating-System/">Linux Operating System</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/The-Attack-and-Defense-of-Computers/">The Attack and Defense of Computers</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -196,7 +205,7 @@ ga('send', 'pageview');
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a><span class="archive-list-count">2</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a><span class="archive-list-count">2</span></li></ul>
     </div>
   </div>
 
@@ -206,6 +215,10 @@ ga('send', 'pageview');
     <h3 class="widget-title">Recents</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2015/10/17/Applied-Cryptography-4/">Applied Cryptography-4</a>
+          </li>
         
           <li>
             <a href="/2015/10/15/Linux-Operating-System-2/">Linux Operating System-2</a>
@@ -221,10 +234,6 @@ ga('send', 'pageview');
         
           <li>
             <a href="/2015/10/10/Applied-Cryptography-3/">Applied Cryptography-3</a>
-          </li>
-        
-          <li>
-            <a href="/2015/09/29/Applied-Cryptography-2/">Applied Cryptography-2</a>
           </li>
         
       </ul>
