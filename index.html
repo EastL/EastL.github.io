@@ -126,10 +126,17 @@ ga('send', 'pageview');
 <p></p><h6> Euler’s Generalization of  Fermat’ s Theorem </h6><br>For every a and n such that gcd(a,n) = 1, then<p></p>
 <center> <span>$a^{ \phi (n)} \ \ mod \ \ n \ \ = \ \ 1$</span><!-- Has MathJax --> </center>
 
+<p>證明：定義一集合為n的RSR，{ <span>$r_1, \ \ r_2, \ \ ... \ \ , \ \ r_{ \phi (n) }$</span><!-- Has MathJax --> }，則我們能利用類似compute inverse的證明，{ <span>$ar_1 \ \ mod \ \ n,.....,ar_{ \phi (n) } \ \ mod \ \ n$</span><!-- Has MathJax --> }為{ <span>$r_1, \ \ r_2, \ \ ... \ \ , \ \ r_{ \phi (n) }$</span><!-- Has MathJax --> }的重排，因此</p>
+<center> <span>$\prod_{i=1}^{ \phi (n) }(ar_i \ \ mod \ \ n) \ \ \equiv \ \ \prod_{i=1}^{ \phi (n) }r_i \ \ (mod \ \ n)$</span><!-- Has MathJax --> </center><br><center> <span>$(a^{ \phi (n)}) \prod_{i=1}^{ \phi (n) } r_i \ \ \equiv \ \ \prod_{i=1}^{ \phi (n) } r_i \ \ (mod \ \ n)$</span><!-- Has MathJax --> </center><br><center> <span>$\because gcd( \prod_{i=1}^{ \phi (n) }r_i, \ \ n ) \ \ = \ \ 1$</span><!-- Has MathJax --> </center><br><center> <span>$\therefore \prod_{i=1}^{ \phi (n) }r_i$</span><!-- Has MathJax --> 有反元素 </center><br><center> <span>$(a^{ \phi (n)}) \prod_{i=1}^{ \phi (n) } r_i (\prod_{i=1}^{ \phi (n) } r_i)^{-1} \equiv \ \ \prod_{i=1}^{ \phi (n) } r_i (\prod_{i=1}^{ \phi (n) } r_i)^{-1} \ \ (mod \ \ n)$</span><!-- Has MathJax --> </center><br><center> <span>$a^{ \phi (n) } \ \ \equiv \ \ 1 \ \ (mod \ \ n)$</span><!-- Has MathJax --> </center>
+
+<p>在上述的證明中有一點值得探討，之前證明的Computing Inverse是指小於n的所有數值帶入ai mod n的話會有重牌效果，但是這邊的{ <span>$r_1, \ \ r_2, \ \ ... \ \ , \ \ r_{ \phi (n) }$</span><!-- Has MathJax --> }只包含了n的RSR，所以老師額外的證明了當a &lt; n時此狀況還是能成立(由於之後的加密系統所用到的a都是小於n，大於n的狀況我之後有時間會去查)。由於a &lt; n，且a與n互質，故a也是n的RSR裡的元素：</p>
+<p>證明：Let a and b <span>$\in$</span><!-- Has MathJax --> RSR, then (a*b mod n) <span>$\in$</span><!-- Has MathJax --> RSR這邊利用反證法：</p>
+<center> <span>$r \ \ = \ \ (a*b \ \ mod \ \ n) \ \ \notin \ \ RSR \ \ and \ \ gcd(r,n) \ \ = \ \ t&gt;1$</span><!-- Has MathJax --> </center><br><center> <span>$\because ab \ \ = \ \ r \ \ + \ \ kn$</span><!-- Has MathJax --> </center><br><center> <span>$\therefore \frac{ab}{t} \ \ = \ \ \frac{r}{t} \ \ + \ \ k \frac{n}{t}$</span><!-- Has MathJax --> </center><br><center> so, t|a or t|b and t|n <span>$\Rightarrow a \ \ or \ \ b \ \ \notin \ \ RSR \ \ \rightarrow \leftarrow$</span><!-- Has MathJax --> </center><br><center>得證(a*b mod n) <span>$\in$</span><!-- Has MathJax --> RSR</center>
+
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/17/Applied-Cryptography-4/" data-id="cifutu7de000bl2onpn8vcj8k" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/17/Applied-Cryptography-4/" data-id="cifvavicy000brqonvu649z99" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/17/Applied-Cryptography-4/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -182,7 +189,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/15/Linux-Operating-System-2/" data-id="cifutu7d30006l2onb9d06kjx" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/15/Linux-Operating-System-2/" data-id="cifvavico0006rqonpk11rys2" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/15/Linux-Operating-System-2/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -245,7 +252,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/14/Linux-Operating-System-1/" data-id="cifutu7d90009l2onwa2guzan" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/14/Linux-Operating-System-1/" data-id="cifvavicu0009rqon9ds28etr" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/14/Linux-Operating-System-1/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -304,7 +311,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/12/The-Attack-and-Defense-of-Computers-1-3/" data-id="cifutu7cx0003l2onr54v7jha" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/12/The-Attack-and-Defense-of-Computers-1-3/" data-id="cifvavicj0003rqonfx1h7srx" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/12/The-Attack-and-Defense-of-Computers-1-3/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -361,7 +368,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/10/Applied-Cryptography-3/" data-id="cifutu7di000dl2onzw2qc3xy" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/10/Applied-Cryptography-3/" data-id="cifvavid3000drqony3lsftaz" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/10/Applied-Cryptography-3/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -447,7 +454,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/09/29/Applied-Cryptography-2/" data-id="cifutu7dm000fl2onjthxsht4" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/09/29/Applied-Cryptography-2/" data-id="cifvavid8000frqonooc8cnxn" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/09/29/Applied-Cryptography-2/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -507,7 +514,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/09/28/Applied-Cryptography-1/" data-id="cifutu7bk0000l2onjxx9g0eh" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/09/28/Applied-Cryptography-1/" data-id="cifvavib50000rqonyjho0ogj" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/09/28/Applied-Cryptography-1/#disqus_thread" class="article-comment-link">Comments</a>
       
