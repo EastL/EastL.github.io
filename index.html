@@ -84,6 +84,75 @@ ga('send', 'pageview');
       <div class="outer">
         <section id="main">
   
+    <article id="post-The-Attack-and-Defense-of-Computers-4" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/10/18/The-Attack-and-Defense-of-Computers-4/" class="article-date">
+  <time datetime="2015-10-18T05:36:51.000Z" itemprop="datePublished">2015-10-18</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/10/18/The-Attack-and-Defense-of-Computers-4/">The Attack and Defense of Computers-4</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>來源：<a href="http://www.csie.ncu.edu.tw/~hsufh/COURSES/FALL2015/2_BOA.ppt" target="_blank" rel="external">Internet Worms, Buffer Overflow Attacks, and Heap Overflow Attacks (21 ~ 40)</a></p>
+<h2> Return-into-libc Attacks </h2>
+
+<p>上一堂課講的stack smashing是利用return address跳到攻擊者所寫的shell code，由於攻擊者注入的shell code會是在data段，現在大多電腦data段是無法執行code的，所以這邊發展了另一種形式的buffer overflow，叫做Return-into-libc Attacks，它是利用受害程式裡頭現有的程式碼下去執行，所以不會造成data段的code無法執行這問題。上一章節講過會利用buffer overflow幾乎都是要拿來拿shell，這邊return to libc也是一樣，是利用libc裡面的system function，不過如果要執行shell的話必須執行system(/bin/sh)，這邊來看一下如何將參數”/bin/sh”塞給system。</p>
+<p>在<a href="http://eastl.github.io/2015/10/15/Linux-Operating-System-2/">Linux Operating System-2</a>有講過calling conventions，簡單來說就是caller在呼叫callee之前會用push的方式將要傳的參數丟到stack上，callee要使用這些參數時是直接存取ebp的相對位置，因此我們可以利用這一點將/bin/sh傳給system。在如何傳參數前要先了解compiler幫我們增加的程式碼是做什麼用的。</p>
+<p></p><h6> Function Prologue and Epilogue </h6><br>其實Prologue and Epilogue所做的事情就是幫我們長出stack跟回收stack。這邊有個小程式來幫助理解：<p></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">G</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b, <span class="keyword">int</span> c, <span class="keyword">int</span> d, <span class="keyword">int</span> e, <span class="keyword">int</span> f, <span class="keyword">int</span> g, <span class="keyword">int</span> h)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> aa;</span><br><span class="line">    aa = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">return</span> g;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">()</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> a;</span><br><span class="line">    a = G(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面程式碼就只是main function call了G function，只是參數傳的有點多…接下來我們來看Prologue是如何長出stack的，下面是compiler把上面程式翻譯後G function的組語：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">080483</span>eb &lt;G&gt;:</span><br><span class="line"> <span class="number">80483</span>eb:       <span class="number">55</span>                      push   %ebp</span><br><span class="line"> <span class="number">80483</span>ec:       <span class="number">89</span> e5                   mov    %esp,%ebp</span><br><span class="line"> <span class="number">80483</span>ee:       <span class="number">83</span> ec <span class="number">10</span>                sub    $<span class="number">0x10</span>,%esp</span><br><span class="line"> <span class="number">80483f</span>1:       c7 <span class="number">45</span> fc <span class="number">01</span> <span class="number">00</span> <span class="number">00</span> <span class="number">00</span>    movl   $<span class="number">0x1</span>,-<span class="number">0x4</span>(%ebp)</span><br><span class="line"> <span class="number">80483f</span>8:       <span class="number">8</span>b <span class="number">45</span> <span class="number">20</span>                mov    <span class="number">0x20</span>(%ebp),%eax</span><br><span class="line"> <span class="number">80483f</span>b:       c9                      leave</span><br><span class="line"> <span class="number">80483f</span>c:       c3                      ret</span><br></pre></td></tr></table></figure>
+<p>可以看到我真正的程式碼在組語裡面是第四行的 movl   $0x1,-0x4(%ebp)，這行動作是assign local變數，而這行的前三行做的事情就是幫我們製造stack出來：首先先將原本ebp值存起來，接著將目前指著頂端的esp指向ebp，然後esp往前了0x10個byte，這麼一來stack就往下長了16byte的空間出來給G function使用。</p>
+<p>那G function做完事情後要如何回收stack呢？接著我們談Epilogue，看一下剛剛組語的最後兩行，leave跟ret，這兩行指令就是在回收stack用的，看一下老師的投影片：</p>
+<p><img src="/images/proepi.jpg" alt=""></p>
+<p>上面紅色部分是剛剛將得如何長出stack，下面的藍色就是回收stack，可以看到leave做的事情是將esp從stack頂端指回ebp，接著將之前製造stack時存起來的ebp還給現在的ebp，ebp就指向caller的ebp。用GDB來看證在執行的程式目前狀況來解釋：</p>
+<p><img src="/images/gdb_epi.jpg" alt=""></p>
+<p>上圖是gdb執行的結果，這張圖有三個部分，最上面的是目前所有暫存器的值，中間那塊是記憶體中的code段，會有eip指著下一行要執行的指令，最下面則是stack內容，從esp開始往下共28byte。這張圖目前執行到的指令是我藍色框起來的部分，也就是在G function裡面leave的前一行指令，這行指令是將ebp+20位置的值移到eax，很明顯的這是要處理G function要return給main的值，我程式碼中回傳的是g，g=7，所以可以看到左上腳紅色框現在eax的值是7。接著執行下一行指令：</p>
+<p><img src="/images/gdb_epi2.jpg" alt=""></p>
+<p>執行完leave後可以看到stack裡面最上面目前剩下return address，接著是之前main所push的參數，所以應證了老師投影片裡面的leave做的事情，我們來比較執行leave前後暫存器裡面的值：</p>
+<p><img src="/images/gdb_epi3.jpg" alt=""></p>
+<p>執行leave前ebp的位置是0xbffff530，ebp指向0xbffff568，0xbffff568是main的ebp位置；執行leave後會先讓esp指到ebp，所以esp會先變成0xbffff530，接著pop ebp，pop會把目前stack頂端的值回收，所以esp值+4變成0xbffff534，而pop還會將stack頂端裡面存放的值丟給後面的參數，所以將原本stack頂端的0xbffff568存到ebp裡面，因此ebp就變成了0xbffff568。<br>接著執行ret，ret做的事情就是pop eip，讓eip指向caller call function的下一行指令，所以程式就會回到main function。</p>
+<p>整理一下剛剛學到的訊息，stack開始前會先push ebp，結束時會將stack回收再回到caller，回到剛剛的問題，要如何將參數”/bin/sh”給system()呢？當然第一步跟之前的stack smashing一樣，先把system()的位置蓋在return address上，那麼受害程式執行完leave、ret後，會到達system()的位置，然後system()執行Prologue會push ebp，接著system()要執行caller給他的參數時會去ebp+8的位置去拿，如果這時他在ebp+8拿到的是”/bin/sh”我們就成功了，看一下下面這張圖：</p>
+<p><img src="/images/ret2lib_stack.jpg" alt=""></p>
+<p>上圖中我們將return address蓋成system()位置外，我們還將return address+8的位置蓋成了字串/bin/sh的起始位置。</p>
+<p><img src="/images/ret2lib_stack2.jpg" alt=""></p>
+<p>接著受害程式執行完leave，return address底下的stack被回收了。</p>
+<p><img src="/images/ret2lib_stack3.jpg" alt=""></p>
+<p>執行ret，再將return address pop給eip，因此eip目前指向system()的位置。</p>
+<p><img src="/images/ret2lib_stack4.jpg" alt=""></p>
+<p>接著執行system()時，會先push ebp，接著準備好要給system()用的stack，此時我們剛剛塞的”/bin/sh”字串起始位置正好是ebp+8，大功告成。<br>這邊額外講一下我一開始的盲點，我一直認為return address上面的參數不是會被回收嗎？那剛塞的/bin/sh字串不就被回收掉了……其實回收這動作是在caller當中，而你return到的地方正常來講應該是要到caller，但是這邊攻擊流程式讓他到達system()，所以參數並沒有被回收。</p>
+<p>/<em> FIXME </em>/<br>heap跟BSS的overflow老師這邊很快就帶過，我有時間研究一下後再補上。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://eastl.github.io/2015/10/18/The-Attack-and-Defense-of-Computers-4/" data-id="cifw8zgcx00031aondq4xyt95" class="article-share-link">Share</a>
+      
+        <a href="http://eastl.github.io/2015/10/18/The-Attack-and-Defense-of-Computers-4/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/The-Attack-and-Defense-of-Computers/">The Attack and Defense of Computers</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-Applied-Cryptography-4" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2015/10/17/Applied-Cryptography-4/" class="article-date">
@@ -136,7 +205,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/17/Applied-Cryptography-4/" data-id="cifvavicy000brqonvu649z99" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/17/Applied-Cryptography-4/" data-id="cifw8zgdh000d1aonzf3nebmr" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/17/Applied-Cryptography-4/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -189,7 +258,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/15/Linux-Operating-System-2/" data-id="cifvavico0006rqonpk11rys2" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/15/Linux-Operating-System-2/" data-id="cifw8zgd800081aondyv5r6hc" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/15/Linux-Operating-System-2/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -252,7 +321,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/14/Linux-Operating-System-1/" data-id="cifvavicu0009rqon9ds28etr" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/14/Linux-Operating-System-1/" data-id="cifw8zgdd000b1aono7dokyrh" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/14/Linux-Operating-System-1/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -311,7 +380,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/12/The-Attack-and-Defense-of-Computers-1-3/" data-id="cifvavicj0003rqonfx1h7srx" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/12/The-Attack-and-Defense-of-Computers-1-3/" data-id="cifw8zgd300061aon8k4mk3tp" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/12/The-Attack-and-Defense-of-Computers-1-3/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -368,7 +437,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/10/Applied-Cryptography-3/" data-id="cifvavid3000drqony3lsftaz" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/10/Applied-Cryptography-3/" data-id="cifw8zgdl000f1aon7r6q9euz" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/10/Applied-Cryptography-3/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -454,7 +523,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/09/29/Applied-Cryptography-2/" data-id="cifvavid8000frqonooc8cnxn" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/09/29/Applied-Cryptography-2/" data-id="cifw8zgdq000h1aony6siethg" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/09/29/Applied-Cryptography-2/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -514,7 +583,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/09/28/Applied-Cryptography-1/" data-id="cifvavib50000rqonyjho0ogj" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/09/28/Applied-Cryptography-1/" data-id="cifw8zgbe00001aonr1v5fj9y" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/09/28/Applied-Cryptography-1/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -539,7 +608,7 @@ ga('send', 'pageview');
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux-Operating-System/">Linux Operating System</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/The-Attack-and-Defense-of-Computers/">The Attack and Defense of Computers</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux-Operating-System/">Linux Operating System</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/The-Attack-and-Defense-of-Computers/">The Attack and Defense of Computers</a><span class="tag-list-count">2</span></li></ul>
     </div>
   </div>
 
@@ -548,7 +617,7 @@ ga('send', 'pageview');
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Applied-Cryptography/" style="font-size: 20px;">Applied Cryptography</a> <a href="/tags/Linux-Operating-System/" style="font-size: 15px;">Linux Operating System</a> <a href="/tags/The-Attack-and-Defense-of-Computers/" style="font-size: 10px;">The Attack and Defense of Computers</a>
+      <a href="/tags/Applied-Cryptography/" style="font-size: 20px;">Applied Cryptography</a> <a href="/tags/Linux-Operating-System/" style="font-size: 10px;">Linux Operating System</a> <a href="/tags/The-Attack-and-Defense-of-Computers/" style="font-size: 10px;">The Attack and Defense of Computers</a>
     </div>
   </div>
 
@@ -557,7 +626,7 @@ ga('send', 'pageview');
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a><span class="archive-list-count">2</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a><span class="archive-list-count">2</span></li></ul>
     </div>
   </div>
 
@@ -567,6 +636,10 @@ ga('send', 'pageview');
     <h3 class="widget-title">Recents</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2015/10/18/The-Attack-and-Defense-of-Computers-4/">The Attack and Defense of Computers-4</a>
+          </li>
         
           <li>
             <a href="/2015/10/17/Applied-Cryptography-4/">Applied Cryptography-4</a>
@@ -582,10 +655,6 @@ ga('send', 'pageview');
         
           <li>
             <a href="/2015/10/12/The-Attack-and-Defense-of-Computers-1-3/">The Attack and Defense of Computers (1~3)</a>
-          </li>
-        
-          <li>
-            <a href="/2015/10/10/Applied-Cryptography-3/">Applied Cryptography-3</a>
           </li>
         
       </ul>
