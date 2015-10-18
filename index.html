@@ -133,13 +133,13 @@ ga('send', 'pageview');
 <p><img src="/images/ret2lib_stack3.jpg" alt=""></p>
 <p>執行ret，再將return address pop給eip，因此eip目前指向system()的位置。</p>
 <p><img src="/images/ret2lib_stack4.jpg" alt=""></p>
-<p>接著執行system()時，會先push ebp，接著準備好要給system()用的stack，此時我們剛剛塞的”/bin/sh”字串起始位置正好是ebp+8，大功告成。<br>這邊額外講一下我一開始的盲點，我一直認為return address上面的參數不是會被回收嗎？那剛塞的/bin/sh字串不就被回收掉了……其實回收這動作是在caller當中，而你return到的地方正常來講應該是要到caller，但是這邊攻擊流程式讓他到達system()，所以參數並沒有被回收。</p>
+<p>接著執行system()時，會先push ebp，接著準備好要給system()用的stack，此時我們剛剛塞的”/bin/sh”字串起始位置正好是ebp+8，大功告成。<br>這邊額外講一下我一開始的盲點，我一直認為return address上面的參數不是會被回收嗎？那剛塞的/bin/sh字串不就被回收掉了……其實回收這動作是在caller當中，而你return到的地方正常來講應該是要到caller，但是這邊攻擊流程是讓他到達system()，所以參數並沒有被回收。</p>
 <p>/<em> FIXME </em>/<br>heap跟BSS的overflow老師這邊很快就帶過，我有時間研究一下後再補上。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/18/The-Attack-and-Defense-of-Computers-4/" data-id="cifw8zgcx00031aondq4xyt95" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/18/The-Attack-and-Defense-of-Computers-4/" data-id="cifwak6ml0003dlong5qj4sdf" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/18/The-Attack-and-Defense-of-Computers-4/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -205,7 +205,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/17/Applied-Cryptography-4/" data-id="cifw8zgdh000d1aonzf3nebmr" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/17/Applied-Cryptography-4/" data-id="cifwak6n5000ddlon0qvv1oej" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/17/Applied-Cryptography-4/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -258,7 +258,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/15/Linux-Operating-System-2/" data-id="cifw8zgd800081aondyv5r6hc" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/15/Linux-Operating-System-2/" data-id="cifwak6mw0008dlonm2uewicu" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/15/Linux-Operating-System-2/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -321,7 +321,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/14/Linux-Operating-System-1/" data-id="cifw8zgdd000b1aono7dokyrh" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/14/Linux-Operating-System-1/" data-id="cifwak6n0000bdlonkn9jil6a" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/14/Linux-Operating-System-1/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -380,7 +380,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/12/The-Attack-and-Defense-of-Computers-1-3/" data-id="cifw8zgd300061aon8k4mk3tp" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/12/The-Attack-and-Defense-of-Computers-1-3/" data-id="cifwak6mr0006dlon4vjsj1sn" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/12/The-Attack-and-Defense-of-Computers-1-3/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -437,7 +437,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/10/Applied-Cryptography-3/" data-id="cifw8zgdl000f1aon7r6q9euz" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/10/Applied-Cryptography-3/" data-id="cifwak6n9000fdloncpkfudoi" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/10/Applied-Cryptography-3/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -523,7 +523,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/09/29/Applied-Cryptography-2/" data-id="cifw8zgdq000h1aony6siethg" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/09/29/Applied-Cryptography-2/" data-id="cifwak6ne000hdlonruaffpm6" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/09/29/Applied-Cryptography-2/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -583,7 +583,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/09/28/Applied-Cryptography-1/" data-id="cifw8zgbe00001aonr1v5fj9y" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/09/28/Applied-Cryptography-1/" data-id="cifwak6l10000dlontos3otg0" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/09/28/Applied-Cryptography-1/#disqus_thread" class="article-comment-link">Comments</a>
       
