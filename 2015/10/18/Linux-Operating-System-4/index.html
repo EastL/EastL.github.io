@@ -21,7 +21,7 @@
  Logical Addresses 主要是由segment base address加上offset組成，segment ba">
 <meta property="og:image" content="http://eastl.github.io/images/address_trans.jpg">
 <meta property="og:image" content="http://eastl.github.io/images/segment_selector.jpg">
-<meta property="og:updated_time" content="2015-10-20T04:27:29.000Z">
+<meta property="og:updated_time" content="2015-10-20T16:17:44.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Linux Operating System-4">
 <meta name="twitter:description" content="來源：Introduction and Memory Addressing: Segmentation Unit (21 ~ 49, 72 ~ 83)
@@ -131,11 +131,30 @@ ga('send', 'pageview');
 <p>上圖為Address Translation過程，這邊注意的是這些轉換過程都是寫在CPU電路上的，並不是我們寫程式去執行的。在memory中有可能會有兩個processor同時要去存取同一塊記憶體，因此有Memory Arbitrator機制來保證不會發生此狀況。<br>接著開始進入Segmentation Unit，Segmentation Unit是在intel processor的protected mode底下addressing的機制，透過logical address 的 16bit segment selector以及32 bit 的 offset來計算出linear address。16 bit 的segment selector存在於segment register，IA-32 processor的segment register有六種，其中常用的為cs(code段用)、ds(data段用)，而segment selector的16個bit結構如下：</p>
 <p><img src="/images/segment_selector.jpg" alt=""></p>
 <p>最右邊兩個bit是RPL(Request Privilege Level)，代表著執行權限，有分為kernel權限(00)以及user權限(11)。cs暫存器中的RPL稱做CPL(Current Privilege Level)，代表著目前執行的process所擁有的執行權限。從logical address轉到linear address時，processer會透過segment selector來找到該位址的segment base，再將offset加上這個base address便是完整的linear address，而這些segment會用一種方式將他儲存在Descriptor中，這些Descriptors又會放在table裡面，所以當processor要去找相對應的segment需要先找到table，然後再去找table裡面的某個欄位才會是processor要的segment descriptor。中間的TI(Table Indicator)就是用來辨認這一次要找的segment base要去哪個table找，而最前面剩下的13個bit就是描述table的第幾欄位(index)。</p>
+<p>講了這麼多，到底什麼是Descriptor，而這些Descriptor又放在什麼table呢？</p>
+<ul>
+<li><p>Segment Descriptor </p>
+<p>為了方便管理記憶體，將記憶體切成一個區塊一個區塊，每個區塊叫做segment。而每個區塊的起始位置以及大小等資訊都會用 Descriptor 來記錄， Descriptor 大小為 8 byte：</p>
+<ul>
+<li>Base field (32): the linear address of the first byte of the segment.</li>
+<li>G granularity flag (1): 0 (byte); 1 (4K bytes).</li>
+<li>Limit field (20).</li>
+<li>S system flag (1): 0 (system segment); 1 (normal segment).</li>
+<li>Type field (4): segment type and its access rights.</li>
+<li>DPL (Descriptor privilege level) (2):</li>
+<li>Segment-present flag</li>
+<li>D/B flag</li>
+<li>Reserved bit</li>
+<li>AVL flag</li>
+</ul>
+<p>DPL是表示此segment的執行權限，CPU查到此segment時，會將這個Descriptor的DPL跟segment register的CPL做比對，來看目前是否有權限執行。</p>
+</li>
+</ul>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/18/Linux-Operating-System-4/" data-id="cifyvclsf0008v0ontuvho9pi" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/18/Linux-Operating-System-4/" data-id="cifzjktsn0008byonhtr9nb1n" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/18/Linux-Operating-System-4/#disqus_thread" class="article-comment-link">Comments</a>
       
