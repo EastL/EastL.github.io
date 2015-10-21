@@ -21,7 +21,11 @@
  Logical Addresses 主要是由segment base address加上offset組成，segment ba">
 <meta property="og:image" content="http://eastl.github.io/images/address_trans.jpg">
 <meta property="og:image" content="http://eastl.github.io/images/segment_selector.jpg">
-<meta property="og:updated_time" content="2015-10-20T16:17:44.000Z">
+<meta property="og:image" content="http://eastl.github.io/images/segment_descriptor.jpg">
+<meta property="og:image" content="http://eastl.github.io/images/gdtr.jpg">
+<meta property="og:image" content="http://eastl.github.io/images/ldtr.jpg">
+<meta property="og:image" content="http://eastl.github.io/images/trans_address.jpg">
+<meta property="og:updated_time" content="2015-10-21T00:47:37.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Linux Operating System-4">
 <meta name="twitter:description" content="來源：Introduction and Memory Addressing: Segmentation Unit (21 ~ 49, 72 ~ 83)
@@ -147,14 +151,31 @@ ga('send', 'pageview');
 <li>Reserved bit</li>
 <li>AVL flag</li>
 </ul>
-<p>DPL是表示此segment的執行權限，CPU查到此segment時，會將這個Descriptor的DPL跟segment register的CPL做比對，來看目前是否有權限執行。</p>
+<p>DPL是表示此segment的執行權限，CPU查到此segment時，會將這個Descriptor的DPL跟segment register的CPL做比對，來看目前是否有權限執行。而Segment Descriptor又分為以下幾種：</p>
+<ul>
+<li>Code Segment Descriptor</li>
+<li>Data Segment Descriptor</li>
+<li>Task State Segment Descriptor </li>
+<li>Local Descriptor Table Descriptor </li>
+</ul>
+<p>Task State Segment Descriptor(TSSD)是用在process切換時，儲存睡眠的proces暫存器狀態。下圖是Segment Descriptors的實際結構圖：</p>
+<p><img src="/images/segment_descriptor.jpg" alt=""></p>
+</li>
+<li><p>GDT v.s. LDT</p>
+<p>Segment Descriptors 會存在Global Descriptor Table (GDT) 或者Local Descriptor Table (LDT)這兩個table當中。在GDT裡面儲存的Descriptors是所有process都能夠使用的，所以一顆CPU只會有一個GDT；而LDT則是給各別的process使用，process無法存取別人的LDT。GDT的起始位置會存在gdtr暫存器裡，gdtr是32 bit的linear address以及16 bit的 table 大小：</p>
+<p><img src="/images/gdtr.jpg" alt=""></p>
+<p>而LDT的起始位置是存在ldtr當中：</p>
+<p><img src="/images/ldtr.jpg" alt=""></p>
 </li>
 </ul>
+<p>由於Segment Selector 的index只有13個bit，因此GDT最多只能有<span>$2^{13}$</span><!-- Has MathJax -->個entry，GDT的index最小從0開始。接下來看Intel processor如何將logical address轉換成linear address的：</p>
+<p><img src="/images/trans_address.jpg" alt=""></p>
+<p>透過selector找到相對應的GDT或LDT後，根據index找到descriptor，再從descriptor裡面找到base address，然後跟offset相加就得到linear address啦！</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/18/Linux-Operating-System-4/" data-id="cifzjktsn0008byonhtr9nb1n" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/18/Linux-Operating-System-4/" data-id="cig02xn640008n8on9unzr21i" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/18/Linux-Operating-System-4/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -295,5 +316,35 @@ ga('send', 'pageview');
 <script src="/js/script.js" type="text/javascript"></script>
 
   </div>
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
 </body>
 </html>
