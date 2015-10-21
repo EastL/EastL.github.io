@@ -154,11 +154,17 @@ ga('send', 'pageview');
 <p>由於Segment Selector 的index只有13個bit，因此GDT最多只能有<span>$2^{13}$</span><!-- Has MathJax -->個entry，GDT的index最小從0開始。接下來看Intel processor如何將logical address轉換成linear address的：</p>
 <p><img src="/images/trans_address.jpg" alt=""></p>
 <p>透過selector找到相對應的GDT或LDT後，根據index找到descriptor，再從descriptor裡面找到base address，然後跟offset相加就得到linear address啦！</p>
+<p></p><h2> Segmentation in Linux </h2><br>在linux kernel中他不想要用x86架構的segmentation，他讓所有的segment的起始位置都是00000000，所有的segment大小都是ffffffff，因此每個segment都可以用到整個4G的記憶體空間。由於每個segment的base都是00000000，因此在linux底下的logical offset就是他的virtual address。下圖為linux的descriptor：<p></p>
+<p><img src="/images/linux_dc.jpg" alt=""></p>
+<ul>
+<li>Privilege Level Change<br>cs暫存器的RPL如果換成了不同的mode其他ds或是ss暫存器也要跟著切換。</li>
+</ul>
+<p>剩下的linux GDT就到下次講比較完整。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/18/Linux-Operating-System-4/" data-id="cig02xn640008n8on9unzr21i" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/18/Linux-Operating-System-4/" data-id="cig0sns8h0008c3on8knwgni8" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/18/Linux-Operating-System-4/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -227,7 +233,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/18/The-Attack-and-Defense-of-Computers-4/" data-id="cig02xn5u0003n8on5ma9wvk7" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/18/The-Attack-and-Defense-of-Computers-4/" data-id="cig0sns870003c3onos8z7lu1" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/18/The-Attack-and-Defense-of-Computers-4/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -293,7 +299,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/17/Applied-Cryptography-4/" data-id="cig02xn6k000fn8onvmgukmj4" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/17/Applied-Cryptography-4/" data-id="cig0sns8w000fc3oncywew10b" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/17/Applied-Cryptography-4/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -346,7 +352,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/15/Linux-Operating-System-2/" data-id="cig02xn69000bn8ontzvos2ml" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/15/Linux-Operating-System-2/" data-id="cig0sns8n000bc3onvvacy2pf" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/15/Linux-Operating-System-2/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -409,7 +415,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/14/Linux-Operating-System-1/" data-id="cig02xn6f000dn8onk07x7axk" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/14/Linux-Operating-System-1/" data-id="cig0sns8s000dc3on4e9qiovg" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/14/Linux-Operating-System-1/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -468,7 +474,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/12/The-Attack-and-Defense-of-Computers-1-3/" data-id="cig02xn5z0006n8onlpsdd2ya" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/12/The-Attack-and-Defense-of-Computers-1-3/" data-id="cig0sns8c0006c3ond4unlrqp" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/12/The-Attack-and-Defense-of-Computers-1-3/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -525,7 +531,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/10/Applied-Cryptography-3/" data-id="cig02xn6o000hn8onkt32npgq" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/10/Applied-Cryptography-3/" data-id="cig0sns90000hc3oniag0ki8j" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/10/Applied-Cryptography-3/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -611,7 +617,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/09/29/Applied-Cryptography-2/" data-id="cig02xn6t000jn8onusiez5x5" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/09/29/Applied-Cryptography-2/" data-id="cig0sns95000jc3onljknp0g6" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/09/29/Applied-Cryptography-2/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -671,7 +677,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/09/28/Applied-Cryptography-1/" data-id="cig02xn4b0000n8onr2fkf1w6" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/09/28/Applied-Cryptography-1/" data-id="cig0sns6m0000c3onk9y3m4f3" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/09/28/Applied-Cryptography-1/#disqus_thread" class="article-comment-link">Comments</a>
       
