@@ -84,6 +84,51 @@ ga('send', 'pageview');
       <div class="outer">
         <section id="main">
   
+    <article id="post-Applied-Cryptography-5" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/10/21/Applied-Cryptography-5/" class="article-date">
+  <time datetime="2015-10-21T13:20:38.000Z" itemprop="datePublished">2015-10-21</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/10/21/Applied-Cryptography-5/">Applied Cryptography-5</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>來源：<a href="http://staff.csie.ncu.edu.tw/yensm/lecture/Cryptography/Chapter-3%20Number%20Theory.pdf" target="_blank" rel="external">chapter 3(23~31)</a></p>
+<p>在上一次的尤拉函數中，我們推得了費瑪理論的通式<span>$a^{ \phi (n) } \ \ mod \ \ n \ \ = \ \ 1 \ \ if \ \ gcd(a,n)=1$</span><!-- Has MathJax -->，這個式子對於餘數系統的乘法反元素非常有幫助，以上面例子來說，a在餘數系統中的乘法反元素就是<span>$a^{ \phi (n) - 1}$</span><!-- Has MathJax -->，但如果考慮到計算量的話我們會想讓a的指數越小越好，因此在n=pq, p、q都是質數情況下，我們可以將<span>$a^{ \phi (n) } \ \ mod \ \ n \ \ = \ \ 1$</span><!-- Has MathJax --> 改成<span>$a^{ lcm(p-1,q-1) } \ \ mod \ \ n \ \ = \ \ 1$</span><!-- Has MathJax -->。(關於此式子小弟還沒想通，之後再補上證明)</p>
+<p>有了餘數系統的乘法反元素後，RSA將他應用在加密演算法上：</p>
+<p>令<span>$\phi (n) \ \ + \ \ 1 \ \ = \ \ A \ \ \times \ \ B$</span><!-- Has MathJax --><br>(A, n)為public key<br>密文 <span>$C \ \ = \ \ m^A \ \ mod \ \ n$</span><!-- Has MathJax -->，m為明文<br>(B, n)為private key<br>解密 <span>$C^B \ \ mod \ \ n \ \ = \ \ m^{AB} \ \ mod \ \ n \ \ = \ \ m^{ \phi (n)+1} \ \ mod \ \ n \ \ = \ \ m$</span><!-- Has MathJax --> </p>
+<p>上式的解密用到<span>$(m^A \ \ mod \ \ n)^B \ \ mod \ \ n \ \ = \ \ m^{AB} \ \ mod \ \ n$</span><!-- Has MathJax -->，此證明我在<a href="http://eastl.github.io/2015/09/28/Applied-Cryptography-1/">Applied Cryptography-1</a>中講Diffie-Hellman如何傳送public key時有證明，可以參考。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://eastl.github.io/2015/10/21/Applied-Cryptography-5/" data-id="cig1mef09000fb1on0hp2brbb" class="article-share-link">Share</a>
+      
+        <a href="http://eastl.github.io/2015/10/21/Applied-Cryptography-5/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-Linux-Operating-System-4" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2015/10/18/Linux-Operating-System-4/" class="article-date">
@@ -164,7 +209,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/18/Linux-Operating-System-4/" data-id="cig0sns8h0008c3on8knwgni8" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/18/Linux-Operating-System-4/" data-id="cig1meezv0008b1one92tqnnt" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/18/Linux-Operating-System-4/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -233,7 +278,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/18/The-Attack-and-Defense-of-Computers-4/" data-id="cig0sns870003c3onos8z7lu1" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/18/The-Attack-and-Defense-of-Computers-4/" data-id="cig1meezk0003b1onynggz21s" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/18/The-Attack-and-Defense-of-Computers-4/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -299,7 +344,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/17/Applied-Cryptography-4/" data-id="cig0sns8w000fc3oncywew10b" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/17/Applied-Cryptography-4/" data-id="cig1mef0d000hb1onjhp0zeud" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/17/Applied-Cryptography-4/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -352,7 +397,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/15/Linux-Operating-System-2/" data-id="cig0sns8n000bc3onvvacy2pf" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/15/Linux-Operating-System-2/" data-id="cig1mef01000bb1ongpmvo53l" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/15/Linux-Operating-System-2/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -415,7 +460,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/14/Linux-Operating-System-1/" data-id="cig0sns8s000dc3on4e9qiovg" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/14/Linux-Operating-System-1/" data-id="cig1mef05000db1onxzq6eze4" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/14/Linux-Operating-System-1/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -474,7 +519,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/12/The-Attack-and-Defense-of-Computers-1-3/" data-id="cig0sns8c0006c3ond4unlrqp" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/12/The-Attack-and-Defense-of-Computers-1-3/" data-id="cig1meezq0006b1onf6btkwq6" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/12/The-Attack-and-Defense-of-Computers-1-3/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -531,7 +576,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/10/Applied-Cryptography-3/" data-id="cig0sns90000hc3oniag0ki8j" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/10/Applied-Cryptography-3/" data-id="cig1mef0j000jb1onq4g3k06u" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/10/Applied-Cryptography-3/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -617,7 +662,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/09/29/Applied-Cryptography-2/" data-id="cig0sns95000jc3onljknp0g6" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/09/29/Applied-Cryptography-2/" data-id="cig1mef0o000lb1ontn6cg8vp" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/09/29/Applied-Cryptography-2/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -677,7 +722,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/09/28/Applied-Cryptography-1/" data-id="cig0sns6m0000c3onk9y3m4f3" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/09/28/Applied-Cryptography-1/" data-id="cig1meexy0000b1onoetkxd2y" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/09/28/Applied-Cryptography-1/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -702,7 +747,7 @@ ga('send', 'pageview');
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux-Operating-System/">Linux Operating System</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/The-Attack-and-Defense-of-Computers/">The Attack and Defense of Computers</a><span class="tag-list-count">2</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux-Operating-System/">Linux Operating System</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/The-Attack-and-Defense-of-Computers/">The Attack and Defense of Computers</a><span class="tag-list-count">2</span></li></ul>
     </div>
   </div>
 
@@ -720,7 +765,7 @@ ga('send', 'pageview');
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a><span class="archive-list-count">2</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a><span class="archive-list-count">2</span></li></ul>
     </div>
   </div>
 
@@ -730,6 +775,10 @@ ga('send', 'pageview');
     <h3 class="widget-title">Recents</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2015/10/21/Applied-Cryptography-5/">Applied Cryptography-5</a>
+          </li>
         
           <li>
             <a href="/2015/10/18/Linux-Operating-System-4/">Linux Operating System-4</a>
@@ -745,10 +794,6 @@ ga('send', 'pageview');
         
           <li>
             <a href="/2015/10/15/Linux-Operating-System-2/">Linux Operating System-2</a>
-          </li>
-        
-          <li>
-            <a href="/2015/10/14/Linux-Operating-System-1/">Linux Operating System-1</a>
           </li>
         
       </ul>

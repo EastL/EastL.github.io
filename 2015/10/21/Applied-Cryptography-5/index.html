@@ -3,17 +3,21 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Archives: 2015/9 | Justice Shadower</title>
+  <title>Applied Cryptography-5 | Justice Shadower</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Justice Shadower">
-<meta property="og:url" content="http://eastl.github.io/archives/2015/09/index.html">
+  <meta name="description" content="來源：chapter 3(23~31)
+在上一次的尤拉函數中，我們推得了費瑪理論的通式$a^{ \phi (n) } \ \ mod \ \ n \ \ = \ \ 1 \ \ if \ \ gcd(a,n)=1$&amp;lt;!-- Has MathJax --&amp;gt;，這個式子對於餘數系統的乘法反元素非常有幫助，以上面例子來說，a在餘數系統中的乘法反元素就是$a^{ \phi (n) - 1}$&amp;lt;!-- Has">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Applied Cryptography-5">
+<meta property="og:url" content="http://eastl.github.io/2015/10/21/Applied-Cryptography-5/index.html">
 <meta property="og:site_name" content="Justice Shadower">
-<meta property="og:description">
+<meta property="og:description" content="來源：chapter 3(23~31)
+在上一次的尤拉函數中，我們推得了費瑪理論的通式$a^{ \phi (n) } \ \ mod \ \ n \ \ = \ \ 1 \ \ if \ \ gcd(a,n)=1$&amp;lt;!-- Has MathJax --&amp;gt;，這個式子對於餘數系統的乘法反元素非常有幫助，以上面例子來說，a在餘數系統中的乘法反元素就是$a^{ \phi (n) - 1}$&amp;lt;!-- Has">
+<meta property="og:updated_time" content="2015-10-22T02:53:41.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Justice Shadower">
-<meta name="twitter:description">
+<meta name="twitter:title" content="Applied Cryptography-5">
+<meta name="twitter:description" content="來源：chapter 3(23~31)
+在上一次的尤拉函數中，我們推得了費瑪理論的通式$a^{ \phi (n) } \ \ mod \ \ n \ \ = \ \ 1 \ \ if \ \ gcd(a,n)=1$&amp;lt;!-- Has MathJax --&amp;gt;，這個式子對於餘數系統的乘法反元素非常有幫助，以上面例子來說，a在餘數系統中的乘法反元素就是$a^{ \phi (n) - 1}$&amp;lt;!-- Has">
 <meta name="twitter:creator" content="@coolwuxing">
   
     <link rel="alternative" href="/atom.xml" title="Justice Shadower" type="application/atom+xml">
@@ -82,58 +86,67 @@ ga('send', 'pageview');
   </div>
 </div>
       <div class="outer">
-        <section id="main">
-  
-  
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2015" class="archive-year">2015</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2015/09/29/Applied-Cryptography-2/" class="archive-article-date">
-  <time datetime="2015-09-28T21:56:36.000Z" itemprop="datePublished">Sep 29</time>
+        <section id="main"><article id="post-Applied-Cryptography-5" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/10/21/Applied-Cryptography-5/" class="article-date">
+  <time datetime="2015-10-21T13:20:38.000Z" itemprop="datePublished">2015-10-21</time>
 </a>
-      
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2015/09/29/Applied-Cryptography-2/">Applied Cryptography-2</a>
+    <h1 class="article-title" itemprop="name">
+      Applied Cryptography-5
     </h1>
   
 
-    </header>
-  </div>
-</article>
-  
+      </header>
     
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2015/09/28/Applied-Cryptography-1/" class="archive-article-date">
-  <time datetime="2015-09-28T03:21:06.000Z" itemprop="datePublished">Sep 28</time>
-</a>
+    <div class="article-entry" itemprop="articleBody">
       
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2015/09/28/Applied-Cryptography-1/">Applied Cryptography-1</a>
-    </h1>
-  
+        <p>來源：<a href="http://staff.csie.ncu.edu.tw/yensm/lecture/Cryptography/Chapter-3%20Number%20Theory.pdf" target="_blank" rel="external">chapter 3(23~31)</a></p>
+<p>在上一次的尤拉函數中，我們推得了費瑪理論的通式<span>$a^{ \phi (n) } \ \ mod \ \ n \ \ = \ \ 1 \ \ if \ \ gcd(a,n)=1$</span><!-- Has MathJax -->，這個式子對於餘數系統的乘法反元素非常有幫助，以上面例子來說，a在餘數系統中的乘法反元素就是<span>$a^{ \phi (n) - 1}$</span><!-- Has MathJax -->，但如果考慮到計算量的話我們會想讓a的指數越小越好，因此在n=pq, p、q都是質數情況下，我們可以將<span>$a^{ \phi (n) } \ \ mod \ \ n \ \ = \ \ 1$</span><!-- Has MathJax --> 改成<span>$a^{ lcm(p-1,q-1) } \ \ mod \ \ n \ \ = \ \ 1$</span><!-- Has MathJax -->。(關於此式子小弟還沒想通，之後再補上證明)</p>
+<p>有了餘數系統的乘法反元素後，RSA將他應用在加密演算法上：</p>
+<p>令<span>$\phi (n) \ \ + \ \ 1 \ \ = \ \ A \ \ \times \ \ B$</span><!-- Has MathJax --><br>(A, n)為public key<br>密文 <span>$C \ \ = \ \ m^A \ \ mod \ \ n$</span><!-- Has MathJax -->，m為明文<br>(B, n)為private key<br>解密 <span>$C^B \ \ mod \ \ n \ \ = \ \ m^{AB} \ \ mod \ \ n \ \ = \ \ m^{ \phi (n)+1} \ \ mod \ \ n \ \ = \ \ m$</span><!-- Has MathJax --> </p>
+<p>上式的解密用到<span>$(m^A \ \ mod \ \ n)^B \ \ mod \ \ n \ \ = \ \ m^{AB} \ \ mod \ \ n$</span><!-- Has MathJax -->，此證明我在<a href="http://eastl.github.io/2015/09/28/Applied-Cryptography-1/">Applied Cryptography-1</a>中講Diffie-Hellman如何傳送public key時有證明，可以參考。</p>
 
-    </header>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://eastl.github.io/2015/10/21/Applied-Cryptography-5/" data-id="cig1mef09000fb1on0hp2brbb" class="article-share-link">Share</a>
+      
+        <a href="http://eastl.github.io/2015/10/21/Applied-Cryptography-5/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a></li></ul>
+
+    </footer>
   </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2015/10/18/Linux-Operating-System-4/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Linux Operating System-4</div>
+    </a>
+  
+</nav>
+
+  
 </article>
-  
-  
-    </div></section>
-  
+
+
+<section id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
 </section>
         
           <aside id="sidebar">
@@ -223,11 +236,13 @@ ga('send', 'pageview');
 <script>
   var disqus_shortname = 'EastL';
   
+  var disqus_url = 'http://eastl.github.io/2015/10/21/Applied-Cryptography-5/';
+  
   (function(){
     var dsq = document.createElement('script');
     dsq.type = 'text/javascript';
     dsq.async = true;
-    dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
     (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
   })();
 </script>
@@ -243,5 +258,35 @@ ga('send', 'pageview');
 <script src="/js/script.js" type="text/javascript"></script>
 
   </div>
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
 </body>
 </html>
