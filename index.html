@@ -144,11 +144,18 @@ ga('send', 'pageview');
 <p>上列式子先給定兩個式子①跟②，而這兩個式子要做的事情就是右邊的輾轉相除法得到的結果，圖中可以看到我一直維持著 80x + 36y = a 的線性式子。</p>
 <p><img src="/images/pezu2.jpg" alt=""></p>
 <p>上圖可以知道最後輾轉相除結果是0時，最大公因數就是上一次的答案，也就是4，而我算完最大公因數時，貝祖等式也就出現了(Iterative)。上面的演算法就是利用此精神撰寫，首先初始化X，X1為f的係數，X2為d的係數，X3為f跟d的線性組合結果，Y跟T也是此結構，所以每次做完一輪輾轉相除Y是最新的結果，因此當最後Y3等於0時表示X3就是最大公因數，等於1時兩數互質。</p>
+<hr>
+
+<p></p><h2> Chinese Remainder Theorem (C.R.T.) </h2><br>中國餘數定理起源為<a href="http://episte.math.ntu.edu.tw/articles/sm/sm_01_01_2/index.html" target="_blank" rel="external">韓信點兵</a>，「兵不知其數，三三數之剩二，五五數之剩三，七七數之剩二。」這句話點出了中國餘數定理的精隨，也成為現代數論跟幾何重要定理之一。上面這句話有個重要的概念：當你要處理某個巨大複雜的數據時(兵不知其數)，可以將此數據分散處理(三三數之剩二，五五數之剩三，七七數之剩二)，處理完後再合併為原來數據。接下來介紹中國餘數定理(孫子定理)：<br>令<span>$z_1, \ \ z_2, \ \ ... \ \ , \ \ z_k$</span><!-- Has MathJax -->為兩兩互質的整數，且<span>$x \ \ mod \ \ z_k \ \ = \ \ x_k$</span><!-- Has MathJax -->，$x_k$為已知，那麼當<span>$n \ \ = \ \ \prod_{i=1}^k \ \ z_i$</span><!-- Has MathJax --> 且 <span>$x \ \ \in \ \ [0, n-1]$</span><!-- Has MathJax -->，則x能透過CRT計算出來。<p></p>
+<p><img src="/images/crt.jpg" alt=""></p>
+<p>CRT在現代工業上用在許多地方，這邊用電腦當例子，上圖中左邊為超級電腦，可以處理n位元，右邊四台為一般市面的筆電。假設今天要計算很大的數字的加法跟乘法運算，我們可以將很大的數字分配給右邊四台電腦，而且四台電腦能夠同時處理較小的數字，處理完後再丟回原本的超級電腦。</p>
+<p></p><h4>CRT Form:</h4><p></p>
+<center> <span>$let \ \ n \ \ = \ \ \prod_{i=1}^k z_i \ \ and \ \ x \ \ mod \ \ z_i \ \ = \ \ x_i, \ \ then \ \ x \ \ = \ \ \sum_{i=1}^k x_i \ \ * \ \ ( \frac{n}{z_i} ) \ \ * \ \ [( \frac{n}{z_i})^{-1} \ \ mod \ \ z_i] \ \ mod \ \ n$</span><!-- Has MathJax --> </center>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/21/Applied-Cryptography-5/" data-id="cig55k4nt000f4con8jqq1tch" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/21/Applied-Cryptography-5/" data-id="cig57mitu000fcronsl7vrio7" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/21/Applied-Cryptography-5/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -242,7 +249,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/18/Linux-Operating-System-4/" data-id="cig55k4nf00084con5mywssyw" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/18/Linux-Operating-System-4/" data-id="cig57mitg0008cronhpllzhju" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/18/Linux-Operating-System-4/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -311,7 +318,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/18/The-Attack-and-Defense-of-Computers-4/" data-id="cig55k4n300034conqtxi57ph" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/18/The-Attack-and-Defense-of-Computers-4/" data-id="cig57mit40003cronmfamnoos" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/18/The-Attack-and-Defense-of-Computers-4/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -377,7 +384,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/17/Applied-Cryptography-4/" data-id="cig55k4nx000h4conv2omqnmz" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/17/Applied-Cryptography-4/" data-id="cig57mitx000hcronqoy8txfi" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/17/Applied-Cryptography-4/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -430,7 +437,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/15/Linux-Operating-System-2/" data-id="cig55k4nj000b4cont96u2rit" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/15/Linux-Operating-System-2/" data-id="cig57mitk000bcronjnf2433g" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/15/Linux-Operating-System-2/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -493,7 +500,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/14/Linux-Operating-System-1/" data-id="cig55k4no000d4conpnmuv8ny" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/14/Linux-Operating-System-1/" data-id="cig57mitp000dcronhc7ug9sa" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/14/Linux-Operating-System-1/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -552,7 +559,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/12/The-Attack-and-Defense-of-Computers-1-3/" data-id="cig55k4n800064con6pfa82e8" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/12/The-Attack-and-Defense-of-Computers-1-3/" data-id="cig57mit90006cronlsf48j2b" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/12/The-Attack-and-Defense-of-Computers-1-3/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -609,7 +616,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/10/Applied-Cryptography-3/" data-id="cig55k4o2000j4conxhk8krdt" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/10/Applied-Cryptography-3/" data-id="cig57miu3000jcron56g983e8" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/10/Applied-Cryptography-3/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -695,7 +702,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/09/29/Applied-Cryptography-2/" data-id="cig55k4o7000l4con7uhtc2ea" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/09/29/Applied-Cryptography-2/" data-id="cig57miu8000lcronrsbdu8ly" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/09/29/Applied-Cryptography-2/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -755,7 +762,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/09/28/Applied-Cryptography-1/" data-id="cig55k4lf00004conpvufrklf" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/09/28/Applied-Cryptography-1/" data-id="cig57mirf0000cronre1gbbyk" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/09/28/Applied-Cryptography-1/#disqus_thread" class="article-comment-link">Comments</a>
       
