@@ -5,19 +5,21 @@
   
   <title>Applied Cryptography-5 | Justice Shadower</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="來源：chapter 3(23~31)Number Theory II (3 ~ 4)
-在上一次的尤拉函數中，我們推得了費瑪理論的通式$a^{ \phi (n) } \ \ mod \ \ n \ \ = \ \ 1 \ \ if \ \ gcd(a,n)=1$&amp;lt;!-- Has MathJax --&amp;gt;，這個式子對於餘數系統的乘法反元素非常有幫助，以上面例子來說，a在餘數系統中的乘法反元素就是$a^">
+  <meta name="description" content="來源：chapter 3(23~31)，Number Theory II (3 ~ 4)
+在上一次的尤拉函數中，我們推得了費瑪理論的通式$a^{ \phi (n) } \ \ mod \ \ n \ \ = \ \ 1 \ \ if \ \ gcd(a,n)=1$&amp;lt;!-- Has MathJax --&amp;gt;，這個式子對於餘數系統的乘法反元素非常有幫助，以上面例子來說，a在餘數系統中的乘法反元素就是$a">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Applied Cryptography-5">
 <meta property="og:url" content="http://eastl.github.io/2015/10/21/Applied-Cryptography-5/index.html">
 <meta property="og:site_name" content="Justice Shadower">
-<meta property="og:description" content="來源：chapter 3(23~31)Number Theory II (3 ~ 4)
-在上一次的尤拉函數中，我們推得了費瑪理論的通式$a^{ \phi (n) } \ \ mod \ \ n \ \ = \ \ 1 \ \ if \ \ gcd(a,n)=1$&amp;lt;!-- Has MathJax --&amp;gt;，這個式子對於餘數系統的乘法反元素非常有幫助，以上面例子來說，a在餘數系統中的乘法反元素就是$a^">
-<meta property="og:updated_time" content="2015-10-22T14:58:09.000Z">
+<meta property="og:description" content="來源：chapter 3(23~31)，Number Theory II (3 ~ 4)
+在上一次的尤拉函數中，我們推得了費瑪理論的通式$a^{ \phi (n) } \ \ mod \ \ n \ \ = \ \ 1 \ \ if \ \ gcd(a,n)=1$&amp;lt;!-- Has MathJax --&amp;gt;，這個式子對於餘數系統的乘法反元素非常有幫助，以上面例子來說，a在餘數系統中的乘法反元素就是$a">
+<meta property="og:image" content="http://eastl.github.io/images/pezu.jpg">
+<meta property="og:image" content="http://eastl.github.io/images/pezu2.jpg">
+<meta property="og:updated_time" content="2015-10-24T14:05:55.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Applied Cryptography-5">
-<meta name="twitter:description" content="來源：chapter 3(23~31)Number Theory II (3 ~ 4)
-在上一次的尤拉函數中，我們推得了費瑪理論的通式$a^{ \phi (n) } \ \ mod \ \ n \ \ = \ \ 1 \ \ if \ \ gcd(a,n)=1$&amp;lt;!-- Has MathJax --&amp;gt;，這個式子對於餘數系統的乘法反元素非常有幫助，以上面例子來說，a在餘數系統中的乘法反元素就是$a^">
+<meta name="twitter:description" content="來源：chapter 3(23~31)，Number Theory II (3 ~ 4)
+在上一次的尤拉函數中，我們推得了費瑪理論的通式$a^{ \phi (n) } \ \ mod \ \ n \ \ = \ \ 1 \ \ if \ \ gcd(a,n)=1$&amp;lt;!-- Has MathJax --&amp;gt;，這個式子對於餘數系統的乘法反元素非常有幫助，以上面例子來說，a在餘數系統中的乘法反元素就是$a">
 <meta name="twitter:creator" content="@coolwuxing">
   
     <link rel="alternative" href="/atom.xml" title="Justice Shadower" type="application/atom+xml">
@@ -108,7 +110,7 @@ ga('send', 'pageview');
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>來源：<a href="http://staff.csie.ncu.edu.tw/yensm/lecture/Cryptography/Chapter-3%20Number%20Theory.pdf" target="_blank" rel="external">chapter 3(23~31)</a><a href="http://web.math.isu.edu.tw/yeh/2013Fall/GE/Lectures/L5/L5.pdf" target="_blank" rel="external">Number Theory II (3 ~ 4)</a></p>
+        <p>來源：<a href="http://staff.csie.ncu.edu.tw/yensm/lecture/Cryptography/Chapter-3%20Number%20Theory.pdf" target="_blank" rel="external">chapter 3(23~31)</a>，<a href="http://web.math.isu.edu.tw/yeh/2013Fall/GE/Lectures/L5/L5.pdf" target="_blank" rel="external">Number Theory II (3 ~ 4)</a></p>
 <p>在上一次的尤拉函數中，我們推得了費瑪理論的通式<span>$a^{ \phi (n) } \ \ mod \ \ n \ \ = \ \ 1 \ \ if \ \ gcd(a,n)=1$</span><!-- Has MathJax -->，這個式子對於餘數系統的乘法反元素非常有幫助，以上面例子來說，a在餘數系統中的乘法反元素就是<span>$a^{ \phi (n) - 1}$</span><!-- Has MathJax -->，但如果考慮到計算量的話我們會想讓a的指數越小越好，因此在n=pq, p、q都是質數情況下，我們可以將<span>$a^{ \phi (n) } \ \ mod \ \ n \ \ = \ \ 1$</span><!-- Has MathJax --> 改成<span>$a^{ lcm(p-1,q-1) } \ \ mod \ \ n \ \ = \ \ 1$</span><!-- Has MathJax -->。(關於此式子小弟還沒想通，之後再補上證明)</p>
 <p>有了餘數系統的乘法反元素後，RSA將他應用在加密演算法上：</p>
 <p>令<span>$\phi (n) \ \ + \ \ 1 \ \ = \ \ A \ \ \times \ \ B$</span><!-- Has MathJax --><br>(A, n)為public key<br>密文 <span>$C \ \ = \ \ m^A \ \ mod \ \ n$</span><!-- Has MathJax -->，m為明文<br>(B, n)為private key<br>解密 <span>$C^B \ \ mod \ \ n \ \ = \ \ m^{AB} \ \ mod \ \ n \ \ = \ \ m^{ \phi (n)+1} \ \ mod \ \ n \ \ = \ \ m$</span><!-- Has MathJax --> </p>
@@ -128,24 +130,29 @@ ga('send', 'pageview');
 <li>Binary Euclidean algorithm:<br>EUCLIDEAN(a, b), a≥b&gt;0<figure class="highlight tp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">X</span> = a; <span class="keyword">Y</span> = b; g = <span class="number">1</span></span><br><span class="line">while (both <span class="keyword">X</span> and <span class="keyword">Y</span> are even) do</span><br><span class="line">    <span class="keyword">X</span>=<span class="keyword">X</span>/<span class="number">2</span>; <span class="keyword">Y</span>=<span class="keyword">Y</span>/<span class="number">2</span>; g=<span class="number">2</span>g</span><br><span class="line"></span><br><span class="line">while (<span class="keyword">X</span>≠<span class="number">0</span>) do</span><br><span class="line">    while (<span class="keyword">X</span> is even) do <span class="keyword">X</span>=<span class="keyword">X</span>/<span class="number">2</span></span><br><span class="line">    while (<span class="keyword">Y</span> is even) do <span class="keyword">Y</span>=<span class="keyword">Y</span>/<span class="number">2</span></span><br><span class="line">    T=|<span class="keyword">X</span>-<span class="keyword">Y</span>|/<span class="number">2</span></span><br><span class="line">    if (<span class="keyword">X</span>≥<span class="keyword">Y</span>) then <span class="keyword">X</span>=T; else <span class="keyword">Y</span>=T</span><br><span class="line">return <span class="keyword">Y</span>*g (=gcd(a, b))</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
-<p>由於在電腦做運算時，除以2相當於往右shift一個bit，判斷是否為偶數也是看最後一個bit是否為0，因此先將所有2的因數提出來，紀錄在g，接著X與Y沒有2的公因數後代表著有2的因數也沒用了，除掉；接下來利用剛剛的gcd(b, a mod b) = gcd(a, b)原理，可以知道gcd(b, a - b) = gcd(a, b)，可以將X跟Y相減後又跑出2的因數了(奇數-奇數=偶數)，除掉，然後再繼續計算gcd(|X-Y|/2, XorY)，值到最後X為零時Y為因數2以外的公因數，因此Yg為最大公因數。</p>
-<p>接著利用輾轉相除法來計算模數的乘法反元素，首先先來看一下下列的線性組合證明：</p>
+<p>由於在電腦做運算時，除以2相當於往右shift一個bit，判斷是否為偶數也是看最後一個bit是否為0，因此先將所有2的因數提出來，紀錄在g，接著X與Y沒有2的公因數後代表著有2的因數也沒用了，除掉；接下來利用剛剛的gcd(b, a mod b) = gcd(a, b)原理，可以知道gcd(b, a - b) = gcd(a, b)，可以將X跟Y相減後又跑出2的因數了(奇數-奇數=偶數)，除掉，然後再繼續計算gcd(|X-Y|/2, XorY)，直到最後X為零時Y為因數2以外的公因數，因此Yg為最大公因數。</p>
+<p>接著利用輾轉相除法來計算模數的乘法反元素，首先先來看一下下列的線性組合證明(貝祖定理)：</p>
 <ul>
 <li><p>ax + by = gcd(a,b)  (a,b,x,y 為整數) 證明此線性組合存在</p>
 <center> 假設 ax + by = m，m為a與b的線性組合最小正整數解 </center><br><center> gcd(a, b)|a，gcd(a, b)|b，<span>$\therefore$</span><!-- Has MathJax --> gcd(a, b)|m </center><br><center> 得知gcd(a, b) ≤ m  —–(1) </center><br><center> 令 a = mq + r (0 ≤ r &lt; m) </center><br><center> a = (ax + by)q + r </center><br><center> r = a(1 - xq) - b(yq) ，r為a與b線性組合解 </center><br><center> <span>$\because$</span><!-- Has MathJax --> r &lt; m, m為最小正整數解 </center><br><center> <span>$\therefore$</span><!-- Has MathJax --> r = 0, a = mq </center><br><center> <span>$\Rightarrow$</span><!-- Has MathJax --> m|a，同理可證 m|b </center><br><center> <span>$\Rightarrow$</span><!-- Has MathJax --> m 為 a 跟 b 的公因數 </center><br><center> 得知 m ≤ gcd(a, b) —–(2) </center>
 
 </li>
 </ul>
-<p>由上述(1)(2)可以知道gcd(a, b) ≤ m且m ≤ gcd(a, b)，因此 m = gcd(a, b)得證。所以如果要找 mod f 情況下d的反元素(f,d互質)，我們可以知道gcd(f,d)=1，因此 fa + db = 1必定存在，而<span>$fa \ \ + \ \ db \ \ \equiv \ \ db \ \ (mod \ \ f)$</span><!-- Has MathJax -->，故<span>$d^{-1} \ \ \equiv \ \ b \ \ (mod \ \ f)$</span><!-- Has MathJax -->。<br>下列為歐基里德輾轉相除找線性組合的演算法：</p>
+<p>由上述(1)(2)可以知道gcd(a, b) ≤ m且m ≤ gcd(a, b)，因此 m = gcd(a, b)得證。所以如果要找 mod f 情況下d的反元素(f,d互質)，我們可以知道gcd(f,d)=1，因此 fa + db = 1必定存在，而<span>$fa \ \ + \ \ db \ \ \equiv \ \ db \ \ (mod \ \ f)$</span><!-- Has MathJax -->，故<span>$d^{-1} \ \ \equiv \ \ b \ \ (mod \ \ f)$</span><!-- Has MathJax -->。<br>下列為歐基里德輾轉相除找線性組合的演算法(貝祖等式)：</p>
 <ul>
 <li>Extended EUCLIDEAN(d, f), f&gt;d&gt;0<figure class="highlight tp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">(<span class="keyword">X</span><span class="number">1</span>,<span class="keyword">X</span><span class="number">2</span>,<span class="keyword">X</span><span class="number">3</span>) = (<span class="number">1</span>, <span class="number">0</span>, f), (<span class="keyword">Y</span><span class="number">1</span>,<span class="keyword">Y</span><span class="number">2</span>,<span class="keyword">Y</span><span class="number">3</span>) = (<span class="number">0</span>, <span class="number">1</span>, d)</span><br><span class="line">if (<span class="keyword">Y</span><span class="number">3</span>==<span class="number">0</span>) return gcd(d, f) = <span class="keyword">X</span><span class="number">3</span></span><br><span class="line">if (<span class="keyword">Y</span><span class="number">3</span>==<span class="number">1</span>) return gcd(d, f) = <span class="keyword">Y</span><span class="number">3</span></span><br><span class="line">Q = floor(<span class="keyword">X</span><span class="number">3</span> / <span class="keyword">Y</span><span class="number">3</span>)</span><br><span class="line">(T<span class="number">1</span>,T<span class="number">2</span>,T<span class="number">3</span>) = (<span class="keyword">X</span><span class="number">1</span>-QY<span class="number">1</span>, <span class="keyword">X</span><span class="number">2</span>-QY<span class="number">2</span>, <span class="keyword">X</span><span class="number">3</span>-QY<span class="number">3</span>)</span><br><span class="line">(<span class="keyword">X</span><span class="number">1</span>,<span class="keyword">X</span><span class="number">2</span>,<span class="keyword">X</span><span class="number">3</span>) = (<span class="keyword">Y</span><span class="number">1</span>,<span class="keyword">Y</span><span class="number">2</span>,<span class="keyword">Y</span><span class="number">3</span>)</span><br><span class="line">(<span class="keyword">Y</span><span class="number">1</span>,<span class="keyword">Y</span><span class="number">2</span>,<span class="keyword">Y</span><span class="number">3</span>) = (T<span class="number">1</span>,T<span class="number">2</span>,T<span class="number">3</span>)</span><br><span class="line">goto step <span class="number">2</span></span><br></pre></td></tr></table></figure>   
 </li>
 </ul>
+<p>此演算法其實就是貝祖等式的<a href="https://en.wikipedia.org/wiki/Iterative_method" target="_blank" rel="external">Iterative</a>做法，普遍高中利用輾轉相除求線性方程的整數解都是用Recursive Method，Recursive做法就是先把a跟b輾轉相除算出最大公因數後，再將每次相除的過程式子一一列出，列到最大公因數出現後，再一行一行的把數字替換成a跟b的倍數，詳細介紹可以看<a href="https://ccjou.wordpress.com/2012/11/16/%E5%88%A9%E7%94%A8%E5%9F%BA%E6%9C%AC%E5%88%97%E9%81%8B%E7%AE%97%E5%AF%A6%E7%8F%BE%E6%93%B4%E5%B1%95%E6%AD%90%E5%B9%BE%E9%87%8C%E5%BE%97%E6%BC%94%E7%AE%97%E6%B3%95/" target="_blank" rel="external">這邊</a>。而接下來將介紹貝祖等式的Iterative概念，我們以80跟36來做例子：</p>
+<p><img src="/images/pezu.jpg" alt=""></p>
+<p>上列式子先給定兩個式子①跟②，而這兩個式子要做的事情就是右邊的輾轉相除法得到的結果，圖中可以看到我一直維持著 80x + 36y = a 的線性式子。</p>
+<p><img src="/images/pezu2.jpg" alt=""></p>
+<p>上圖可以知道最後輾轉相除結果是0時，最大公因數就是上一次的答案，也就是4，而我算完最大公因數時，貝祖等式也就出現了(Iterative)。上面的演算法就是利用此精神撰寫，首先初始化X，X1為f的係數，X2為d的係數，X3為f跟d的線性組合結果，Y跟T也是此結構，所以每次做完一輪輾轉相除Y是最新的結果，因此當最後Y3等於0時表示X3就是最大公因數，等於1時兩數互質。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/21/Applied-Cryptography-5/" data-id="cig2cw62z000f4qon4nzxf6k5" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/21/Applied-Cryptography-5/" data-id="cig55k4nt000f4con8jqq1tch" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/21/Applied-Cryptography-5/#disqus_thread" class="article-comment-link">Comments</a>
       
