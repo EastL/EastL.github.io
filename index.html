@@ -109,7 +109,7 @@ ga('send', 'pageview');
         <p>來源：<a href="http://www.csie.ncu.edu.tw/~hsufh/COURSES/FALL2015/2_BOA.ppt" target="_blank" rel="external">Internet Worms, Buffer Overflow Attacks, and Heap Overflow Attacks (43 ~ 82)</a></p>
 <p></p><h2> Countermeasures of Buffer Overflow Attacks </h2><br>之前講了幾種buffer overflow的攻擊，接下來要看針對這些攻擊所採取的防禦機制：<p></p>
 <p>Data Execution Prevention (DEP)：<br>這種機制出現在是讓data段的資料不能被執行，code段不能寫入資料，如此攻擊者無法執行shell code。此機制預設是開的，要關掉的話compile時要加上-z execstack。</p>
-<p>StackGuard：<br>compiler會在return address之前加一段檢查碼，最後要ret時會去檢查剛剛加的檢查碼有沒有被改過，有的話就跳出警示。以下列程式為例：</p>
+<p>StackGuard：<br>compiler會在return address之前加一段檢查碼，最後要ret時會去檢查剛剛加的檢查碼有沒有被改過，有的話就跳出警示。以下列程式為例(引用<a href="https://www.ptt.cc/bbs/C_and_CPP/M.1366586700.A.A80.html" target="_blank" rel="external">ptt</a>)：</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">char</span> c[<span class="number">10</span>];</span><br><span class="line">    <span class="built_in">strcpy</span>(c, <span class="string">"AAAAAAAAAAAAAAAAAAAAAAAAAAAA"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure> 
 <p>下圖列出compiler的StackGuard(canary word)機制：</p>
 <p><img src="/images/canary.jpg" alt=""></p>
@@ -140,7 +140,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/25/The-Attack-and-Defense-of-Computers-5/" data-id="cig63dlrq00036lon1q2guybu" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/25/The-Attack-and-Defense-of-Computers-5/" data-id="cig6chttk00038conumqbiwd2" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/25/The-Attack-and-Defense-of-Computers-5/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -228,7 +228,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/21/Applied-Cryptography-5/" data-id="cig63dlsj000h6lonhg59b5ly" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/21/Applied-Cryptography-5/" data-id="cig6chtub000h8conysre16t4" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/21/Applied-Cryptography-5/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -322,7 +322,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/18/Linux-Operating-System-4/" data-id="cig63dls5000a6lonm9uxekoy" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/18/Linux-Operating-System-4/" data-id="cig6chtty000a8conq2fn8kot" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/18/Linux-Operating-System-4/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -391,7 +391,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/18/The-Attack-and-Defense-of-Computers-4/" data-id="cig63dlrw00066loniqijr0p4" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/18/The-Attack-and-Defense-of-Computers-4/" data-id="cig6chttp00068conwpnljh6e" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/18/The-Attack-and-Defense-of-Computers-4/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -457,7 +457,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/17/Applied-Cryptography-4/" data-id="cig63dlso000j6lono7u321d2" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/17/Applied-Cryptography-4/" data-id="cig6chtuh000j8conxxxcppg9" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/17/Applied-Cryptography-4/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -510,7 +510,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/15/Linux-Operating-System-2/" data-id="cig63dlsa000d6lon91nn0r4h" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/15/Linux-Operating-System-2/" data-id="cig6chtu3000d8conse3vscqk" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/15/Linux-Operating-System-2/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -573,7 +573,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/14/Linux-Operating-System-1/" data-id="cig63dlse000f6lonkb1o3hbq" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/14/Linux-Operating-System-1/" data-id="cig6chtu7000f8cond1qk4xv9" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/14/Linux-Operating-System-1/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -632,7 +632,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/12/The-Attack-and-Defense-of-Computers-1-3/" data-id="cig63dls100086lonxx8isq6l" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/12/The-Attack-and-Defense-of-Computers-1-3/" data-id="cig6chttu00088conwwx02d9p" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/12/The-Attack-and-Defense-of-Computers-1-3/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -689,7 +689,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/10/Applied-Cryptography-3/" data-id="cig63dlst000l6lonja56wqdb" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/10/Applied-Cryptography-3/" data-id="cig6chtum000l8conn10juffu" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/10/Applied-Cryptography-3/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -775,7 +775,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/09/29/Applied-Cryptography-2/" data-id="cig63dlsy000n6lonjwlo8rxo" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/09/29/Applied-Cryptography-2/" data-id="cig6chtur000n8confuz72h38" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/09/29/Applied-Cryptography-2/#disqus_thread" class="article-comment-link">Comments</a>
       
