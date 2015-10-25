@@ -84,6 +84,76 @@ ga('send', 'pageview');
       <div class="outer">
         <section id="main">
   
+    <article id="post-The-Attack-and-Defense-of-Computers-5" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/10/25/The-Attack-and-Defense-of-Computers-5/" class="article-date">
+  <time datetime="2015-10-25T03:11:26.000Z" itemprop="datePublished">2015-10-25</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/10/25/The-Attack-and-Defense-of-Computers-5/">The Attack and Defense of Computers-5</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>來源：<a href="http://www.csie.ncu.edu.tw/~hsufh/COURSES/FALL2015/2_BOA.ppt" target="_blank" rel="external">Internet Worms, Buffer Overflow Attacks, and Heap Overflow Attacks (43 ~ 82)</a></p>
+<p></p><h2> Countermeasures of Buffer Overflow Attacks </h2><br>之前講了幾種buffer overflow的攻擊，接下來要看針對這些攻擊所採取的防禦機制：<p></p>
+<p>Data Execution Prevention (DEP)：<br>這種機制出現在是讓data段的資料不能被執行，code段不能寫入資料，如此攻擊者無法執行shell code。此機制預設是開的，要關掉的話compile時要加上-z execstack。</p>
+<p>StackGuard：<br>compiler會在return address之前加一段檢查碼，最後要ret時會去檢查剛剛加的檢查碼有沒有被改過，有的話就跳出警示。以下列程式為例：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">char</span> c[<span class="number">10</span>];</span><br><span class="line">    <span class="built_in">strcpy</span>(c, <span class="string">"AAAAAAAAAAAAAAAAAAAAAAAAAAAA"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure> 
+<p>下圖列出compiler的StackGuard(canary word)機制：</p>
+<p><img src="/images/canary.jpg" alt=""></p>
+<p>如圖，stack剛長出來時會增加一段canary(紅框)，最後要leave之前會將剛剛的canary拿出來比對，發現有誤就跳至__stack_chk_fail。</p>
+<p>Return Address Defender(RAD)：<br>找<a href="https://en.wikibooks.org/wiki/GNU_C_Compiler_Internals/Return_Address_Defense_4_1" target="_blank" rel="external">資料</a>時意外發現…..@@。此方法是將return address存在另一個地方(return address area (RAR))，最後真正要ret時會將目前return address與RAR做比對，如果RAR裡頭不存在此return address，那麼就會被視為stack攻擊。</p>
+<p>Address Space Layout Randomization(ASLR)：<br>此機制會隨機載入記憶體位置，甚至對調stack跟heap相對位置，導致攻擊者很難猜到正確位置。</p>
+<p><img src="/images/ASLR.jpg" alt=""></p>
+<p>如圖最左邊為原本正確的memery長相，經過ASLR隨機載入加上插空隙後就變成了最右邊的樣子。</p>
+<p></p><h2> Return Oriented Programming (ROP) </h2><br>由於DEP會讓資料段的程式碼無法執行，所以發展出了ROP這種攻擊。<a href="https://en.wikipedia.org/wiki/Return-oriented_programming" target="_blank" rel="external">ROP</a>主要精神就是利用ret，在現有的程式碼片段中組合成攻擊者想要執行的程式，再不斷的蓋return address來跑那些程式碼片段。ret做的事情為 pop eip：<p></p>
+<p><img src="/images/rop1.jpg" alt=""></p>
+<p>如上圖在ret之前，esp指向return address，eip指向ret指令。</p>
+<p><img src="/images/rop2.jpg" alt=""></p>
+<p>執行ret後，esp會往上指，return address存到eip中，因此eip指回caller繼續執行。攻擊者要如何操控eip流程呢？假設今天攻擊者找到兩段他可以用的程式片段，分別為<br>mov %eax, %ecx<br>ret<br>以及<br>add $03, %eax<br>ret<br>事實上這兩個程式碼片段是在不同的記憶體位置，一個在0x08900200一個在0x09012800，攻擊者透過stack buffer smashing把return address以及return address+4的位置蓋成了剛剛兩個程式碼片段的所在位置，那麼程式就會去跑剛剛兩串程式碼片段。下圖為攻擊者程式執行之前的內容，esp指向return address，eip指向ret：</p>
+<p><img src="/images/rop3.jpg" alt=""></p>
+<p>第一次ret跳到了攻擊者蓋的0x08900200，eip指著下一行指令。</p>
+<p><img src="/images/rop4.jpg" alt=""></p>
+<p>接著執行了攻擊者期望的第一行指令：mov %eax, %ecx，eip指著ret，esp指著攻擊者的第二個程式碼片段。</p>
+<p><img src="/images/rop5.jpg" alt=""></p>
+<p>執行ret，此時eip跳到了第二個程式碼片段0x09012800，eip指著下一行攻擊碼。</p>
+<p><img src="/images/rop6.jpg" alt=""></p>
+<p>執行了攻擊者第二行指令：add $03, %eax。</p>
+<p><img src="/images/rop7.jpg" alt=""></p>
+<p>剛剛所講的程式碼片段就是ROP Gadget，這邊有一個<a href="https://github.com/JonathanSalwan/ROPgadget" target="_blank" rel="external">ROP Gadget tool</a>可以幫你找Gadget。</p>
+<hr>
+
+<p></p><h2> ASLR on Linux </h2><br>在2005年ASLR正式用在linux kernel 2.6.12，微軟在2007年也引進他們的kernel，不過當初開發ASLR是給linux用的，因此微軟的ASLR有時後效果並沒有那麼好。<p></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://eastl.github.io/2015/10/25/The-Attack-and-Defense-of-Computers-5/" data-id="cig63dlrq00036lon1q2guybu" class="article-share-link">Share</a>
+      
+        <a href="http://eastl.github.io/2015/10/25/The-Attack-and-Defense-of-Computers-5/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/The-Attack-and-Defense-of-Computers/">The Attack and Defense of Computers</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-Applied-Cryptography-5" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2015/10/21/Applied-Cryptography-5/" class="article-date">
@@ -158,7 +228,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/21/Applied-Cryptography-5/" data-id="cig5t6e9m000f4ron21rife0v" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/21/Applied-Cryptography-5/" data-id="cig63dlsj000h6lonhg59b5ly" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/21/Applied-Cryptography-5/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -252,7 +322,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/18/Linux-Operating-System-4/" data-id="cig5t6e9900084rono4nqy5m4" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/18/Linux-Operating-System-4/" data-id="cig63dls5000a6lonm9uxekoy" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/18/Linux-Operating-System-4/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -321,7 +391,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/18/The-Attack-and-Defense-of-Computers-4/" data-id="cig5t6e8y00034ronj8zpagfy" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/18/The-Attack-and-Defense-of-Computers-4/" data-id="cig63dlrw00066loniqijr0p4" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/18/The-Attack-and-Defense-of-Computers-4/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -387,7 +457,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/17/Applied-Cryptography-4/" data-id="cig5t6e9q000h4ronmbt1cr45" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/17/Applied-Cryptography-4/" data-id="cig63dlso000j6lono7u321d2" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/17/Applied-Cryptography-4/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -440,7 +510,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/15/Linux-Operating-System-2/" data-id="cig5t6e9e000b4ronex0ij3xb" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/15/Linux-Operating-System-2/" data-id="cig63dlsa000d6lon91nn0r4h" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/15/Linux-Operating-System-2/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -503,7 +573,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/14/Linux-Operating-System-1/" data-id="cig5t6e9j000d4ron9fi1tn26" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/14/Linux-Operating-System-1/" data-id="cig63dlse000f6lonkb1o3hbq" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/14/Linux-Operating-System-1/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -562,7 +632,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/12/The-Attack-and-Defense-of-Computers-1-3/" data-id="cig5t6e9400064ronllvm14kx" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/12/The-Attack-and-Defense-of-Computers-1-3/" data-id="cig63dls100086lonxx8isq6l" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/12/The-Attack-and-Defense-of-Computers-1-3/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -619,7 +689,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/10/Applied-Cryptography-3/" data-id="cig5t6e9v000j4ron13ci2i3c" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/10/Applied-Cryptography-3/" data-id="cig63dlst000l6lonja56wqdb" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/10/Applied-Cryptography-3/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -705,7 +775,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/09/29/Applied-Cryptography-2/" data-id="cig5t6ea1000l4ronwusred6k" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/09/29/Applied-Cryptography-2/" data-id="cig63dlsy000n6lonjwlo8rxo" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/09/29/Applied-Cryptography-2/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -719,66 +789,10 @@ ga('send', 'pageview');
 
 
   
-    <article id="post-Applied-Cryptography-1" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/09/28/Applied-Cryptography-1/" class="article-date">
-  <time datetime="2015-09-28T03:21:06.000Z" itemprop="datePublished">2015-09-28</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/28/Applied-Cryptography-1/">Applied Cryptography-1</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>來源 ： <a href="http://staff.csie.ncu.edu.tw/yensm/lecture/Cryptography/Chapter-1%20Introduction%20to%20Cryptography.pdf" target="_blank" rel="external">chapter 1 (1~23 and 29)</a>, <a href="http://math.stackexchange.com/questions/61358/prove-equivalence-of-diffie-hellman-shared-secret" target="_blank" rel="external">Prove equivalence of Diffie-Hellman shared secret</a></p>
-<h2 id="對稱式加密系統(Symmetric_Key_Cryptography,_SKC)">對稱式加密系統(Symmetric Key Cryptography, SKC)</h2><p>此加密系統特點是加解密所用的key為同一把，所以又稱為對稱式加密。</p>
-<p><img src="/images/skc.jpg" alt=""></p>
-<p>對稱式加密系統主要加密方式有兩種：取代與重排</p>
-<p><img src="/images/skc1.jpg" alt=""></p>
-<p>問題：<br>(1)疊了很多個取代後，能否只用一個取代器來達到相同效果?<br>(2)重排與取代相互使用多次後，能否兜出一套電路來代替?  </p>
-<p>實作：因64bit都要取代實作上有困難，所以每8個bit取代一次，最後64bit進行重排</p>
-<p><img src="/images/skc2.jpg" alt=""></p>
-<p>SKC的對稱式金鑰造成了一個嚴重的問題：當傳送方要使用SKC時，必須先把Key傳給接收方，而要如何把Key傳給接收方為一大問題，Diffie-Hellman這對師生提出了Public Key Exchange解決此問題。</p>
-<p><img src="/images/skc3.jpg" alt=""></p>
-<p>如圖所示，Alice與Bob首先溝通好公開的g與p，然後各自選擇了$X_A$與$X_B$，依照上圖式子計算出Y之後互相交換，這邊以Alice的角度講解：決定好$X_A$後，計算出$Y_A$並將$Y_A$告訴Bob(透過公開頻道)，此時Bob也會將他算出來的$Y_B$告訴Alice，Alice收到$Y_B$後，利用 Z = ${Y_B}^{X_A}$ mod p 算出Z，Bob收到$Y_A$後同理算出Z，此時雙方接拿到共同的key。<br>*能夠公開$Y_A$與$Y_B$，是利用離散對數難題，讓得知Y,g,p的人無法計算出X</p>
-<p>這邊提出一個問題：兩個人拿到的Z是一樣的嗎?<br>proof : ${Y_A}^{X_B} \ \ mod \ \ p \ \ = \ \ {Y_B}^{X_A} \ \ mod \ \ p$</p>
-<center> ${Y_A}^{X_B} \ \ mod \ \ p \ \ = \ \ ({g^{X_A} \ \ mod \ \ p})^{X_B} \ \ mod \ \ p$ </center><br><center> 令$g^{X_A} \ \ mod \ \ p \ \ = \ \ a$，利用餘式定理$a = g^{X_A} - pK$ </center><br><center> 則 ： $({g^{X_A} - pK})^{X_B} \ \ = \ \ g^{X_A X_B}\ \ + \ \ C^{X_B}_1 g^{({X_B}-1) b}pK +…+({pK})^{X_B}$ </center><br><center> $= g^{X_A X_B} + pK(m)$ </center><br><center> 由此可知$({g^{X_A} \ \ mod \ \ p})^{X_B} \ \ mod \ \ p \ \ = \ \ g^{X_A X_B} \ \ mod \ \ p$</center><br><center> 同理可推得$({g^{X_B} \ \ mod \ \ p})^{X_A} \ \ mod \ \ p \ \ = \ \ g^{X_A X_B} \ \ mod \ \ p$</center><br><center> 故$({g^{X_A} \ \ mod \ \ p})^{X_B} \ \ mod \ \ p \ \ = \ \ g^{X_A X_B} \ \ mod \ \ p \ \ = \ \ ({g^{X_B} \ \ mod \ \ p})^{X_A} \ \ mod \ \ p$</center><br><center> 得證${Y_A}^{X_B} \ \ mod \ \ p \ \ = \ \ {Y_B}^{X_A} \ \ mod \ \ p$ </center>
-
-<h2 id="公開金鑰加密系統(Public_Key_Cryptography,_PKC)">公開金鑰加密系統(Public Key Cryptography, PKC)</h2><p><img src="/images/pkc.jpg" alt=""></p>
-<p>公開金鑰特點在於加解密所用的Key是不同把，加密的鑰匙能夠透過公開頻道傳送。<br>PKC利用質因數分解與離散對數難題來產生鑰匙。<br>最典型的例子為RSA加密：<br>收方選取兩個大質數1933和2131，算出兩個的乘積<br>n=p×q=1933×2131=4119223<br>選取一數e當作加密金匙K (公開金鑰)<br>$K_{er}  \ \ : \ \ e \ \ = \ \ 11$<br>計算e之乘法反元素d，作為解密金匙<span>$K_{dr}$</span><!-- Has MathJax -->(私密金鑰)<br>使得 e×d=1 mod 1932×2130<br><span>$K_{dr}  \ \ : \ \ d \ \ = \ \ 748211$</span><!-- Has MathJax --><br>加密時將明文M=2245613 轉換成密文 C<br>$C \ \ = \ \ 2245613^{11} \ \ mod \ \ 4119223 \ \ = \ \ 771889$<br>解密時將密文C轉換回明文<br>$M \ \ = \ \ 7718897482^{11} \ \ mod \ \ 4119223 \ \ = \ \ 2245613$  </p>
-<h2 id="金鑰管理_(Key_Management)">金鑰管理 (Key Management)</h2><p>所有在系統上運作的key能夠在用一個master key來加密，但此master key該如何保管？<br>秘密分享 (secret sharing)<br>令 master key 值為三次方程式與y軸交點，再把方程式上的六個點交給不同人保管<br>之後要還原方程式時只需要四個點就夠了（防止意外，能夠允許其中兩點不見）  </p>
-<h2 id="A_Cryptographic_Game">A Cryptographic Game</h2><center>在牆上有一個寶箱，上面有兩道鎖，這兩道鎖的鑰匙分別由Alice與Bob保管，這兩把鑰匙只能開啟屬於自己的那到鎖，令一道鎖不能開。</center><br><center>有一天Alice將月餅放入寶箱裡面，並且用他的鑰匙將寶箱鎖上，人就走了。</center><br><center>過了一天後，Bob來到寶箱前看到上面有一到鎖，於是也用自己的鑰匙鎖上第二到鎖。</center><br><center>又過了一天，Alice看到Bob鎖上後變把自己的那到鎖解開。</center><br><center>最後，Bob用他的鎖將寶箱打開後，開心的吃著他的月餅。</center><br><center>請問：這是SKC還是PKC？</center>
-
-<p>我個人覺得這是SKC，我把這寶箱的兩道鎖看成兩種加密演算法，這樣一來Alice與Bob就分別用他們的key對月餅加解密，然後Alice解開他自己的鎖，之後Bob在解開自己的鎖。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/09/28/Applied-Cryptography-1/" data-id="cig5t6e7900004ronw0i0ns0t" class="article-share-link">Share</a>
-      
-        <a href="http://eastl.github.io/2015/09/28/Applied-Cryptography-1/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
+    <nav id="page-nav">
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
+    </nav>
   
 </section>
         
@@ -790,7 +804,7 @@ ga('send', 'pageview');
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux-Operating-System/">Linux Operating System</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/The-Attack-and-Defense-of-Computers/">The Attack and Defense of Computers</a><span class="tag-list-count">2</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux-Operating-System/">Linux Operating System</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/The-Attack-and-Defense-of-Computers/">The Attack and Defense of Computers</a><span class="tag-list-count">3</span></li></ul>
     </div>
   </div>
 
@@ -799,7 +813,7 @@ ga('send', 'pageview');
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Applied-Cryptography/" style="font-size: 20px;">Applied Cryptography</a> <a href="/tags/Linux-Operating-System/" style="font-size: 15px;">Linux Operating System</a> <a href="/tags/The-Attack-and-Defense-of-Computers/" style="font-size: 10px;">The Attack and Defense of Computers</a>
+      <a href="/tags/Applied-Cryptography/" style="font-size: 20px;">Applied Cryptography</a> <a href="/tags/Linux-Operating-System/" style="font-size: 10px;">Linux Operating System</a> <a href="/tags/The-Attack-and-Defense-of-Computers/" style="font-size: 10px;">The Attack and Defense of Computers</a>
     </div>
   </div>
 
@@ -808,7 +822,7 @@ ga('send', 'pageview');
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a><span class="archive-list-count">2</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a><span class="archive-list-count">2</span></li></ul>
     </div>
   </div>
 
@@ -818,6 +832,10 @@ ga('send', 'pageview');
     <h3 class="widget-title">Recents</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2015/10/25/The-Attack-and-Defense-of-Computers-5/">The Attack and Defense of Computers-5</a>
+          </li>
         
           <li>
             <a href="/2015/10/21/Applied-Cryptography-5/">Applied Cryptography-5</a>
@@ -833,10 +851,6 @@ ga('send', 'pageview');
         
           <li>
             <a href="/2015/10/17/Applied-Cryptography-4/">Applied Cryptography-4</a>
-          </li>
-        
-          <li>
-            <a href="/2015/10/15/Linux-Operating-System-2/">Linux Operating System-2</a>
           </li>
         
       </ul>
