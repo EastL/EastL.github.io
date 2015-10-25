@@ -5,21 +5,22 @@
   
   <title>Applied Cryptography-5 | Justice Shadower</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="來源：chapter 3(23~31)，Number Theory II (3 ~ 4)
+  <meta name="description" content="來源：chapter 3(23~32)，Number Theory II (3 ~ 4)
 在上一次的尤拉函數中，我們推得了費瑪理論的通式$a^{ \phi (n) } \ \ mod \ \ n \ \ = \ \ 1 \ \ if \ \ gcd(a,n)=1$&amp;lt;!-- Has MathJax --&amp;gt;，這個式子對於餘數系統的乘法反元素非常有幫助，以上面例子來說，a在餘數系統中的乘法反元素就是$a">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Applied Cryptography-5">
 <meta property="og:url" content="http://eastl.github.io/2015/10/21/Applied-Cryptography-5/index.html">
 <meta property="og:site_name" content="Justice Shadower">
-<meta property="og:description" content="來源：chapter 3(23~31)，Number Theory II (3 ~ 4)
+<meta property="og:description" content="來源：chapter 3(23~32)，Number Theory II (3 ~ 4)
 在上一次的尤拉函數中，我們推得了費瑪理論的通式$a^{ \phi (n) } \ \ mod \ \ n \ \ = \ \ 1 \ \ if \ \ gcd(a,n)=1$&amp;lt;!-- Has MathJax --&amp;gt;，這個式子對於餘數系統的乘法反元素非常有幫助，以上面例子來說，a在餘數系統中的乘法反元素就是$a">
 <meta property="og:image" content="http://eastl.github.io/images/pezu.jpg">
 <meta property="og:image" content="http://eastl.github.io/images/pezu2.jpg">
 <meta property="og:image" content="http://eastl.github.io/images/crt.jpg">
-<meta property="og:updated_time" content="2015-10-24T15:20:35.000Z">
+<meta property="og:image" content="http://eastl.github.io/images/CRT_example.jpg">
+<meta property="og:updated_time" content="2015-10-25T01:13:46.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Applied Cryptography-5">
-<meta name="twitter:description" content="來源：chapter 3(23~31)，Number Theory II (3 ~ 4)
+<meta name="twitter:description" content="來源：chapter 3(23~32)，Number Theory II (3 ~ 4)
 在上一次的尤拉函數中，我們推得了費瑪理論的通式$a^{ \phi (n) } \ \ mod \ \ n \ \ = \ \ 1 \ \ if \ \ gcd(a,n)=1$&amp;lt;!-- Has MathJax --&amp;gt;，這個式子對於餘數系統的乘法反元素非常有幫助，以上面例子來說，a在餘數系統中的乘法反元素就是$a">
 <meta name="twitter:creator" content="@coolwuxing">
   
@@ -111,7 +112,7 @@ ga('send', 'pageview');
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>來源：<a href="http://staff.csie.ncu.edu.tw/yensm/lecture/Cryptography/Chapter-3%20Number%20Theory.pdf" target="_blank" rel="external">chapter 3(23~31)</a>，<a href="http://web.math.isu.edu.tw/yeh/2013Fall/GE/Lectures/L5/L5.pdf" target="_blank" rel="external">Number Theory II (3 ~ 4)</a></p>
+        <p>來源：<a href="http://staff.csie.ncu.edu.tw/yensm/lecture/Cryptography/Chapter-3%20Number%20Theory.pdf" target="_blank" rel="external">chapter 3(23~32)</a>，<a href="http://web.math.isu.edu.tw/yeh/2013Fall/GE/Lectures/L5/L5.pdf" target="_blank" rel="external">Number Theory II (3 ~ 4)</a></p>
 <p>在上一次的尤拉函數中，我們推得了費瑪理論的通式<span>$a^{ \phi (n) } \ \ mod \ \ n \ \ = \ \ 1 \ \ if \ \ gcd(a,n)=1$</span><!-- Has MathJax -->，這個式子對於餘數系統的乘法反元素非常有幫助，以上面例子來說，a在餘數系統中的乘法反元素就是<span>$a^{ \phi (n) - 1}$</span><!-- Has MathJax -->，但如果考慮到計算量的話我們會想讓a的指數越小越好，因此在n=pq, p、q都是質數情況下，我們可以將<span>$a^{ \phi (n) } \ \ mod \ \ n \ \ = \ \ 1$</span><!-- Has MathJax --> 改成<span>$a^{ lcm(p-1,q-1) } \ \ mod \ \ n \ \ = \ \ 1$</span><!-- Has MathJax -->。(關於此式子小弟還沒想通，之後再補上證明)</p>
 <p>有了餘數系統的乘法反元素後，RSA將他應用在加密演算法上：</p>
 <p>令<span>$\phi (n) \ \ + \ \ 1 \ \ = \ \ A \ \ \times \ \ B$</span><!-- Has MathJax --><br>(A, n)為public key<br>密文 <span>$C \ \ = \ \ m^A \ \ mod \ \ n$</span><!-- Has MathJax -->，m為明文<br>(B, n)為private key<br>解密 <span>$C^B \ \ mod \ \ n \ \ = \ \ m^{AB} \ \ mod \ \ n \ \ = \ \ m^{ \phi (n)+1} \ \ mod \ \ n \ \ = \ \ m$</span><!-- Has MathJax --> </p>
@@ -155,12 +156,15 @@ ga('send', 'pageview');
 <p><img src="/images/crt.jpg" alt=""></p>
 <p>CRT在現代工業上用在許多地方，這邊用電腦當例子，上圖中左邊為超級電腦，可以處理n位元，右邊四台為一般市面的筆電。假設今天要計算很大的數字的加法跟乘法運算，我們可以將很大的數字分配給右邊四台電腦，而且四台電腦能夠同時處理較小的數字，處理完後再丟回原本的超級電腦。</p>
 <p></p><h4>CRT Form:</h4><p></p>
-<center> <span>$let \ \ n \ \ = \ \ \prod_{i=1}^k z_i \ \ and \ \ x \ \ mod \ \ z_i \ \ = \ \ x_i, \ \ then \ \ x \ \ = \ \ \sum_{i=1}^k x_i \ \ * \ \ ( \frac{n}{z_i} ) \ \ * \ \ [( \frac{n}{z_i})^{-1} \ \ mod \ \ z_i] \ \ mod \ \ n$</span><!-- Has MathJax --> </center>
+<center> <span>$let \ \ n \ \ = \ \ \prod_{i=1}^k z_i \ \ and \ \ x \ \ mod \ \ z_i \ \ = \ \ x_i, \ \ then \ \ x \ \ = \ \ \sum_{i=1}^k x_i \ \ * \ \ ( \frac{n}{z_i} ) \ \ * \ \ [( \frac{n}{z_i})^{-1} \ \ mod \ \ z_i] \ \ mod \ \ n$</span><!-- Has MathJax --> </center><br>這邊用i=2時說明：令$z_1$ = p，$z_2$ = q，則$x_1$在[o, p-1]，$x_2$在[0, q-1]，且pq互質，x可以透過以下算式得到：<br><center> <span>$x \ \ = \ \ (x_1 * a * q \ \ + \ \ x_2 * b * p ) \ \ mod \ \ (p*q)$</span><!-- Has MathJax --> </center><br>a,b定義如下：<span>$a \ \ \equiv \ \ q^{-1} (mod \ \ p) \  \ and \  \ b \ \ \equiv \ \ p^{-1} (mod \ \ q)$</span><!-- Has MathJax --><br>這邊運用到一項概念：(L mod(pq))mod p = L mod p，所以當x mod p時，$x_2$那項會被消掉，但我們的目的是要讓x mod p = $x_1$，因此還需要消掉q，所以我們定義了一個a在mod p底下為q的反元素，因此最後就會只剩下$x_1$。<br><br><center> <span>$x \ \ mod \ \ p \ \ = \ \ (x_1aq \ \ + \ \ x_2bp \ \ mod \ \ pq) \ \ mod \ \ p$</span><!-- Has MathJax --> </center><br><center> <span>$= \ \ (x_1aq \ \ + \ \ x_2bp) \ \ mod \ \ p$</span><!-- Has MathJax --> </center><br><center> <span>$= \ \ (x_1 * 1 \ \ + \ \ 0) \ \ mod \ \ p \ \ ( \because aq \ \ mod \ \ p \ \ = \ \ 1 )$</span><!-- Has MathJax --> </center><br><center> <span>$= \ \ x_1$</span><!-- Has MathJax --> 同理可得 <span>$x \ \ mod \ \ q \ \ = \ \ x_2$</span><!-- Has MathJax --> </center>
+
+<p>實例：</p>
+<p><img src="/images/CRT_example.jpg" alt=""></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/21/Applied-Cryptography-5/" data-id="cig57mitu000fcronsl7vrio7" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/21/Applied-Cryptography-5/" data-id="cig5t6e9m000f4ron21rife0v" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/21/Applied-Cryptography-5/#disqus_thread" class="article-comment-link">Comments</a>
       
