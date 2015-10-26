@@ -24,7 +24,9 @@ Data Execution Prevention (DEP">
 <meta property="og:image" content="http://eastl.github.io/images/rop5.jpg">
 <meta property="og:image" content="http://eastl.github.io/images/rop6.jpg">
 <meta property="og:image" content="http://eastl.github.io/images/rop7.jpg">
-<meta property="og:updated_time" content="2015-10-25T10:01:58.000Z">
+<meta property="og:image" content="http://eastl.github.io/images/nopie_eip.jpg">
+<meta property="og:image" content="http://eastl.github.io/images/pie_eip.jpg">
+<meta property="og:updated_time" content="2015-10-26T13:40:07.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="The Attack and Defense of Computers-5">
 <meta name="twitter:description" content="來源：Internet Worms, Buffer Overflow Attacks, and Heap Overflow Attacks (43 ~ 82)
@@ -149,12 +151,17 @@ ga('send', 'pageview');
 <p>剛剛所講的程式碼片段就是ROP Gadget，這邊有一個<a href="https://github.com/JonathanSalwan/ROPgadget" target="_blank" rel="external">ROP Gadget tool</a>可以幫你找Gadget。</p>
 <hr>
 
-<p></p><h2> ASLR on Linux </h2><br>在2005年ASLR正式用在linux kernel 2.6.12，微軟在2007年也引進他們的kernel，不過當初開發ASLR是給linux用的，因此微軟的ASLR有時後效果並沒有那麼好。<p></p>
+<p></p><h2> ASLR on Linux </h2><br>在2005年ASLR正式用在linux kernel 2.6.12，微軟在2007年也引進他們的kernel，不過當初開發ASLR是給linux用的，因此微軟的ASLR有時後效果並沒有那麼好。<br>雖然每個process都會有ASLR，但並不是每個記憶體區塊被隨機載入時都能執行。而如果要在code段實施隨機載入，則在編譯程式碼時要開啟Position Independent Executable(PIE)，library段則是一開始compile時就幫你開啟PIE了，所以library段都會是隨機載入，gcc開啟PIE的方法為加參數”-fPIE -pie”即可。下列程式是印出EIP位址：<p></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span>* <span class="title">getEIP</span> <span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> __builtin_return_address(<span class="number">0</span>)-<span class="number">0x5</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>** argv)</span></span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"EIP located at: %p\n"</span>,getEIP());</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>這邊我compile時沒有開啟PIE，因此EIP位址是不會變的，但是library是隨機載入：</p>
+<p><img src="/images/nopie_eip.jpg" alt=""></p>
+<p>接下來我開啟PIE，可以看到EIP位址是被隨機載入記憶體當中：</p>
+<p><img src="/images/pie_eip.jpg" alt=""></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/25/The-Attack-and-Defense-of-Computers-5/" data-id="cig6cjadd00039uon68n33vdr" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/25/The-Attack-and-Defense-of-Computers-5/" data-id="cig806kbi0003mxon6g0t8vwh" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/25/The-Attack-and-Defense-of-Computers-5/#disqus_thread" class="article-comment-link">Comments</a>
       
