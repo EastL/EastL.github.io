@@ -125,11 +125,34 @@ ga('send', 'pageview');
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> desc_struct &#123;</span><br><span class="line">    <span class="keyword">union</span> &#123;</span><br><span class="line">        <span class="keyword">struct</span> &#123;</span><br><span class="line">            <span class="keyword">unsigned</span> <span class="keyword">int</span> a;</span><br><span class="line">            <span class="keyword">unsigned</span> <span class="keyword">int</span> b;</span><br><span class="line">        &#125;;</span><br><span class="line">        <span class="keyword">struct</span> &#123;</span><br><span class="line">            u16 limit0;</span><br><span class="line">            u16 base0;</span><br><span class="line">            <span class="keyword">unsigned</span> base1: <span class="number">8</span>, type: <span class="number">4</span>, s: <span class="number">1</span>, dpl: <span class="number">2</span>, p: <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">unsigned</span> limit: <span class="number">4</span>, avl: <span class="number">1</span>, l: <span class="number">1</span>, d: <span class="number">1</span>, g: <span class="number">1</span>, base2: <span class="number">8</span>;</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;;</span><br><span class="line"> __attribute__((packed));</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
+<p></p><h3> Task State Segment </h3><br>Intel x86有提供Task State Segment(TSS)，當process要切換到另一個process時，必須把目前的暫存器的值存起來，這時可以將這些值存在Task State Segment。而在linux kernel每個processor只會有一個TSS，要呼叫時用TR selector選擇該processor的GDT裡的TSS descriptor，再從descriptor裡面的資訊找到segment：<p></p>
+<p><img src="/images/tss.jpg" alt=""></p>
+<p>TSS架構：</p>
+<p><img src="/images/tss_struct.jpg" alt=""></p>
+<p>接下來介紹兩種在linux kernel會看到但不常見的語法：</p>
+<ul>
+<li><p>typeof Operator<br>通常typeof是來看被宣告的變數是什麼型態，由於linux kernel的code非常長，要用某個變數時時常不曉得他在哪邊被宣告的，於是我們就直接用typeof來看遍數為什麼型態，甚至能用來宣告變數。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> e;</span><br><span class="line">__typeof__(e + <span class="number">1</span>) j;  <span class="comment">/* the same as declaring int j; */</span></span><br></pre></td></tr></table></figure>
+<p>上面的j被宣告為與e相同型態。</p>
+</li>
+<li><p>Comma Expressions<br>在C語言裡所有的敘述都會有回傳值，Comma Expressions會由左邊先計算，回傳值為最右邊。考慮下列程式：</p>
+<figure class="highlight gcode"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">r = <span class="comment">(a, b, ..., c)</span>;</span><br></pre></td></tr></table></figure>
+<p>則計算過程為:a;b;…;r = c</p>
+</li>
+</ul>
+<p></p><h2> Paging Unit </h2><br>之前講到x86的位址轉換，會先由logical address經由segment unit轉為linear address，之後再轉成memory可以用的physical address，從linear address轉為physical address過程就是paging unit。下圖為page unit示意圖：<p></p>
+<p><img src="/images/page_unit.jpg" alt="圖一"></p>
+<p>linear address會被切成3段，結構如下：</p>
+<p><img src="/images/linearaddress_struct.jpg" alt=""></p>
+<p>最左邊10個bit是查directory用，中間的10個bit是查page table用，最後的12bit則是offset。page的概念是一堆linear address的集合，每一個page大小為固定；page table裡面每一個entry就對應到一個page；page directory裡面的每一個entry就對應到一個page table。page table(這邊指的是圖一中page table以及page directory，老師投影片中講的小寫page table就是在這邊用到，因為常常把table跟directory統稱為page table)固定有1024個entry，每個entry為4 byte，所以一個page table大小為4KB。</p>
+<p>在電腦剛開機時，processor進入real mode，此時paging的機制沒有開啟，在進到protected時，必須把cr0暫存器的PG flag設定為1才會開啟page unit。</p>
+<p><img src="/images/page_cr0.jpg" alt=""></p>
+<p>當PG=0時，processor會直接把linear address當做physical address送出去。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/26/Linux-Operating-System-5/" data-id="cig819ake000atyonyzfenau8" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/26/Linux-Operating-System-5/" data-id="cig8t3q6t000augon7n3n1wfk" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/26/Linux-Operating-System-5/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -204,7 +227,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/25/The-Attack-and-Defense-of-Computers-5/" data-id="cig819ak00003tyon3na8zb3p" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/25/The-Attack-and-Defense-of-Computers-5/" data-id="cig8t3q6f0003ugon5u2pbfmh" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/25/The-Attack-and-Defense-of-Computers-5/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -292,7 +315,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/21/Applied-Cryptography-5/" data-id="cig819akx000jtyonzvbl99kd" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/21/Applied-Cryptography-5/" data-id="cig8t3q7c000jugonmacmepsh" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/21/Applied-Cryptography-5/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -386,7 +409,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/18/Linux-Operating-System-4/" data-id="cig819akj000dtyon5qq1o39e" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/18/Linux-Operating-System-4/" data-id="cig8t3q6y000dugonoq3knro3" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/18/Linux-Operating-System-4/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -455,7 +478,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/18/The-Attack-and-Defense-of-Computers-4/" data-id="cig819ak50006tyonlxxrzxp1" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/18/The-Attack-and-Defense-of-Computers-4/" data-id="cig8t3q6k0006ugonuop74lw7" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/18/The-Attack-and-Defense-of-Computers-4/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -521,7 +544,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/17/Applied-Cryptography-4/" data-id="cig819al2000ltyonkqd8obko" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/17/Applied-Cryptography-4/" data-id="cig8t3q7h000lugonfvgih5gj" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/17/Applied-Cryptography-4/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -574,7 +597,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/15/Linux-Operating-System-2/" data-id="cig819akn000ftyon8lot8on3" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/15/Linux-Operating-System-2/" data-id="cig8t3q72000fugonhp564tr9" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/15/Linux-Operating-System-2/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -637,7 +660,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/14/Linux-Operating-System-1/" data-id="cig819akr000htyoni2v90z06" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/14/Linux-Operating-System-1/" data-id="cig8t3q76000hugonfrhppz87" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/14/Linux-Operating-System-1/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -696,7 +719,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/12/The-Attack-and-Defense-of-Computers-1-3/" data-id="cig819aka0008tyon5i1quvib" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/12/The-Attack-and-Defense-of-Computers-1-3/" data-id="cig8t3q6p0008ugonmlpfeemn" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/12/The-Attack-and-Defense-of-Computers-1-3/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -753,7 +776,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/10/Applied-Cryptography-3/" data-id="cig819al7000ntyonhdpdnhmt" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/10/Applied-Cryptography-3/" data-id="cig8t3q7l000nugonl26lu5h3" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/10/Applied-Cryptography-3/#disqus_thread" class="article-comment-link">Comments</a>
       
