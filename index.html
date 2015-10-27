@@ -152,7 +152,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/26/Linux-Operating-System-5/" data-id="cig8t3q6t000augon7n3n1wfk" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/26/Linux-Operating-System-5/" data-id="cig8vci2o000ae2onqffoeqro" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/26/Linux-Operating-System-5/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -227,7 +227,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/25/The-Attack-and-Defense-of-Computers-5/" data-id="cig8t3q6f0003ugon5u2pbfmh" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/25/The-Attack-and-Defense-of-Computers-5/" data-id="cig8vci2a0003e2ont3s5k0i3" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/25/The-Attack-and-Defense-of-Computers-5/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -315,7 +315,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/21/Applied-Cryptography-5/" data-id="cig8t3q7c000jugonmacmepsh" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/21/Applied-Cryptography-5/" data-id="cig8vci3c000le2ondbhhczib" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/21/Applied-Cryptography-5/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -409,7 +409,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/18/Linux-Operating-System-4/" data-id="cig8t3q6y000dugonoq3knro3" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/18/Linux-Operating-System-4/" data-id="cig8vci2t000de2on8735oykv" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/18/Linux-Operating-System-4/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -478,7 +478,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/18/The-Attack-and-Defense-of-Computers-4/" data-id="cig8t3q6k0006ugonuop74lw7" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/18/The-Attack-and-Defense-of-Computers-4/" data-id="cig8vci2f0006e2ony8hyeh6x" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/18/The-Attack-and-Defense-of-Computers-4/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -544,12 +544,86 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/17/Applied-Cryptography-4/" data-id="cig8t3q7h000lugonfvgih5gj" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/17/Applied-Cryptography-4/" data-id="cig8vci3g000ne2onut6jmjv6" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/17/Applied-Cryptography-4/#disqus_thread" class="article-comment-link">Comments</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Linux-Operating-System-3" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/10/16/Linux-Operating-System-3/" class="article-date">
+  <time datetime="2015-10-16T04:19:29.000Z" itemprop="datePublished">2015-10-16</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/10/16/Linux-Operating-System-3/">Linux Operating System-3</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>來源：<a href="http://www.csie.ncu.edu.tw/~hsufh/COURSES/FALL2015/linuxLecture_3_9-1.ppt" target="_blank" rel="external">Introduction (99 ~ 116)</a>，<a href="http://www.csie.ncu.edu.tw/~hsufh/COURSES/FALL2015/linuxLecture_3_9-2.ppt" target="_blank" rel="external">Introduction and Memory Addressing: Segmentation Unit (1 ~ 20)</a></p>
+<p></p><h2> Execution Mode of IA32 </h2><br>在x86架構的processor分為real mode以及protected mode，而在protected mode底下又分為ring0、ring1、ring2、ring3，linux kernel只用到了ring0以及ring3，分別是kernel mode以及user mode，這兩種mode有著不同的權限，在上一堂課講到的address space分為kernel space跟user space，在kernel mode底下所有的address space都能夠執行，但是在user mode底下是無法執行kernel space的。在user space底下存放了以下這些東西：<p></p>
+<ul>
+<li>user-level functions</li>
+<li>variables</li>
+<li>user-level data</li>
+<li>library functions</li>
+<li>the heap</li>
+<li>the user-level stack</li>
+</ul>
+<p>而kernel address space裡面有存放這些東西：</p>
+<ul>
+<li>Kernel data</li>
+<li>Kernel functions</li>
+<li>each process’s kernel-level stack</li>
+</ul>
+<p>既然在user mode底下無法執行kernel space的東西，那使用者在使用電腦時是如何做一些kernel才能做的事情呢？這邊有一個概念叫做mode switch，如果在user mode底下有需要用到kernel space東西時，會經由system call才能變為kernel mode，此時才有辦法存取”特定”kernel space的東西。這邊講的特定是：當你經由system call進到kernel mode前，你會先告訴system call你要做的事情，而當你通過system call進到kernel mode時，你就只能做你剛剛預告的事情，這邊先提個大概，在之後的課程會完整的說明流程。</p>
+<p>而有些process是專門處理kernel的，他完全不會跟user溝通，只會run 在kernel address space裡，這種process叫做kernel threads，通常system剛啟動時或者系統被關閉時才會出現的程序。</p>
+<p></p><h4> Uniprocessors vs. Multiprocessing </h4><br>不管是Uniprocessors或是Multiprocessing，一顆processor只能執行一個process，那我們的電腦是如何執行這麼多程式的？其實在CPU中會不會的切換process，才會讓使用者有同時執行很多程式的錯覺，那麼OS是如何切換程式呢？<p></p>
+<ul>
+<li><p>Context Switch<br>也可以稱做process switch，當一個process要切換到另一個process時，必須先切換到kernel mode，然後在kernel mode底下將控制權轉移給另一個process。通常有下列四種事件發生時會進行context switch：</p>
+<ul>
+<li>System calls</li>
+<li>Exceptions</li>
+<li>Interrupts</li>
+<li>Kernel thread</li>
+</ul>
+<p>下圖為mode切換示意圖：<br><img src="/images/mode_switch.jpg" alt=""></p>
+<p>Exceptions通常是process造成的，可能是page fault、除以零或者是有違法的address出現等，而Interrupts通常是硬體有事件發生，造成其他process先暫停，先處理interrupt，由interrupt handler處理。</p>
+</li>
+<li><p>Reentrant Kernels<br>如果有兩個process同時要執行時，必須先暫停一個process，直到另一個process執行完畢。Interrupts可以利用此機制暫停目前正在執行的process，執行interrupt handler。</p>
+</li>
+</ul>
+<p>Interrupts與Exceptions其實蠻常發生的，process常常會被切換來切換去。<br><img src="/images/interleaving.jpg" alt=""></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://eastl.github.io/2015/10/16/Linux-Operating-System-3/" data-id="cig8vci2x000fe2on46owkn7p" class="article-share-link">Share</a>
+      
+        <a href="http://eastl.github.io/2015/10/16/Linux-Operating-System-3/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux-Operating-System/">Linux Operating System</a></li></ul>
 
     </footer>
   </div>
@@ -597,7 +671,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/15/Linux-Operating-System-2/" data-id="cig8t3q72000fugonhp564tr9" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/15/Linux-Operating-System-2/" data-id="cig8vci32000he2onk3vnxx20" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/15/Linux-Operating-System-2/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -660,7 +734,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/14/Linux-Operating-System-1/" data-id="cig8t3q76000hugonfrhppz87" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/14/Linux-Operating-System-1/" data-id="cig8vci37000je2on04e6oquy" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/14/Linux-Operating-System-1/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -719,69 +793,12 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/12/The-Attack-and-Defense-of-Computers-1-3/" data-id="cig8t3q6p0008ugonmlpfeemn" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/12/The-Attack-and-Defense-of-Computers-1-3/" data-id="cig8vci2k0008e2onizocjto2" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/12/The-Attack-and-Defense-of-Computers-1-3/#disqus_thread" class="article-comment-link">Comments</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/The-Attack-and-Defense-of-Computers/">The Attack and Defense of Computers</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-Applied-Cryptography-3" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/10/10/Applied-Cryptography-3/" class="article-date">
-  <time datetime="2015-10-10T15:38:40.000Z" itemprop="datePublished">2015-10-10</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/10/10/Applied-Cryptography-3/">Applied Cryptography-3</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>來源：<a href="/papers/Chapter2.pdf">chapter 2 (23~51)</a></p>
-<p>在進入Block Cipher之前，先來思考一個問題：<br><img src="/images/QAQ.gif" alt=""></p>
-<h5> Question: 加解密，錯誤更正碼(encoder、decoder)，壓縮先後順序 </h5><br>假設今天你要將資料m透過網路傳給別人，但資料量太大必須壓縮，而且資料必須保密不能讓第三者看到因此要加密，並且需要保證接收方收到的資料正確無誤所以你希望加個錯誤更正碼降低接收方的錯誤率，問題來了，這三道程序的先後順序要如何排列呢？如果不按照”正確”的程序進行會發生什麼事呢？<br><br><img src="/images/AC3_Q.jpg" alt=""><br><br>一次要看三道程序的話不免過於複雜，學資工的應要有資工的解法，這邊我們利用divide and conquer的想法(誤XDD<br>首先我們先來看看加解密與錯誤更正碼哪個應該優先做，分別為下兩a、b兩種方法：<br><br><img src="/images/cry_coder.jpg" alt=""><br><br>如果你的更正碼用的是linear block code，若你想要code自動錯誤更正n個bit，你至少要增加2n+1個bit的更正碼，不然更正碼可能會更正到另一組更正碼認為是正確的coset。這邊用簡單的圖來幫助理解，先想像一下，你今天收到的資料與原本資料假設有k個bit不一樣，也就是錯了k個bit，這樣就代表著你收到的資料與正確資料距離為k，ok，再來理解錯誤更正碼，假設你今天送的資料加了錯誤更正碼，它能夠自動錯誤更正n個bit，也就是我今天收到的資料如果錯的bit數小於n的話，他就有辦法自己更正成正確的，那也就是在方圓半徑n以內的我都有辦法將他拉到原點，如下圖所示：A點為正確資料，半徑為n，<span>$r_1$</span><!-- Has MathJax -->能夠自動更正回來，<span>$r_2$</span><!-- Has MathJax -->無法。<br><br><img src="/images/err_1.jpg" alt=""><br><br>OK，問題來了，假設今天只有一個圓，也就是只有一組正確資料，那沒什麼問題，但現實情況不可能只有傳一筆資料吧….所以當你有兩筆以上的資料時，如果每筆資料靠的太近，那就可能會發生相交甚至重疊，此時如果你剛好錯誤的地點發生在重疊部分，錯誤更正碼就可能將你導向”另一筆”正確資料。如下圖所示，<span>$r_1$</span><!-- Has MathJax -->點落在A與B重疊處，原本正確資料為A，錯誤更正完後可能會變成B。<br><br><img src="/images/err_2.jpg" alt=""><br><br>為了避免上述情況發生，我們增加了2n+1個bit的更正碼來增加正確資料的距離，避免錯誤更正範圍重疊。如下圖，只要錯誤的點不要落在錯誤更正範圍外，都能夠正確的解回來。<br><br><img src="/images/err_3.jpg" alt="A與B距離為2n+1"><br><br>有了錯誤更正碼的概念後，我們可以發現：錯誤更正碼能力是有限的，他只能容許錯誤在一定範圍內，因此如果錯誤更正碼要搭配加密，那麼必須是在加密之後再來加錯誤更正碼，因為加密後只要錯了一個bit，解回來時肯定不只錯一個bit，所以如果你用了方法b，原本只錯了一個bit的密文解密後錯更多，在進行錯誤更正碼就大亂了，因此應該要使用方法a。<br><br>接下來我們來看看加解密與壓縮，一樣分為兩種方法：<br><br><img src="/images/cry_comp.jpg" alt=""><br><br>這邊可以用效能來看，傳統加解密會需要耗費許多時間，因此需要被加解密的資料越小越好，當然選擇先壓縮再加密。而另一個角度是這兩種演算法的特性：資料壓縮的原理是將重複的pattern用特定的符號來取代，所以重複的pattern越多壓縮效果越好；而加密演算法特性是將資料打得越亂越好，因此不太有機會出現重複的pattern，所以如果先加密再壓縮的話，壓縮的效果可能不佳，甚至可能壓縮後檔案會變大。<br><br>綜合以上推論，正確順序應該為：壓縮→加解密→錯誤更正碼。<br><br><hr><br><br><h3> Block Cipher </h3><br><br>一開始先介紹Block Cipher的概念，如下圖所示，將訊息切割成n段後，每一段訊息(block)都進入加密器加密，最後再merge回完整cipher。<br><br><img src="/images/block_cipher.jpg" alt="Block Cipher"><br><br>接下來將利用典型的DES(Data Encryption Standard)來帶領大家進入Block Cipher的世界。首先DES每次取的block為64bit，而DES的key也是64個bit，那DES是如何將這64bit明文加密的呢?可以參考下圖：<br><br><img src="/images/DES.jpg" alt=""><br><br>我們可以看到明文會經過16回合後變成cipher，key會每回合shift、permuted後進來，接下來我們來看這16回合實際運作。<br><br><img src="/images/Feistel_cipher.jpg" alt=""><br><center> <a href="https://en.wikipedia.org/wiki/Feistel_cipher" target="_blank" rel="external">Feistel cipher from wiki</a> </center><br><br>DES這16回合是來自於Feistel cipher，它的概念是這樣：將明文分為左右兩部分，左半邊為<span>$L_n$</span><!-- Has MathJax -->右半邊為<span>$R_n$</span><!-- Has MathJax -->，n為回合數。首先把<span>$R_0$</span><!-- Has MathJax -->與<span>$K_0$</span><!-- Has MathJax -->當作input，丟進F後的output與<span>$L_0$</span><!-- Has MathJax -->做<span>$\bigoplus$</span><!-- Has MathJax -->，此為第一回合，第二回合開始將第一回合<span>$\bigoplus$</span><!-- Has MathJax -->結果與<span>$K_1$</span><!-- Has MathJax -->當作input再丟入F，得到output再與第一回合的<span>$R_0$</span><!-- Has MathJax -->做<span>$\bigoplus$</span><!-- Has MathJax -->，以此類推至16回合結束。解密的部分稍後再詳細說明。<br><br>接下來介紹F裡面做了什麼事情，在介紹之前先介紹第一堂課探討過的取代跟重排。取代跟重排不管你單獨重複多次或者交叉使用多次，都能夠化減為單一回合的取代。為了解決此問題，<a href="https://en.wikipedia.org/wiki/Substitution-permutation_network" target="_blank" rel="external">Substitution-permutation network</a>利用了不同size的S-box與P-box進行重排與取代，此方法經過重複多次後無法用單一回合的取代來代替。<br><br><img src="/images/SP.jpg" alt="S-P Network"><br><br>Substitution-permutation network一開始的8bit substitution為key，故每次的key不一樣導致替換的結果不同，後面的64bit permutation會造成<a href="https://en.wikipedia.org/wiki/Avalanche_effect" target="_blank" rel="external">Avalanche effect 雪崩效應</a>，所以不同input只差一個bit會導致ciphertext完全不一樣。<br><br>有了Substitution-permutation network概念後接下來看F做的事情，如下圖所示：<br><br><img src="/images/DES1.jpg" alt=""><br><br>圖中可以看到它把右邊的32bit先做Expansion以及permutation成48bit，實作如下圖：<br><br><img src="/images/expper.jpg" alt="Expansion/Permutation"><br><br>得到48bit後與key做<span>$\bigoplus$</span><!-- Has MathJax -->，XOR完之後就是S-box變形與P-box，下圖為P-box實作：<br><br><img src="/images/DES_pbox.jpg" alt="P-box"><br><br>上面兩個permutation的圖都是代表第幾個位置為原本位置的值，例如Expansion/Permutation的圖，第一個bit的值被替代後變成了原本的第32bit的值。<br>而這邊的S-box比較特殊，它是8個6bit轉4bit的替換器，替換方式如下：<span>$b_1$</span><!-- Has MathJax -->與<span>$b_6$</span><!-- Has MathJax -->代表第幾列，<span>$b_2$</span><!-- Has MathJax -->到<span>$b_5$</span><!-- Has MathJax -->代表第幾行。舉個例子：假設今天送進<span>$S_1$</span><!-- Has MathJax -->的訊息為000001，則替換的數字為第01列第0000行，所以output為0010(4)。<br><br><img src="/images/DES_sbox.jpg" alt="S-box"><br><br>這邊可以發現到S-box內容是不變的，但在之前Substitution-permutation network有提到S-box應隨著key做改變，看一下下列這張圖：<br><br><img src="/images/DES2.jpg" alt=""><br><br>在進行S-box之前會先將資訊與key作XOR，此動作會導致替換結果隨著key做改變。<br><br>下圖為DES的key schedule，key schedule是決定每次round要給予的subkey的值，圖中可以看到key拿掉8 bit的parity後經過PC1被分成左右兩半，之後分別進行left shift，每次shift有可能是1bit或2bit，取決於右邊的Number of Left Shifts，shift完之後再經由PC2從28bit當中挑選24bit，合併後傳送給DES做XOR。<br><br><img src="/images/key_schedule.jpg" alt=""><br><br>有關PC1與PC2的permutation如下(圖的看法與上面的permutation一樣)：<br><br><img src="/images/PC1and2.jpg" alt=""><br><br><h5> DES decryption </h5>
-
-<p>終於到了解密部分了…..是否還記得剛剛加密時的S-box？它是將6bit轉換為4bit，但如果按照正常邏輯，要解密時不是該變成反函式，要將4bit轉回6bit嗎？但這件是不可能發生啊!!!!!!除非你會通靈….</p>
-<div class="video-container"><iframe src="//www.youtube.com/embed/sToP9FpZ4Dk" frameborder="0" allowfullscreen></iframe></div>
-<p>4bit轉6bit代表你要1對多，在一對多的狀況時你要如何知道哪個才是你真正要的原文呢？因此此方法行不通。那麼該如何解密呢？觀察一下下面這張圖：</p>
-<p><img src="/images/DES_decrypt.jpg" alt=""></p>
-<p>首先先看左邊加密時的狀況，在最後一個回合時，右邊的藍色跟黃色做XOR後得到紅色，然後被拉到左邊；而左邊的黑色根紫色做XOR後變成綠色，被拉到右邊。而右邊的黃色是原本的左邊綠色經過F後得到的，而左邊的紫色是右邊的藍色經過F所得到的。左邊加密看完後接下來看右邊的解密，假如我直接把得到的密文再丟入DES一次會發生什麼事情呢？右邊的綠色往上丟，經過F會變成黃色(由左邊加密時得知)，而左邊紅色也往上丟，與剛剛出爐的黃色做XOR得到藍色(藍XOR黃=紅，so黃XOR紅=藍)，有沒有發現一件神奇的事情，我剛剛做的事情就是原本加密時的第16回合，也就是說，照原本DES的加密上式進行下去，key只要倒著排，就能夠把密文還原回明文，酷吧！</p>
-<hr>
-
-<h4> Cipher Block Chaining (CBC) </h4>
-
-<p>由於DES有個致命的缺點，一樣的明文送進DES第二次會出現與上一次一模一樣的密文，這樣攻擊者只要蒐集密文並分析就有可能推測出明文，為了避免像是ciphertext searching這種攻擊，block cipher有一種模式叫做cipher block chaining，它是在每次要進行加密前，多XOR一串vector，這樣就不會使每次的明文加密完後都一樣。</p>
-<p><img src="/images/CBC.jpg" alt=""></p>
-<p>如上圖，第一個block會XOR一個Initial Vector(IV)，之後的block都會XOR前一個block的cipher，這麼做的好處是cipher是加密過後的，所以他的值非常難預測，幾乎是亂數值。而CBC的最後一個cipher也能拿來當作Message Authentication Code (MAC)，由於你要拿到最後一個cipher一定要將整個明文做一次CBC mode的加密才有辦法拿到，所以此cipher能拿來當作MAC，MAC概念類似於checksum或者是parity check。<a href="https://en.wikipedia.org/wiki/Message_authentication_code" target="_blank" rel="external">wiki在此</a></p>
-<p>最後老師講了一個CBC的攻擊，不過我看投影片還有其他的攻擊，這部分就保留到下次在一起寫吧。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/10/Applied-Cryptography-3/" data-id="cig8t3q7l000nugonl26lu5h3" class="article-share-link">Share</a>
-      
-        <a href="http://eastl.github.io/2015/10/10/Applied-Cryptography-3/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a></li></ul>
 
     </footer>
   </div>
@@ -805,7 +822,7 @@ ga('send', 'pageview');
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux-Operating-System/">Linux Operating System</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/The-Attack-and-Defense-of-Computers/">The Attack and Defense of Computers</a><span class="tag-list-count">3</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux-Operating-System/">Linux Operating System</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/The-Attack-and-Defense-of-Computers/">The Attack and Defense of Computers</a><span class="tag-list-count">3</span></li></ul>
     </div>
   </div>
 
@@ -814,7 +831,7 @@ ga('send', 'pageview');
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Applied-Cryptography/" style="font-size: 20px;">Applied Cryptography</a> <a href="/tags/Linux-Operating-System/" style="font-size: 15px;">Linux Operating System</a> <a href="/tags/The-Attack-and-Defense-of-Computers/" style="font-size: 10px;">The Attack and Defense of Computers</a>
+      <a href="/tags/Applied-Cryptography/" style="font-size: 20px;">Applied Cryptography</a> <a href="/tags/Linux-Operating-System/" style="font-size: 20px;">Linux Operating System</a> <a href="/tags/The-Attack-and-Defense-of-Computers/" style="font-size: 10px;">The Attack and Defense of Computers</a>
     </div>
   </div>
 
@@ -823,7 +840,7 @@ ga('send', 'pageview');
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a><span class="archive-list-count">2</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">11</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a><span class="archive-list-count">2</span></li></ul>
     </div>
   </div>
 
