@@ -3,23 +3,30 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Linux Operating System-3 | Justice Shadower</title>
+  <title>Applied Cryptography-6 | Justice Shadower</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="來源：Introduction (99 ~ 116)，Introduction and Memory Addressing: Segmentation Unit (1 ~ 20)
- Execution Mode of IA32 在x86架構的processor分為real mode以及protected mode，而在protected mode底下又分為ring0、ring1、ring2、rin">
+  <meta name="description" content="來源：chapter 3 (33 ~ 49)
+上禮拜最後講中國餘數定理，可以將大世界的複雜計算分給很多個小世界，小世界計算完後透過中國餘數定理merge回來，接下來的二次剩餘將會運用到中國餘數定理。
+ Quadratic Residues Quadratic Residues探討在模數世界開根號的問題，既然是開根號就分為兩種：可以開根號跟不能開根號。
+
+Quadratic Residue ($QR">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Linux Operating System-3">
-<meta property="og:url" content="http://eastl.github.io/2015/10/16/Linux-Operating-System-3/index.html">
+<meta property="og:title" content="Applied Cryptography-6">
+<meta property="og:url" content="http://eastl.github.io/2015/10/28/Applied-Cryptography-6/index.html">
 <meta property="og:site_name" content="Justice Shadower">
-<meta property="og:description" content="來源：Introduction (99 ~ 116)，Introduction and Memory Addressing: Segmentation Unit (1 ~ 20)
- Execution Mode of IA32 在x86架構的processor分為real mode以及protected mode，而在protected mode底下又分為ring0、ring1、ring2、rin">
-<meta property="og:image" content="http://eastl.github.io/images/mode_switch.jpg">
-<meta property="og:image" content="http://eastl.github.io/images/interleaving.jpg">
-<meta property="og:updated_time" content="2015-10-27T05:28:00.000Z">
+<meta property="og:description" content="來源：chapter 3 (33 ~ 49)
+上禮拜最後講中國餘數定理，可以將大世界的複雜計算分給很多個小世界，小世界計算完後透過中國餘數定理merge回來，接下來的二次剩餘將會運用到中國餘數定理。
+ Quadratic Residues Quadratic Residues探討在模數世界開根號的問題，既然是開根號就分為兩種：可以開根號跟不能開根號。
+
+Quadratic Residue ($QR">
+<meta property="og:updated_time" content="2015-10-28T09:37:56.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Linux Operating System-3">
-<meta name="twitter:description" content="來源：Introduction (99 ~ 116)，Introduction and Memory Addressing: Segmentation Unit (1 ~ 20)
- Execution Mode of IA32 在x86架構的processor分為real mode以及protected mode，而在protected mode底下又分為ring0、ring1、ring2、rin">
+<meta name="twitter:title" content="Applied Cryptography-6">
+<meta name="twitter:description" content="來源：chapter 3 (33 ~ 49)
+上禮拜最後講中國餘數定理，可以將大世界的複雜計算分給很多個小世界，小世界計算完後透過中國餘數定理merge回來，接下來的二次剩餘將會運用到中國餘數定理。
+ Quadratic Residues Quadratic Residues探討在模數世界開根號的問題，既然是開根號就分為兩種：可以開根號跟不能開根號。
+
+Quadratic Residue ($QR">
 <meta name="twitter:creator" content="@coolwuxing">
   
     <link rel="alternative" href="/atom.xml" title="Justice Shadower" type="application/atom+xml">
@@ -88,10 +95,10 @@ ga('send', 'pageview');
   </div>
 </div>
       <div class="outer">
-        <section id="main"><article id="post-Linux-Operating-System-3" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-Applied-Cryptography-6" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2015/10/16/Linux-Operating-System-3/" class="article-date">
-  <time datetime="2015-10-16T04:19:29.000Z" itemprop="datePublished">2015-10-16</time>
+    <a href="/2015/10/28/Applied-Cryptography-6/" class="article-date">
+  <time datetime="2015-10-28T08:25:35.000Z" itemprop="datePublished">2015-10-28</time>
 </a>
     
   </div>
@@ -102,7 +109,7 @@ ga('send', 'pageview');
         
   
     <h1 class="article-title" itemprop="name">
-      Linux Operating System-3
+      Applied Cryptography-6
     </h1>
   
 
@@ -110,50 +117,28 @@ ga('send', 'pageview');
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>來源：<a href="http://www.csie.ncu.edu.tw/~hsufh/COURSES/FALL2015/linuxLecture_3_9-1.ppt" target="_blank" rel="external">Introduction (99 ~ 116)</a>，<a href="http://www.csie.ncu.edu.tw/~hsufh/COURSES/FALL2015/linuxLecture_3_9-2.ppt" target="_blank" rel="external">Introduction and Memory Addressing: Segmentation Unit (1 ~ 20)</a></p>
-<p></p><h2> Execution Mode of IA32 </h2><br>在x86架構的processor分為real mode以及protected mode，而在protected mode底下又分為ring0、ring1、ring2、ring3，linux kernel只用到了ring0以及ring3，分別是kernel mode以及user mode，這兩種mode有著不同的權限，在上一堂課講到的address space分為kernel space跟user space，在kernel mode底下所有的address space都能夠執行，但是在user mode底下是無法執行kernel space的。在user space底下存放了以下這些東西：<p></p>
+        <p>來源：<a href="http://staff.csie.ncu.edu.tw/yensm/lecture/Cryptography/Chapter-3%20Number%20Theory.pdf" target="_blank" rel="external">chapter 3 (33 ~ 49)</a></p>
+<p>上禮拜最後講中國餘數定理，可以將大世界的複雜計算分給很多個小世界，小世界計算完後透過中國餘數定理merge回來，接下來的二次剩餘將會運用到中國餘數定理。</p>
+<p></p><h2> Quadratic Residues </h2><br>Quadratic Residues探討在模數世界開根號的問題，既然是開根號就分為兩種：可以開根號跟不能開根號。<p></p>
 <ul>
-<li>user-level functions</li>
-<li>variables</li>
-<li>user-level data</li>
-<li>library functions</li>
-<li>the heap</li>
-<li>the user-level stack</li>
+<li>Quadratic Residue (<span>$QR_p$</span><!-- Has MathJax -->)<br>定義p為質數，若某數平方後mod p能找到a，則我們稱a為<span>$QR_p$</span><!-- Has MathJax -->：<span>$x^2 \ \ \equiv \ \ a \ \ (mod \ \ p)$</span><!-- Has MathJax --></li>
+<li>Quadratic Nonresidue(<span>$NQR_p$</span><!-- Has MathJax -->)<br>若mod p底下有一個數a，他找不到任何x使得<span>$x^2 \ \ \equiv \ \ a \ \ (mod \ \ p)$</span><!-- Has MathJax -->，則代表a在mod p底下不能開根號，稱為<span>$NQR_p$</span><!-- Has MathJax -->。</li>
 </ul>
-<p>而kernel address space裡面有存放這些東西：</p>
-<ul>
-<li>Kernel data</li>
-<li>Kernel functions</li>
-<li>each process’s kernel-level stack</li>
-</ul>
-<p>既然在user mode底下無法執行kernel space的東西，那使用者在使用電腦時是如何做一些kernel才能做的事情呢？這邊有一個概念叫做mode switch，如果在user mode底下有需要用到kernel space東西時，會經由system call才能變為kernel mode，此時才有辦法存取”特定”kernel space的東西。這邊講的特定是：當你經由system call進到kernel mode前，你會先告訴system call你要做的事情，而當你通過system call進到kernel mode時，你就只能做你剛剛預告的事情，這邊先提個大概，在之後的課程會完整的說明流程。</p>
-<p>而有些process是專門處理kernel的，他完全不會跟user溝通，只會run 在kernel address space裡，這種process叫做kernel threads，通常system剛啟動時或者系統被關閉時才會出現的程序。</p>
-<p></p><h4> Uniprocessors vs. Multiprocessing </h4><br>不管是Uniprocessors或是Multiprocessing，一顆processor只能執行一個process，那我們的電腦是如何執行這麼多程式的？其實在CPU中會不會的切換process，才會讓使用者有同時執行很多程式的錯覺，那麼OS是如何切換程式呢？<p></p>
-<ul>
-<li><p>Context Switch<br>也可以稱做process switch，當一個process要切換到另一個process時，必須先切換到kernel mode，然後在kernel mode底下將控制權轉移給另一個process。通常有下列四種事件發生時會進行context switch：</p>
-<ul>
-<li>System calls</li>
-<li>Exceptions</li>
-<li>Interrupts</li>
-<li>Kernel thread</li>
-</ul>
-<p>下圖為mode切換示意圖：<br><img src="/images/mode_switch.jpg" alt=""></p>
-<p>Exceptions通常是process造成的，可能是page fault、除以零或者是有違法的address出現等，而Interrupts通常是硬體有事件發生，造成其他process先暫停，先處理interrupt，由interrupt handler處理。</p>
-</li>
-<li><p>Reentrant Kernels<br>如果有兩個process同時要執行時，必須先暫停一個process，直到另一個process執行完畢。Interrupts可以利用此機制暫停目前正在執行的process，執行interrupt handler。</p>
-</li>
-</ul>
-<p>Interrupts與Exceptions其實蠻常發生的，process常常會被切換來切換去。<br><img src="/images/interleaving.jpg" alt=""></p>
+<p>知道了在模數底下分為可開根號跟不可開根號後，接下來我們來看看在mod p底下(p為質數)，會有多少個<span>$QR_p$</span><!-- Has MathJax -->跟<span>$NQR_p$</span><!-- Has MathJax -->呢？mod p 底下總共會有0~p-1共p個數，0在這邊暫且不談，我們將其他的數都做平方來觀察：</p>
+<center> <span>$1^2, \ \ 2^2, \ \ 3^2, ... , \ \ ( \frac{p-1}{2} )^2, \ \ ( \frac{p+1}{2} )^2, \ \ ..., \ \ (p-2)^2, \ \ (p-1)^2$</span><!-- Has MathJax --> </center>
+
+<p>觀察$1^2$跟$(p-1)^2$，這兩數平方後mod p都是1，所以1的平方根為1跟p-1，其他數也是如此，其實如果把p改成0就是我們平常認知的平方根了，所以k根p-k一組，剛好從中間切半，那左半邊的平方後mod p會不會有兩個根對到同一個數呢？下面利用反證法來證明：</p>
+<p>假設<span>$x^2 \ \ \equiv \ \ a \ \ \equiv \ \ y^2 \ \ (mod \ \ p)$</span><!-- Has MathJax -->，且x,y不相等，<span>$1 \ \ \leq \ \ x,y \ \ \leq \ \ /frac{p-1}{2}$</span><!-- Has MathJax -->，則x不是跟y一樣就是p-y，但這兩種都不符合條件，因此平方根不會同時有兩個小於(p-1)/2，也就是在小於(p-1)/2的情況下會有兩個數平方後mod p會是同一個數。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/16/Linux-Operating-System-3/" data-id="cigak3kv7000f4monpodh0w5b" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/28/Applied-Cryptography-6/" data-id="cigak3kvl000l4mon4asxa7xd" class="article-share-link">Share</a>
       
-        <a href="http://eastl.github.io/2015/10/16/Linux-Operating-System-3/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://eastl.github.io/2015/10/28/Applied-Cryptography-6/#disqus_thread" class="article-comment-link">Comments</a>
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux-Operating-System/">Linux Operating System</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a></li></ul>
 
     </footer>
   </div>
@@ -161,19 +146,10 @@ ga('send', 'pageview');
     
 <nav id="article-nav">
   
-    <a href="/2015/10/17/Applied-Cryptography-4/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          Applied Cryptography-4
-        
-      </div>
-    </a>
   
-  
-    <a href="/2015/10/15/Linux-Operating-System-2/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2015/10/26/Linux-Operating-System-5/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">Linux Operating System-2</div>
+      <div class="article-nav-title">Linux Operating System-5</div>
     </a>
   
 </nav>
@@ -276,7 +252,7 @@ ga('send', 'pageview');
 <script>
   var disqus_shortname = 'EastL';
   
-  var disqus_url = 'http://eastl.github.io/2015/10/16/Linux-Operating-System-3/';
+  var disqus_url = 'http://eastl.github.io/2015/10/28/Applied-Cryptography-6/';
   
   (function(){
     var dsq = document.createElement('script');
@@ -298,5 +274,35 @@ ga('send', 'pageview');
 <script src="/js/script.js" type="text/javascript"></script>
 
   </div>
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
 </body>
 </html>
