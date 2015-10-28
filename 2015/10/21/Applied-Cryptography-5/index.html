@@ -17,7 +17,7 @@
 <meta property="og:image" content="http://eastl.github.io/images/pezu2.jpg">
 <meta property="og:image" content="http://eastl.github.io/images/crt.jpg">
 <meta property="og:image" content="http://eastl.github.io/images/CRT_example.jpg">
-<meta property="og:updated_time" content="2015-10-25T01:13:46.000Z">
+<meta property="og:updated_time" content="2015-10-28T00:25:21.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Applied Cryptography-5">
 <meta name="twitter:description" content="來源：chapter 3(23~32)，Number Theory II (3 ~ 4)
@@ -113,7 +113,12 @@ ga('send', 'pageview');
     <div class="article-entry" itemprop="articleBody">
       
         <p>來源：<a href="http://staff.csie.ncu.edu.tw/yensm/lecture/Cryptography/Chapter-3%20Number%20Theory.pdf" target="_blank" rel="external">chapter 3(23~32)</a>，<a href="http://web.math.isu.edu.tw/yeh/2013Fall/GE/Lectures/L5/L5.pdf" target="_blank" rel="external">Number Theory II (3 ~ 4)</a></p>
-<p>在上一次的尤拉函數中，我們推得了費瑪理論的通式<span>$a^{ \phi (n) } \ \ mod \ \ n \ \ = \ \ 1 \ \ if \ \ gcd(a,n)=1$</span><!-- Has MathJax -->，這個式子對於餘數系統的乘法反元素非常有幫助，以上面例子來說，a在餘數系統中的乘法反元素就是<span>$a^{ \phi (n) - 1}$</span><!-- Has MathJax -->，但如果考慮到計算量的話我們會想讓a的指數越小越好，因此在n=pq, p、q都是質數情況下，我們可以將<span>$a^{ \phi (n) } \ \ mod \ \ n \ \ = \ \ 1$</span><!-- Has MathJax --> 改成<span>$a^{ lcm(p-1,q-1) } \ \ mod \ \ n \ \ = \ \ 1$</span><!-- Has MathJax -->。(關於此式子小弟還沒想通，之後再補上證明)</p>
+<p>在上一次的尤拉函數中，我們推得了費瑪理論的通式<span>$a^{ \phi (n) } \ \ mod \ \ n \ \ = \ \ 1 \ \ if \ \ gcd(a,n)=1$</span><!-- Has MathJax -->，這個式子對於餘數系統的乘法反元素非常有幫助，以上面例子來說，a在餘數系統中的乘法反元素就是<span>$a^{ \phi (n) - 1}$</span><!-- Has MathJax -->，但如果考慮到計算量的話我們會想讓a的指數越小越好，因此在n=pq, p、q都是質數情況下，我們可以將<span>$a^{ \phi (n) } \ \ mod \ \ n \ \ = \ \ 1$</span><!-- Has MathJax --> 改成<span>$a^{ lcm(p-1,q-1) } \ \ mod \ \ n \ \ = \ \ 1$</span><!-- Has MathJax -->。</p>
+<p>在證明之前先講會用到的理論，當x mod A = 1且x mod B = 1，則x mod AB = 1。</p>
+<p>再來我們看一下費瑪定理：</p>
+<center> <span>$a^{p-1} \ \ mod \ \ p \ \ = \ \ 1$</span><!-- Has MathJax --> </center><br><center> <span>$a^{q-1} \ \ mod \ \ q \ \ = \ \ 1$</span><!-- Has MathJax --> </center>
+
+<p>故<span>$a^{(p-1)k} \ \ mod \ \ p \ \ = \ \ 1$</span><!-- Has MathJax -->，以p-1為周期到達p-1的倍數mod p後又會等於1。因此我們可以找到lcm(p-1, q-1)，使得<span>$a^{ lcm(p-1,q-1) } \ \ mod \ \ p \ \ = \ \ 1$</span><!-- Has MathJax --> 且<span>$a^{ lcm(p-1,q-1) } \ \ mod \ \ q \ \ = \ \ 1$</span><!-- Has MathJax -->，再利用剛剛的理論得到<span>$a^{ lcm(p-1,q-1) } \ \ mod \ \ n \ \ = \ \ 1$</span><!-- Has MathJax -->。</p>
 <p>有了餘數系統的乘法反元素後，RSA將他應用在加密演算法上：</p>
 <p>令<span>$\phi (n) \ \ + \ \ 1 \ \ = \ \ A \ \ \times \ \ B$</span><!-- Has MathJax --><br>(A, n)為public key<br>密文 <span>$C \ \ = \ \ m^A \ \ mod \ \ n$</span><!-- Has MathJax -->，m為明文<br>(B, n)為private key<br>解密 <span>$C^B \ \ mod \ \ n \ \ = \ \ m^{AB} \ \ mod \ \ n \ \ = \ \ m^{ \phi (n)+1} \ \ mod \ \ n \ \ = \ \ m$</span><!-- Has MathJax --> </p>
 <p>這是RSA剛開始的雛形。上式的解密用到<span>$(m^A \ \ mod \ \ n)^B \ \ mod \ \ n \ \ = \ \ m^{AB} \ \ mod \ \ n$</span><!-- Has MathJax -->，此證明我在<a href="http://eastl.github.io/2015/09/28/Applied-Cryptography-1/">Applied Cryptography-1</a>中講Diffie-Hellman如何傳送public key時有證明，可以參考。</p>
@@ -164,7 +169,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/21/Applied-Cryptography-5/" data-id="cig8vci3c000le2ondbhhczib" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/21/Applied-Cryptography-5/" data-id="ciga29irv000lbvonzjv6qkdj" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/21/Applied-Cryptography-5/#disqus_thread" class="article-comment-link">Comments</a>
       
