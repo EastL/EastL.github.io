@@ -164,7 +164,7 @@ J( \frac{a_1*a_2}{n}) \ \ = \ \ J( \frac{a_1}{n}) \ \ \times \ \ J( \frac{a_2}{n
 <p><img src="/images/mix_root.jpg" alt=""></p>
 <p>$a_p$開根號後假設值為$S_1$, p-$S_1$，$a_q$開根號後為$S_2$, q-$S_2$，而T在mod n底下的四個值假設為x, n-x, y, n-y，則x會是$S_1$跟$S_2$ 利用中國餘數定理merge而成，n-x會是 p-$S_1$ 跟 q-$S_2$ merge而成，同理y會是$S_1$跟 q-$S_2$ merge，n-y是$S_2$跟 p-$S_1$ merge。簡單來說就是兩兩成對，四個根會有兩對pair。基本上到目前為止整個帳密系統輪廓都描繪出來了，就還差一個細節，記得剛剛講說利用中國餘數定理將合成數拆成質數，然後就能計算出開根號，那mod 質數底下要怎麼找開根號的兩個根呢？在1891年Alberto Tonelli發展了一個演算法解決了這問題，但此演算法效能不佳，在1973年<a href="https://en.wikipedia.org/wiki/Daniel_Shanks" target="_blank" rel="external">Daniel Shanks</a>發展了<a href="https://en.wikipedia.org/wiki/Tonelli%E2%80%93Shanks_algorithm" target="_blank" rel="external">Tonelli–Shanks algorithm</a>，也就是接下來要講的演算法。</p>
 <p></p><h4> Tonelli–Shanks algorithm </h4><br>此演算法要解決的問題如下：p為質數，n為$QR_p$，找出x使得<p></p>
-<p><center> <span>$x^2 \ \ \equiv \ \ n \ \ (mod \ \ p)$</span><!-- Has MathJax --> </center><br>其實<a href="https://en.wikipedia.org/wiki/Joseph-Louis_Lagrange" target="_blank" rel="external">Joseph-Louis Lagrange</a>有找到當<span>$p \ \ \equiv \ \ 3 \ \ (mod \ \ 4)$</span><!-- Has MathJax -->情況下，<span>$x \ \ \equiv \ \ \pm n^{ \frac{p+1}{4}}$</span><!-- Has MathJax --> <a href="https://en.wikipedia.org/wiki/Quadratic_residue" target="_blank" rel="external">from wiki</a>，會說明這個特殊狀況是因為待會演算法裡面有這個…</p>
+<p><center> <span>$x^2 \ \ \equiv \ \ n \ \ (mod \ \ p)$</span><!-- Has MathJax --> </center><br>其實<a href="https://en.wikipedia.org/wiki/Joseph-Louis_Lagrange" target="_blank" rel="external">Joseph-Louis Lagrange</a>有找到當<span>$p \ \ \equiv \ \ 3 \ \ (mod \ \ 4)$</span><!-- Has MathJax -->情況下，<span>$x \ \ \equiv \ \ \pm n^{ \frac{p+1}{4}}$</span><!-- Has MathJax --> (<a href="https://en.wikipedia.org/wiki/Quadratic_residue" target="_blank" rel="external">from wiki</a>)，會說明這個特殊狀況是因為待會演算法裡面有這個…</p>
 <p>Algorithm:<br>Input : p, n，p為odd prime，n為integer且$QR_p$<br>Output : R, <span>$R^2 \ \ \equiv \ \ n \ \ (mod \ \ p)$</span><!-- Has MathJax --></p>
 <p>步驟一：將p-1所有2的因數除掉，除到最後為奇數Q，令S為2的個數：<span>$p \ \ - \ \ 1 \ \ = \ \ Q \ \ * \ \ 2^S$</span><!-- Has MathJax -->，當S=1時return <span>$\pm n^{ \frac{p-1}{4}}$</span><!-- Has MathJax --> (剛剛講的特殊狀況)<br>步驟二：選擇一個z使得z為$NQR_p$，並且令<span>$c \ \ \equiv \ \ z^Q  \ \ (mod \ \ p)$</span><!-- Has MathJax --><br>步驟三：令<span>$R \ \ \equiv \ \ n^{ \frac{Q+1}{2}} \ \ (mod \ \ p), \ \ t \ \ \equiv \ \ n^Q, \ \ M \ \ = \ \ S$</span><!-- Has MathJax --><br>步驟四：Loop:</p>
 <ul>
@@ -179,7 +179,7 @@ J( \frac{a_1*a_2}{n}) \ \ = \ \ J( \frac{a_1}{n}) \ \ \times \ \ J( \frac{a_2}{n
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/28/Applied-Cryptography-6/" data-id="cigcc70jk000livonl05f7mry" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/28/Applied-Cryptography-6/" data-id="cigcfinxs000lzxon82abrvdd" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/28/Applied-Cryptography-6/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -261,7 +261,7 @@ J( \frac{a_1*a_2}{n}) \ \ = \ \ J( \frac{a_1}{n}) \ \ \times \ \ J( \frac{a_2}{n
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/26/Linux-Operating-System-5/" data-id="cigcc70is000aivonkhmnmrxf" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/26/Linux-Operating-System-5/" data-id="cigcfinwy000azxon0w3sn6xk" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/26/Linux-Operating-System-5/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -336,7 +336,7 @@ J( \frac{a_1*a_2}{n}) \ \ = \ \ J( \frac{a_1}{n}) \ \ \times \ \ J( \frac{a_2}{n
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/25/The-Attack-and-Defense-of-Computers-5/" data-id="cigcc70ic0003ivon6c1fdq4m" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/25/The-Attack-and-Defense-of-Computers-5/" data-id="cigcfinwh0003zxon4qfuh2pq" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/25/The-Attack-and-Defense-of-Computers-5/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -429,7 +429,7 @@ J( \frac{a_1*a_2}{n}) \ \ = \ \ J( \frac{a_1}{n}) \ \ \times \ \ J( \frac{a_2}{n
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/21/Applied-Cryptography-5/" data-id="cigcc70jq000nivon3d13wppd" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/21/Applied-Cryptography-5/" data-id="cigcfinxx000nzxonop8fjlas" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/21/Applied-Cryptography-5/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -523,7 +523,7 @@ J( \frac{a_1*a_2}{n}) \ \ = \ \ J( \frac{a_1}{n}) \ \ \times \ \ J( \frac{a_2}{n
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/18/Linux-Operating-System-4/" data-id="cigcc70ix000divong5p9qziq" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/18/Linux-Operating-System-4/" data-id="cigcfinx4000dzxon6q84kuq2" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/18/Linux-Operating-System-4/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -592,7 +592,7 @@ J( \frac{a_1*a_2}{n}) \ \ = \ \ J( \frac{a_1}{n}) \ \ \times \ \ J( \frac{a_2}{n
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/18/The-Attack-and-Defense-of-Computers-4/" data-id="cigcc70ii0006ivon73g11q2r" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/18/The-Attack-and-Defense-of-Computers-4/" data-id="cigcfinwn0006zxonz7qtybd3" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/18/The-Attack-and-Defense-of-Computers-4/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -658,7 +658,7 @@ J( \frac{a_1*a_2}{n}) \ \ = \ \ J( \frac{a_1}{n}) \ \ \times \ \ J( \frac{a_2}{n
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/17/Applied-Cryptography-4/" data-id="cigcc70jv000pivonibbya9p0" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/17/Applied-Cryptography-4/" data-id="cigcfiny1000pzxontzuwt2q1" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/17/Applied-Cryptography-4/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -732,7 +732,7 @@ J( \frac{a_1*a_2}{n}) \ \ = \ \ J( \frac{a_1}{n}) \ \ \times \ \ J( \frac{a_2}{n
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/16/Linux-Operating-System-3/" data-id="cigcc70j3000fivon2617eewd" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/16/Linux-Operating-System-3/" data-id="cigcfinxb000fzxongtk7bono" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/16/Linux-Operating-System-3/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -785,7 +785,7 @@ J( \frac{a_1*a_2}{n}) \ \ = \ \ J( \frac{a_1}{n}) \ \ \times \ \ J( \frac{a_2}{n
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/15/Linux-Operating-System-2/" data-id="cigcc70j7000hivonc7z0fjky" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/15/Linux-Operating-System-2/" data-id="cigcfinxf000hzxonj9a3qfnw" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/15/Linux-Operating-System-2/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -848,7 +848,7 @@ J( \frac{a_1*a_2}{n}) \ \ = \ \ J( \frac{a_1}{n}) \ \ \times \ \ J( \frac{a_2}{n
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/14/Linux-Operating-System-1/" data-id="cigcc70jc000jivon2jo5060f" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/14/Linux-Operating-System-1/" data-id="cigcfinxl000jzxonbj612feo" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/14/Linux-Operating-System-1/#disqus_thread" class="article-comment-link">Comments</a>
       
