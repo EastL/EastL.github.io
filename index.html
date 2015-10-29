@@ -144,11 +144,28 @@ NQR_p \ \ \times \ \ NQR_p \ \ \rightarrow \ \ QR_p$$</span><!-- Has MathJax -->
 <p><center><br><span>$$J( \frac{a}{pqr}) \ \ = \ \ L( \frac{a}{p}) \ \ \times \ \ L( \frac{a}{q}) \ \ \times \ \ L( \frac{a}{r}) \ \ p,q,r \ \ \in \ \ odd \ \  prime  \\
 J( \frac{a_1*a_2}{n}) \ \ = \ \ J( \frac{a_1}{n}) \ \ \times \ \ J( \frac{a_2}{n})$$</span><!-- Has MathJax --><br></center><br>這邊要注意的是，如果要使 <span>$a \ \ \in \ \ QR_n$</span><!-- Has MathJax -->，則a必須是所有n的質因數的QR才行，剛剛講的QR跟NQR特性是在同一個質數的模數底下，這邊用Jacobi symbol拆開的模數是不同的質數。這邊舉個例子：</p>
 <p>假設要算<span>$J( \frac{a}{pq})$</span><!-- Has MathJax --> ，如果<span>$J( \frac{a}{p})$</span><!-- Has MathJax --> 與<span>$J( \frac{a}{q})$</span><!-- Has MathJax --> 都是-1，則不能像剛剛那樣(-1)*(-1)=1，因為這邊模數一個是p一個是q，因此只要有一個Jacobi symbol值為-1則a就是NQR。</p>
+<hr>
+
+<p>講了這麼多數論的東西，終於要進到第一個實際運用的系統了(灑花~~)，繼續講數論的話很多同學可能看到數學就…</p>
+<p><img src="/images/holucan.gif" alt=""></p>
+<p>好啦回歸正題，我們可以運用剛剛的QR以及NQR來設計一個帳密系統，這個帳密系統只能在local端登入，並且使用者去註冊時帳號密碼都是系統給你的，使用者無從選擇。帳號密碼管理通常就是建一張表格，表格內容每個entry就是一組帳號對應到密碼，如果要安全一點的可能把密碼丟進<a href="https://en.wikipedia.org/wiki/Hash_table" target="_blank" rel="external">hash</a>存hash值。這邊我們可以利用QR跟NQR來儲存帳號相對應的密碼，而且密碼只需要存2個bit就夠了。</p>
+<p>這系統既然會用到QR跟NQR，那他就一定是要開根號囉？沒錯，這系統主要運作原理就是選定一個帳號，然後將帳號開根號後得到密碼，丟給使用者，那麼你一定會問，如果密碼是把帳號開根號，那我自己開根號就好了啊，有帳號不是就等於有密碼了？這邊的關鍵點就在模數底下對合成數的開根號。現今在這世上對合成數開根號的演算法是利用中國餘數定理，把合成數拆成質數分別做開根號，如果不用中國餘數定理做的話就跟暴力法沒兩樣了，所以我們能利用這點，設計一個合成數n，n為兩個質數p,q相乘，n能公開但p跟q不公開，將帳號在mod n底下開根號得到密碼，如此一來攻擊者如果不知道如何將n拆成p跟q，那麼他也無法將帳號做開根號的動作來得到密碼了。有了這概念後接下來問題來了，你說要在模數底下開根號，可是我們剛剛才講過，開根號的世界可以分成QR跟NQR，並不是所有數都能開根號啊，所以接下來系統裡面會有一張表，這張表就是來處理這問題，讓所有帳號進來都能夠被開根號。</p>
+<p>那這張表到底有什麼神奇魔力能夠讓NQR也可以開根號？其實就是用剛剛講到的QR跟NQR的特性，就是那個國中講的負負得正啦！如果今天帳號進來是NQR，那就讓他在乘上一個NQR不就可以開根號了~接著我們來詳細介紹這張表的內容：</p>
+<p><img src="/images/QR_system.jpg" alt=""></p>
+<p>首先n = pq剛剛有講過，然後mod p可以分為QR跟NQR，mod q也能分為QR跟NQR，所以pq組合起來會有四種，後面的-1表示NQR，+1表示QR，如此一來帳號在mod n底下的所有可能性都在這張表上面了，然後我們在這四種狀況分別找一個數，就是前面的$ \alpha \ \ \beta \ \ \gamma \ \ 1$。接著我們來看管理者要如何儲存帳號跟密碼：</p>
+<p><img src="/images/ID_QR_table.jpg" alt=""></p>
+<p>帳號(ID)在mod n底下也會是那四種可能的其中一種，所以密碼就記錄對p是+1還是-1，對q是+1還是-1，因此密碼欄位只需要兩個bit。有了上面這兩張表後，當我選定了一個ID，對應到密碼欄位(i.j)得知他的QR、NQR狀態，再去剛剛的表格看要選$ \alpha \ \ \beta \ \ \gamma \ \ 1$哪一個k來跟帳號相乘，如此一來相乘結果就能開根號了。下表是將剛剛講的兩張表結合整理：</p>
+<p><img src="/images/ID_QR_k_table.jpg" alt=""></p>
+<ul>
+<li>Password generation：<br><center> <span>$$(Pw_i)^2 \ \ \equiv \ \ ID_i \ \ \times \ \ k \ \ (mod \ \ n) \ \ n \ \ = \ \ p*q \\
+(choose \ \ the \ \ smallest)$$</span><!-- Has MathJax --> 
+</center><br>注意這邊ID開根號完會有4個密碼，因為是在mod合成數底下造成的，mod一個質數開根號後會有兩個根，我們設定的n擁有兩個質數，因此密碼會有四個根，至於為什麼要選擇最小的則是因為攻擊者如果拿到這四個根，他就有辦法解出p跟q，詳細狀況待會說明，先來看看這四個根是什麼狀況。</li>
+</ul>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/28/Applied-Cryptography-6/" data-id="cigatlkaq000lwlon2463fb1y" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/28/Applied-Cryptography-6/" data-id="cigbkths6000lc6on4h6ixx0a" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/28/Applied-Cryptography-6/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -230,7 +247,7 @@ J( \frac{a_1*a_2}{n}) \ \ = \ \ J( \frac{a_1}{n}) \ \ \times \ \ J( \frac{a_2}{n
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/26/Linux-Operating-System-5/" data-id="cigatlka3000awlons1jcjikr" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/26/Linux-Operating-System-5/" data-id="cigbkthri000ac6ontyc1awuc" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/26/Linux-Operating-System-5/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -305,7 +322,7 @@ J( \frac{a_1*a_2}{n}) \ \ = \ \ J( \frac{a_1}{n}) \ \ \times \ \ J( \frac{a_2}{n
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/25/The-Attack-and-Defense-of-Computers-5/" data-id="cigatlk9p0003wlonszg8vhxm" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/25/The-Attack-and-Defense-of-Computers-5/" data-id="cigbkthr40003c6ondexnw6a0" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/25/The-Attack-and-Defense-of-Computers-5/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -398,7 +415,7 @@ J( \frac{a_1*a_2}{n}) \ \ = \ \ J( \frac{a_1}{n}) \ \ \times \ \ J( \frac{a_2}{n
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/21/Applied-Cryptography-5/" data-id="cigatlkau000nwlonozlrt3ym" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/21/Applied-Cryptography-5/" data-id="cigbkthsb000nc6onu8rp4122" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/21/Applied-Cryptography-5/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -492,7 +509,7 @@ J( \frac{a_1*a_2}{n}) \ \ = \ \ J( \frac{a_1}{n}) \ \ \times \ \ J( \frac{a_2}{n
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/18/Linux-Operating-System-4/" data-id="cigatlka7000dwloniw5bvmh9" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/18/Linux-Operating-System-4/" data-id="cigbkthrn000dc6onpze06jiz" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/18/Linux-Operating-System-4/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -561,7 +578,7 @@ J( \frac{a_1*a_2}{n}) \ \ = \ \ J( \frac{a_1}{n}) \ \ \times \ \ J( \frac{a_2}{n
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/18/The-Attack-and-Defense-of-Computers-4/" data-id="cigatlk9u0006wlonnrwx2i1c" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/18/The-Attack-and-Defense-of-Computers-4/" data-id="cigbkthr90006c6onm4vpa1gx" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/18/The-Attack-and-Defense-of-Computers-4/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -627,7 +644,7 @@ J( \frac{a_1*a_2}{n}) \ \ = \ \ J( \frac{a_1}{n}) \ \ \times \ \ J( \frac{a_2}{n
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/17/Applied-Cryptography-4/" data-id="cigatlkay000pwlonsgwybmv8" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/17/Applied-Cryptography-4/" data-id="cigbkthsf000pc6onm4rh6zft" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/17/Applied-Cryptography-4/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -701,7 +718,7 @@ J( \frac{a_1*a_2}{n}) \ \ = \ \ J( \frac{a_1}{n}) \ \ \times \ \ J( \frac{a_2}{n
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/16/Linux-Operating-System-3/" data-id="cigatlkab000fwlon27japnjy" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/16/Linux-Operating-System-3/" data-id="cigbkthrs000fc6on499yewx0" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/16/Linux-Operating-System-3/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -754,7 +771,7 @@ J( \frac{a_1*a_2}{n}) \ \ = \ \ J( \frac{a_1}{n}) \ \ \times \ \ J( \frac{a_2}{n
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/15/Linux-Operating-System-2/" data-id="cigatlkag000hwlon241ka4d9" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/15/Linux-Operating-System-2/" data-id="cigbkthrw000hc6onvyhmzbzz" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/15/Linux-Operating-System-2/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -817,7 +834,7 @@ J( \frac{a_1*a_2}{n}) \ \ = \ \ J( \frac{a_1}{n}) \ \ \times \ \ J( \frac{a_2}{n
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/14/Linux-Operating-System-1/" data-id="cigatlkal000jwlonpo8mr0cg" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/14/Linux-Operating-System-1/" data-id="cigbkths1000jc6on5tcwqdbe" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/14/Linux-Operating-System-1/#disqus_thread" class="article-comment-link">Comments</a>
       
