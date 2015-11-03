@@ -84,6 +84,70 @@ ga('send', 'pageview');
       <div class="outer">
         <section id="main">
   
+    <article id="post-Linux-Operating-System-6" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/11/01/Linux-Operating-System-6/" class="article-date">
+  <time datetime="2015-11-01T08:57:31.000Z" itemprop="datePublished">2015-11-01</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/11/01/Linux-Operating-System-6/">Linux Operating System-6</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>來源：<a href="http://www.csie.ncu.edu.tw/~hsufh/COURSES/FALL2015/linuxLecture_3_9-3.ppt" target="_blank" rel="external">Memory Addressing: Paging Unit (18 ~ 47)</a>，<a href="http://wiki.osdev.org/Paging" target="_blank" rel="external">wiki:Paging</a></p>
+<p>上禮拜講到Paging Unit是利用兩層page table來完成address轉換，這邊接著講為何需要用到兩層table。原本兩層的話是利用linear address最前面10個bit來表示page directory的entry，中間的10個bit表示page table的entry，最後12bit則是physical address的offset，由此可知如果要將兩個page table簡化為一個table，那個前面20bit就是代表這一個table的entry，意思就是說在只有一個table情況下這table會有$2^{20}$個entry，相當於4MB，相較於兩層的page table是各佔4KB，所以用兩層table省了不少記憶體空間，再者雖然兩個table來轉換效率比一個table慢，但由於大多數的linear address都不會被用到，只有在process正要執行的address才會進行page table轉換，還沒有要用的linear address是不會被搬到記憶體上的。</p>
+<p></p><h2> Structures of Page Directories And Page Tables Entries </h2><br>其實Page Directory跟Page Table的結構是一樣的，雖然細節部分有些許差異，但實際設計上的架構是把兩方會用到的參數都設定，如果是有一方有用到而另一方沒用到的參數就直接浪費掉那個欄位。這樣做的原因是：如果專門為Page Directory跟Page Table量身定做兩個Structure，那麼會浪費更多的記憶體。下圖為Page Directory Structure：<p></p>
+<p><img src="/images/page_dir.jpg" alt=""></p>
+<p>G跟”0”這兩個欄位就是剛剛講的概念，這邊是Page Directory沒用到但Page Table會用到。</p>
+<p>S：Page Size，是指Page Directory 的entry所指向的Page Table size，此欄位設定為0的話代表所指的Page Table大小為4KB，設定為1的話所指的Page Table大小為4MB。</p>
+<p>A：Accessed flag，表示此entry所指向的page table有沒有被使用過，有的話設定1沒有設定0，此欄位是給OS用的，當發生記憶體不夠用時OS會去找一塊記憶體swap out，這時就要依據此欄位來看哪個page要先被踢掉。</p>
+<p>D：Cache Disable，設定此bit則page frame將不會被<a href="http://enginechang.logdown.com/posts/249025-discussion-on-memory-cache" target="_blank" rel="external">cache</a>，否則就會。</p>
+<p>W：這也是提供cache機制，如果設定為1表示write-through cache，設定為0表示write-back cache，有關write-through以及write-back可以參考<a href="http://www.computerweekly.com/feature/Write-through-write-around-write-back-Cache-explained" target="_blank" rel="external">Computer Weekly</a>。</p>
+<p>U：User\Supervisor flag，顧名思義用來檢查權限用，雖然protected mode底下有ring 0 ~ 3，但這邊只有一個bit，因此如果此bit為1代表所有人都能存取，如果為0只有ring 0能存取。</p>
+<p>R： ‘Read/Write’ permissions flag，讀寫權限，在segmentation有4個bit來表示讀寫以及執行權限，但這邊只有一個bit，因此如果此bit為1則能夠讀寫，為0則僅能讀取。</p>
+<p>P：Present bit，表示所指向的page frame有沒有在記憶體裡面，有的話設定為1沒有設定為0，沒有在記憶體時則page fault。</p>
+<p>接下來下圖為page table structure：</p>
+<p><img src="/images/page_table.jpg" alt=""></p>
+<p>這邊有跟Page Directory重複的就不再贅述。</p>
+<p>G：Global flag，此bit設定為1能避免被<a href="http://wiki.osdev.org/TLB" target="_blank" rel="external">TLB</a> flush，如果要用到此flag需要將cr4暫存器的Page Global Enable flag設定1。</p>
+<p><img src="/images/cr4_PGE.jpg" alt=""><br>D：Dirty flag，此flag與Accessed flag搭配使用，這邊是給OS的Enhanced Second-Chance Algorithm來決定要將哪些page做swap out，有關Enhanced Second-Chance可以參考<a href="https://www.cs.utah.edu/~mflatt/past-courses/cs5460/lecture10.pdf" target="_blank" rel="external">Page-Replacement Algorithms</a>。</p>
+<p>下圖為兩個process在配置記憶體時的示意圖，可以看到linear addres轉換後的physical address是被打散在實體記憶體當中的，所以一個process所佔用的記憶體並不會全部都放到實體記憶體當中，只會有正在使用的記憶體才會被放入，而有了paging機制之後，每個process確保不會用到同一個實體記憶體區塊，而且如果要進行shared memory的話利用paging也方便許多。</p>
+<p><img src="/images/memory_vir_phy_layout.jpg" alt=""></p>
+<p></p><h2> Extended Paging </h2><br>此機制是在Pentium CPU之後才有的，由於kernel space每次需要存取大量的記憶體，但paging unit一次只給4KB，因此Extended Paging將page frame增為4MB。如下圖所示，page directory大小不變，一樣是1024個entry，但之後就直接指向physical address了，每個page frame大小為4MB：<p></p>
+<p><img src="/images/extend_paging.jpg" alt=""></p>
+<p>要使用Extended Paging Page Size 設定為1，代表每個entry所指向的page frame為4MB，cr4的Page Size Extension(PSE) bit也要設為1。</p>
+<p><img src="/images/cr4_pse.jpg" alt=""></p>
+<p>在extend paging下linear address就只切成兩段，將原本paging unit的page table 10 bit與offset 12bit合併為offset 22bit，所以一個page frame會有$2^{22}$個offset相當於4MB，Directory一樣是10個bit。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://eastl.github.io/2015/11/01/Linux-Operating-System-6/" data-id="cigisk6in000av6on92a7cfy9" class="article-share-link">Share</a>
+      
+        <a href="http://eastl.github.io/2015/11/01/Linux-Operating-System-6/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux-Operating-System/">Linux Operating System</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-Applied-Cryptography-6" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2015/10/28/Applied-Cryptography-6/" class="article-date">
@@ -204,7 +268,7 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/28/Applied-Cryptography-6/" data-id="cigdqo63b000lbuon6lyeqr2q" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/28/Applied-Cryptography-6/" data-id="cigisk6jg000nv6onal06b5i3" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/28/Applied-Cryptography-6/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -286,7 +350,7 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/26/Linux-Operating-System-5/" data-id="cigdqo62q000abuonja27oi8b" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/26/Linux-Operating-System-5/" data-id="cigisk6iu000dv6onm2of4aiy" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/26/Linux-Operating-System-5/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -361,7 +425,7 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/25/The-Attack-and-Defense-of-Computers-5/" data-id="cigdqo62d0003buonclihxux8" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/25/The-Attack-and-Defense-of-Computers-5/" data-id="cigisk6g40003v6onqta0mv9z" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/25/The-Attack-and-Defense-of-Computers-5/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -454,7 +518,7 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/21/Applied-Cryptography-5/" data-id="cigdqo63f000nbuon7p2invii" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/21/Applied-Cryptography-5/" data-id="cigisk6jl000pv6on0a6phumb" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/21/Applied-Cryptography-5/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -548,7 +612,7 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/18/Linux-Operating-System-4/" data-id="cigdqo62v000dbuon6h7oyhqb" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/18/Linux-Operating-System-4/" data-id="cigisk6ix000fv6onxmqhpk2k" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/18/Linux-Operating-System-4/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -617,7 +681,7 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/18/The-Attack-and-Defense-of-Computers-4/" data-id="cigdqo62h0006buon32c8mfqn" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/18/The-Attack-and-Defense-of-Computers-4/" data-id="cigisk6id0006v6ontqup2ndm" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/18/The-Attack-and-Defense-of-Computers-4/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -683,7 +747,7 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/17/Applied-Cryptography-4/" data-id="cigdqo63j000pbuondb1x7hl2" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/17/Applied-Cryptography-4/" data-id="cigisk6jq000rv6onsdv33kuk" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/17/Applied-Cryptography-4/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -757,7 +821,7 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/16/Linux-Operating-System-3/" data-id="cigdqo62z000fbuoneigbxuc1" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/16/Linux-Operating-System-3/" data-id="cigisk6j2000hv6on83jjfyib" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/16/Linux-Operating-System-3/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -810,72 +874,9 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/15/Linux-Operating-System-2/" data-id="cigdqo632000hbuond09tky8x" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/15/Linux-Operating-System-2/" data-id="cigisk6j6000jv6on769zkvie" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/15/Linux-Operating-System-2/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux-Operating-System/">Linux Operating System</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-Linux-Operating-System-1" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/10/14/Linux-Operating-System-1/" class="article-date">
-  <time datetime="2015-10-14T12:02:44.000Z" itemprop="datePublished">2015-10-14</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/10/14/Linux-Operating-System-1/">Linux Operating System-1</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>來源：<a href="http://www.csie.ncu.edu.tw/~hsufh/COURSES/FALL2015/linuxLecture_3_9-1.ppt" target="_blank" rel="external">Introduction (1~52)</a>，<a href="https://zh.wikipedia.org/wiki/X86-64" target="_blank" rel="external">x86-64</a>，<a href="https://zh.wikipedia.org/wiki/X86" target="_blank" rel="external">x86</a></p>
-<h2> Intel x86 Architecture </h2>
-
-<p>講x86之前當然要先講一下它的由來，x86是intel的指令集架構，Intel這家公司成立於1968年，他最早創造了全球第一顆微處理器4004，然後演變成了8位元的CPU 8008，到了1978年x86架構正式誕生，第一款x86架構的處理器是8086，它是一個16位元的處理器，直到80386之後變成了32位元的cpu，也許是因為都是86結尾所以才叫做x86?到了2003年AMD這家公司針對x86架構開發了64位元的CPU，取名叫做AMD64，這AMD64可以相容之前的16、20、32位元的程式，所以廣受大家歡迎，Intel就採用了AMD64，並且把它叫做”Intel 64”，也就是現在統稱的x86-64或簡稱x64，「IA-32e」及「EM64T」也是指相同的東西，唯一要注意的是IA-64並不是指現在的x64，IA-64是在AMD64之前Intel與其他公司合作開發出來的架構，但他跟x86架構不相容，所以市場比較冷淡。下圖是老師投影片中的微處理器進化史：</p>
-<p><img src="/images/microprocessors.jpg" alt="Evolution of Intel Microprocessors"></p>
-<p>接下來的x86跟x64暫存器這邊就不介紹了…..</p>
-<h2> Real Mode vs. Protected Mode </h2>
-
-<p>在x86架構的處理器有好幾種mode，這邊介紹IA-32的real mode跟protected mode。IA32的CPU開機後，會先執行BIOS的程式，BIOS檢查程序執行完後會將執行權交給boot loader，然後boot loader才會將OS從硬碟中拉到記憶體，控制權再交給OS。在剛開機時，IA32 CPU是在real mode，real mode最大只能存取1MB的記憶體，而protected mode最大能存取4GB的記憶體，這是因為兩種mode的Addressing方式不一樣。  </p>
-<p>real mode addressing 是直接將logical address轉換成physical address，logical address表示方式為segment:offset，轉換過程其實很簡單，就把segment往左shift 4 bit然後加上offset就是physical address了。<br>protected mode addressing感覺非常麻煩，他要先將logical address轉成linear address，然後再從linear address轉成physical address，這邊之後上課會詳細的介紹paging unit的memory addressing。</p>
-<p><img src="/images/protected_mode.jpg" alt="Addressing in Protected Mode"></p>
-<h5> Interrupts </h5>
-
-<p>Interrupt是指某樣事件發生後會去觸發某個動作，而處理相對應動作的稱做Interrupt Service Routine簡稱ISR，或者叫Interrup Handler。在real mode底下有一個Interrupt Vector Table(IVT)，裡面總共有256個entry，每一個emtry會指向ISR，如下圖：</p>
-<p><img src="/images/IVT.jpg" alt="Interrupt Vector Table"></p>
-<p>而在protected mode下做法其實類似於real mode，它是將ISR存在Interrupt Descriptor Table(IDT)當中，而IDT的base address存在於Interrupt Descriptor Table Register(IDTR)，IDT裡存放的是8 byte的descriptor陣列，而descriptor又分為三種：task-gate descriptor、interrupt-gate descriptor、和 trap-gate descriptor。詳細可以看<a href="http://www.csie.ntu.edu.tw/~wcchen/asm98/asm/proj/b85506061/chap4/idt.html" target="_blank" rel="external">這裡</a>。</p>
-<p><img src="/images/interrupt_pro.jpg" alt="Interrupts in Protected Mode"></p>
-<p>這邊注意一下CR0或MSW的PE flag是決定processor現在是real mode還是protected mode。</p>
-<h3> Endian Order </h3>
-
-<p>根據byte存放順序可分為Little Endian跟Big Endian，Little Endian會將排序較後面的byte放在較低的address，Big Endian會將排序較前面的byte放在較低的address。而Intel processors是little endian。舉個例子，有一個4byte的int為：Byte3, Byte2, Byte1, Byte0，則：</p>
-<p><img src="/images/little_endian.jpg" alt="Little Endian"></p>
-<p><img src="/images/big_endian.jpg" alt="Big Endian"></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/14/Linux-Operating-System-1/" data-id="cigdqo636000jbuonpvnf2eil" class="article-share-link">Share</a>
-      
-        <a href="http://eastl.github.io/2015/10/14/Linux-Operating-System-1/#disqus_thread" class="article-comment-link">Comments</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux-Operating-System/">Linux Operating System</a></li></ul>
@@ -902,7 +903,7 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux-Operating-System/">Linux Operating System</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/The-Attack-and-Defense-of-Computers/">The Attack and Defense of Computers</a><span class="tag-list-count">3</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux-Operating-System/">Linux Operating System</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/The-Attack-and-Defense-of-Computers/">The Attack and Defense of Computers</a><span class="tag-list-count">3</span></li></ul>
     </div>
   </div>
 
@@ -911,7 +912,7 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Applied-Cryptography/" style="font-size: 20px;">Applied Cryptography</a> <a href="/tags/Linux-Operating-System/" style="font-size: 15px;">Linux Operating System</a> <a href="/tags/The-Attack-and-Defense-of-Computers/" style="font-size: 10px;">The Attack and Defense of Computers</a>
+      <a href="/tags/Applied-Cryptography/" style="font-size: 20px;">Applied Cryptography</a> <a href="/tags/Linux-Operating-System/" style="font-size: 20px;">Linux Operating System</a> <a href="/tags/The-Attack-and-Defense-of-Computers/" style="font-size: 10px;">The Attack and Defense of Computers</a>
     </div>
   </div>
 
@@ -920,7 +921,7 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a><span class="archive-list-count">2</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a><span class="archive-list-count">2</span></li></ul>
     </div>
   </div>
 
@@ -930,6 +931,10 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
     <h3 class="widget-title">Recents</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2015/11/01/Linux-Operating-System-6/">Linux Operating System-6</a>
+          </li>
         
           <li>
             <a href="/2015/10/28/Applied-Cryptography-6/">Applied Cryptography-6</a>
@@ -945,10 +950,6 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
         
           <li>
             <a href="/2015/10/21/Applied-Cryptography-5/">Applied Cryptography-5</a>
-          </li>
-        
-          <li>
-            <a href="/2015/10/18/Linux-Operating-System-4/">Linux Operating System-4</a>
           </li>
         
       </ul>

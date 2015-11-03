@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Linux Operating System-6 | Justice Shadower</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="來源：Memory Addressing: Paging Unit (18 ~ 47)，wiki:Paging
+上禮拜講到Paging Unit是利用兩層page table來完成address轉換，這邊接著講為何需要用到兩層table。原本兩層的話是利用linear address最前面10個bit來表示page directory的entry，中間的10個bit表示page table的ent">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux Operating System-6">
+<meta property="og:url" content="http://eastl.github.io/2015/11/01/Linux-Operating-System-6/index.html">
+<meta property="og:site_name" content="Justice Shadower">
+<meta property="og:description" content="來源：Memory Addressing: Paging Unit (18 ~ 47)，wiki:Paging
+上禮拜講到Paging Unit是利用兩層page table來完成address轉換，這邊接著講為何需要用到兩層table。原本兩層的話是利用linear address最前面10個bit來表示page directory的entry，中間的10個bit表示page table的ent">
+<meta property="og:image" content="http://eastl.github.io/images/page_dir.jpg">
+<meta property="og:image" content="http://eastl.github.io/images/page_table.jpg">
+<meta property="og:image" content="http://eastl.github.io/images/cr4_PGE.jpg">
+<meta property="og:image" content="http://eastl.github.io/images/memory_vir_phy_layout.jpg">
+<meta property="og:image" content="http://eastl.github.io/images/extend_paging.jpg">
+<meta property="og:image" content="http://eastl.github.io/images/cr4_pse.jpg">
+<meta property="og:updated_time" content="2015-11-03T04:48:48.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Linux Operating System-6">
+<meta name="twitter:description" content="來源：Memory Addressing: Paging Unit (18 ~ 47)，wiki:Paging
+上禮拜講到Paging Unit是利用兩層page table來完成address轉換，這邊接著講為何需要用到兩層table。原本兩層的話是利用linear address最前面10個bit來表示page directory的entry，中間的10個bit表示page table的ent">
+<meta name="twitter:creator" content="@coolwuxing">
+  
+    <link rel="alternative" href="/atom.xml" title="Justice Shadower" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/images/cube.jpg">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+  <link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-43935113-3', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <div id="header">
+  <div id="banner">
+    <div id="cover"></div>
+    <div id="stars"></div>
+  </div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Justice Shadower</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">This world around you is not what it seems.</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://eastl.github.io"></form>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="outer">
+        <section id="main"><article id="post-Linux-Operating-System-6" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/11/01/Linux-Operating-System-6/" class="article-date">
+  <time datetime="2015-11-01T08:57:31.000Z" itemprop="datePublished">2015-11-01</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Linux Operating System-6
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>來源：<a href="http://www.csie.ncu.edu.tw/~hsufh/COURSES/FALL2015/linuxLecture_3_9-3.ppt" target="_blank" rel="external">Memory Addressing: Paging Unit (18 ~ 47)</a>，<a href="http://wiki.osdev.org/Paging" target="_blank" rel="external">wiki:Paging</a></p>
+<p>上禮拜講到Paging Unit是利用兩層page table來完成address轉換，這邊接著講為何需要用到兩層table。原本兩層的話是利用linear address最前面10個bit來表示page directory的entry，中間的10個bit表示page table的entry，最後12bit則是physical address的offset，由此可知如果要將兩個page table簡化為一個table，那個前面20bit就是代表這一個table的entry，意思就是說在只有一個table情況下這table會有$2^{20}$個entry，相當於4MB，相較於兩層的page table是各佔4KB，所以用兩層table省了不少記憶體空間，再者雖然兩個table來轉換效率比一個table慢，但由於大多數的linear address都不會被用到，只有在process正要執行的address才會進行page table轉換，還沒有要用的linear address是不會被搬到記憶體上的。</p>
+<p></p><h2> Structures of Page Directories And Page Tables Entries </h2><br>其實Page Directory跟Page Table的結構是一樣的，雖然細節部分有些許差異，但實際設計上的架構是把兩方會用到的參數都設定，如果是有一方有用到而另一方沒用到的參數就直接浪費掉那個欄位。這樣做的原因是：如果專門為Page Directory跟Page Table量身定做兩個Structure，那麼會浪費更多的記憶體。下圖為Page Directory Structure：<p></p>
+<p><img src="/images/page_dir.jpg" alt=""></p>
+<p>G跟”0”這兩個欄位就是剛剛講的概念，這邊是Page Directory沒用到但Page Table會用到。</p>
+<p>S：Page Size，是指Page Directory 的entry所指向的Page Table size，此欄位設定為0的話代表所指的Page Table大小為4KB，設定為1的話所指的Page Table大小為4MB。</p>
+<p>A：Accessed flag，表示此entry所指向的page table有沒有被使用過，有的話設定1沒有設定0，此欄位是給OS用的，當發生記憶體不夠用時OS會去找一塊記憶體swap out，這時就要依據此欄位來看哪個page要先被踢掉。</p>
+<p>D：Cache Disable，設定此bit則page frame將不會被<a href="http://enginechang.logdown.com/posts/249025-discussion-on-memory-cache" target="_blank" rel="external">cache</a>，否則就會。</p>
+<p>W：這也是提供cache機制，如果設定為1表示write-through cache，設定為0表示write-back cache，有關write-through以及write-back可以參考<a href="http://www.computerweekly.com/feature/Write-through-write-around-write-back-Cache-explained" target="_blank" rel="external">Computer Weekly</a>。</p>
+<p>U：User\Supervisor flag，顧名思義用來檢查權限用，雖然protected mode底下有ring 0 ~ 3，但這邊只有一個bit，因此如果此bit為1代表所有人都能存取，如果為0只有ring 0能存取。</p>
+<p>R： ‘Read/Write’ permissions flag，讀寫權限，在segmentation有4個bit來表示讀寫以及執行權限，但這邊只有一個bit，因此如果此bit為1則能夠讀寫，為0則僅能讀取。</p>
+<p>P：Present bit，表示所指向的page frame有沒有在記憶體裡面，有的話設定為1沒有設定為0，沒有在記憶體時則page fault。</p>
+<p>接下來下圖為page table structure：</p>
+<p><img src="/images/page_table.jpg" alt=""></p>
+<p>這邊有跟Page Directory重複的就不再贅述。</p>
+<p>G：Global flag，此bit設定為1能避免被<a href="http://wiki.osdev.org/TLB" target="_blank" rel="external">TLB</a> flush，如果要用到此flag需要將cr4暫存器的Page Global Enable flag設定1。</p>
+<p><img src="/images/cr4_PGE.jpg" alt=""><br>D：Dirty flag，此flag與Accessed flag搭配使用，這邊是給OS的Enhanced Second-Chance Algorithm來決定要將哪些page做swap out，有關Enhanced Second-Chance可以參考<a href="https://www.cs.utah.edu/~mflatt/past-courses/cs5460/lecture10.pdf" target="_blank" rel="external">Page-Replacement Algorithms</a>。</p>
+<p>下圖為兩個process在配置記憶體時的示意圖，可以看到linear addres轉換後的physical address是被打散在實體記憶體當中的，所以一個process所佔用的記憶體並不會全部都放到實體記憶體當中，只會有正在使用的記憶體才會被放入，而有了paging機制之後，每個process確保不會用到同一個實體記憶體區塊，而且如果要進行shared memory的話利用paging也方便許多。</p>
+<p><img src="/images/memory_vir_phy_layout.jpg" alt=""></p>
+<p></p><h2> Extended Paging </h2><br>此機制是在Pentium CPU之後才有的，由於kernel space每次需要存取大量的記憶體，但paging unit一次只給4KB，因此Extended Paging將page frame增為4MB。如下圖所示，page directory大小不變，一樣是1024個entry，但之後就直接指向physical address了，每個page frame大小為4MB：<p></p>
+<p><img src="/images/extend_paging.jpg" alt=""></p>
+<p>要使用Extended Paging Page Size 設定為1，代表每個entry所指向的page frame為4MB，cr4的Page Size Extension(PSE) bit也要設為1。</p>
+<p><img src="/images/cr4_pse.jpg" alt=""></p>
+<p>在extend paging下linear address就只切成兩段，將原本paging unit的page table 10 bit與offset 12bit合併為offset 22bit，所以一個page frame會有$2^{22}$個offset相當於4MB，Directory一樣是10個bit。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://eastl.github.io/2015/11/01/Linux-Operating-System-6/" data-id="cigisk6in000av6on92a7cfy9" class="article-share-link">Share</a>
+      
+        <a href="http://eastl.github.io/2015/11/01/Linux-Operating-System-6/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux-Operating-System/">Linux Operating System</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2015/10/28/Applied-Cryptography-6/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Applied Cryptography-6</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<section id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux-Operating-System/">Linux Operating System</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/The-Attack-and-Defense-of-Computers/">The Attack and Defense of Computers</a><span class="tag-list-count">3</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Applied-Cryptography/" style="font-size: 20px;">Applied Cryptography</a> <a href="/tags/Linux-Operating-System/" style="font-size: 20px;">Linux Operating System</a> <a href="/tags/The-Attack-and-Defense-of-Computers/" style="font-size: 10px;">The Attack and Defense of Computers</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a><span class="archive-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2015/11/01/Linux-Operating-System-6/">Linux Operating System-6</a>
+          </li>
+        
+          <li>
+            <a href="/2015/10/28/Applied-Cryptography-6/">Applied Cryptography-6</a>
+          </li>
+        
+          <li>
+            <a href="/2015/10/26/Linux-Operating-System-5/">Linux Operating System-5</a>
+          </li>
+        
+          <li>
+            <a href="/2015/10/25/The-Attack-and-Defense-of-Computers-5/">The Attack and Defense of Computers-5</a>
+          </li>
+        
+          <li>
+            <a href="/2015/10/21/Applied-Cryptography-5/">Applied Cryptography-5</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <div id="footer">
+  
+  <div id='foot-stars'></div>
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2015 EastL<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</div>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+<script>
+  var disqus_shortname = 'EastL';
+  
+  var disqus_url = 'http://eastl.github.io/2015/11/01/Linux-Operating-System-6/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+  <script src="/fancybox/jquery.fancybox.pack.js" type="text/javascript"></script>
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+  </div>
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>
