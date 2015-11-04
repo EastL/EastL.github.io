@@ -130,11 +130,19 @@ ga('send', 'pageview');
 <p>要使用Extended Paging Page Size 設定為1，代表每個entry所指向的page frame為4MB，cr4的Page Size Extension(PSE) bit也要設為1。</p>
 <p><img src="/images/cr4_pse.jpg" alt=""></p>
 <p>在extend paging下linear address就只切成兩段，將原本paging unit的page table 10 bit與offset 12bit合併為offset 22bit，所以一個page frame會有$2^{22}$個offset相當於4MB，Directory一樣是10個bit。</p>
+<p></p><h2> The Physical Address Extension (PAE) </h2><br>在Pentium Pro之後的CPU有36條address lines，因此可以有$2^{36}$的記憶體空間，也就是64GB，不過如果要使用到64GB的記憶體位置的話，需要將cr4的PAE bit開啟。<p></p>
+<p><img src="/images/cr4_pae.jpg" alt=""></p>
+<p>那麼這邊衍生一個問題，CPU裡的所有暫存器都還是32位元，那要如何執行到64GB的RAM呢？因此有了新的paging機制。如果我們將64GB的記憶體以4KB為單位，那麼總共會有$2^{24}$個page frame，接著我們看PAE的機制：</p>
+<p><img src="/images/PAE.jpg" alt=""></p>
+<p>與原本paging的差別多了一個Page Directory Pointer Table (PDPT)，PDPT總共有4個entry，每個entry有8個byte。由於原本的entry只有4byte，紀錄位址的地方只有20個bit，這邊要記錄的位址須要36-12=24個bit(page frame size = 4KB)，因此直接擴大兩倍每個entry為8byte。而後面的page directory與page table都是512個entry，每個entry一樣為8byte。由此可知在linear address的切割方式為：前兩個bit給PDPT，接下來的9個bit給page directory，再來9個給page table，最後的12bit為offset。</p>
+<p>回到剛剛問題，那暫存器只有32個bit要如何存取到64GB的記憶體？由於我們這邊每個entry增為8byte，可以記錄的是整個64GB的記憶體，因此我就能夠存取64GB當中的任意位置，如果用的是以前的paging，那麼每次entry只能記錄20bit，因此就只能夠存取到最前面的4GB了。雖然entry紀錄位置不夠的問題解決了，但一開始的CR3要去指向PDPT要怎麼辦呢？由於CR3只有32bit，然後真正可以紀錄PDPT的base只有27bit，如下圖：</p>
+<p><img src="/images/cr3_register.jpg" alt=""></p>
+<p>為了解決此問題，首先，PDPT就故定放在前4GB的位置，這時代表著PDPT的位址前4個bit一定為0；再來，將PDPT故定放在32的倍數，如此一來後面的5個bit又都是0，因此只需要記錄中間的36-4-5=27個bit就足夠了，之後拿出來前四個bit跟後五個bit都塞0就是PDPT的位置。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/11/01/Linux-Operating-System-6/" data-id="cigisk6in000av6on92a7cfy9" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/11/01/Linux-Operating-System-6/" data-id="cigkn8ogv000au4on6r68yg2o" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/11/01/Linux-Operating-System-6/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -268,7 +276,7 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/28/Applied-Cryptography-6/" data-id="cigisk6jg000nv6onal06b5i3" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/28/Applied-Cryptography-6/" data-id="cigkn8ohn000nu4onjgf4bfyo" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/28/Applied-Cryptography-6/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -350,7 +358,7 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/26/Linux-Operating-System-5/" data-id="cigisk6iu000dv6onm2of4aiy" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/26/Linux-Operating-System-5/" data-id="cigkn8oh0000du4onoooqsf9h" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/26/Linux-Operating-System-5/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -425,7 +433,7 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/25/The-Attack-and-Defense-of-Computers-5/" data-id="cigisk6g40003v6onqta0mv9z" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/25/The-Attack-and-Defense-of-Computers-5/" data-id="cigkn8oge0003u4ons6aktvqk" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/25/The-Attack-and-Defense-of-Computers-5/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -518,7 +526,7 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/21/Applied-Cryptography-5/" data-id="cigisk6jl000pv6on0a6phumb" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/21/Applied-Cryptography-5/" data-id="cigkn8ohq000pu4onw974ppmd" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/21/Applied-Cryptography-5/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -612,7 +620,7 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/18/Linux-Operating-System-4/" data-id="cigisk6ix000fv6onxmqhpk2k" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/18/Linux-Operating-System-4/" data-id="cigkn8oh4000fu4on5eodtlq5" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/18/Linux-Operating-System-4/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -681,7 +689,7 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/18/The-Attack-and-Defense-of-Computers-4/" data-id="cigisk6id0006v6ontqup2ndm" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/18/The-Attack-and-Defense-of-Computers-4/" data-id="cigkn8ogj0006u4onb138clm5" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/18/The-Attack-and-Defense-of-Computers-4/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -747,7 +755,7 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/17/Applied-Cryptography-4/" data-id="cigisk6jq000rv6onsdv33kuk" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/17/Applied-Cryptography-4/" data-id="cigkn8ohv000ru4onzijl4kie" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/17/Applied-Cryptography-4/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -821,7 +829,7 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/16/Linux-Operating-System-3/" data-id="cigisk6j2000hv6on83jjfyib" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/16/Linux-Operating-System-3/" data-id="cigkn8oh8000hu4on62lefs4l" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/16/Linux-Operating-System-3/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -874,7 +882,7 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/15/Linux-Operating-System-2/" data-id="cigisk6j6000jv6on769zkvie" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/15/Linux-Operating-System-2/" data-id="cigkn8ohd000ju4on9ffdv934" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/15/Linux-Operating-System-2/#disqus_thread" class="article-comment-link">Comments</a>
       
