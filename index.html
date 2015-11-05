@@ -84,6 +84,49 @@ ga('send', 'pageview');
       <div class="outer">
         <section id="main">
   
+    <article id="post-The-Attack-and-Defense-of-Computers-6" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/11/05/The-Attack-and-Defense-of-Computers-6/" class="article-date">
+  <time datetime="2015-11-05T01:30:33.000Z" itemprop="datePublished">2015-11-05</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/11/05/The-Attack-and-Defense-of-Computers-6/">The Attack and Defense of Computers-6</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>來源：<a href="http://www.csie.ncu.edu.tw/~hsufh/COURSES/FALL2015/2_BOA.ppt" target="_blank" rel="external">Drive-by Download(83 ~ 106)</a>，<a href="http://www.csie.ncu.edu.tw/~hsufh/COURSES/FALL2015/2_1_Botnet.ppt" target="_blank" rel="external">Botnet(1 ~ 10)</a></p>
+<h2> Heap Spray </h2><br>Heap spray主要概念就是在受害程式的heap段注入大量的shellcode以及nop，這項技術是由SkyLined所提出，他利用heap spray打下了IE的許多漏洞，例如<a href="http://www.microsoft.com/technet/security/Bulletin/MS04-040.mspx" target="_blank" rel="external">MS04-040</a>以及<a href="http://www.microsoft.com/technet/security/Bulletin/MS05-020.mspx" target="_blank" rel="external">MS05-020</a>。下圖為Heap spray概念圖：<br><br><img src="/images/heap_spray.jpg" alt=""><br><br>首先受害程式必須要有可以注入heap段的地方，我們所注入的程式必須在user space的heap段當中，圖中可以看到是在0x7fffffff以下，這邊是因為在windows環境，memory有一半是user space，而所注入的程式碼為nop+shellcode，如此一來再配合其他手段，將程式流程導向heap段變能發起攻擊。<br><br>實際要攻擊web的話可以利用Javascript的字串，就跟buffer overflow有點像，將javascript的string塞爆蓋到heap段為止。在Adobe Flash裡面也可以利用ActionScript來達到heap spray。下面為Javascript heap spray程式碼：<br><br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">SCRIPT</span> <span class="attribute">language</span>=<span class="value">"text/javascript"</span>&gt;</span><span class="javascript"></span><br><span class="line">  shellcode = <span class="built_in">unescape</span>(<span class="string">"%u4343%u4343%..."</span>);</span><br><span class="line">  oneblock = <span class="built_in">unescape</span>(<span class="string">"%u0D0D%u0D0D"</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> fullblock = oneblock;</span><br><span class="line">  <span class="keyword">while</span> (fullblock.length&lt;<span class="number">0x40000</span>) &#123;</span><br><span class="line">      fullblock += fullblock;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  sprayContainer = <span class="keyword">new</span> <span class="built_in">Array</span>();</span><br><span class="line">  <span class="keyword">for</span> (i=<span class="number">0</span>; i&lt;<span class="number">1000</span>; i++) &#123;</span><br><span class="line">      sprayContainer[i] = fullblock + shellcode;</span><br><span class="line">  &#125;</span><br><span class="line"></span><span class="tag">&lt;/<span class="title">SCRIPT</span>&gt;</span></span><br></pre></td></tr></table></figure><br><br>上面可以看到注入的東西為shellcode以及NOP，整個注入的大小大概是262MB。因此ASLR在這邊對攻擊者而言影響不大。(參考<a href="http://research.microsoft.com/pubs/76528/tr-2008-176.pdf" target="_blank" rel="external">Nozzle: A Defense Against Heap-spraying Code Injection Attacks</a>)<br>而現在我們常用的影像檔案也可以拿來當作heap spray攻擊媒介，由於讀取影像檔的程式是動態讀取影像大小，因為影像檔大小無法預測，故我們可以依照讀取影像程式的寫法來塞heap spray到影像檔當中，這樣在受害者開起影像時就能將程式碼注入到開起影像的程式的heap段了。<br><br><h2> Memory Corruption Exploit </h2><br>講完heap spray後接下來看如何將程式流程導向heap段當中。第一種方法為Mishandling Tag Attribute Values，他是利用tag的屬性來讓memory crash。攻擊者可以自己加一段iframe，這個iframe大小為0因此受害者看不到，接著在裡面的屬性填上大量的字元，使得瀏覽器在執行抓取tag時造成memory corruption。範例如下：<br><br><img src="/images/mishandling_tag_value.jpg" alt=""><br><br>圖中可以看到攻擊者在src以及name裡面塞了大量的字元，而塞完結果導致eip停在0x769f682f，代表我們塞的字串蓋到了return address，使得程式流程導向了非法的記憶體位置，因此我們便可利用這點加上一些denug工具，將程式流程導向我們剛剛所注入的heap段當中，變能完成攻擊。<br><br><h4> Virtual Table </h4><br>我們也能利用Virtual Table 來達成攻擊。Virtual Table是用來儲存一些function位置，在call一些lib時可以先到此table查詢function位置，然後再到function的真正位置，C裡面的GOT就是此類型的table。我們在overflow時可以將指向table的值蓋成我們自己的table，接著table裡面再去指向我們的heap spray段，如此便能達到攻擊者想要的流程：<br><br><img src="/images/virtual_table.jpg" alt=""><br><br>上圖可以看到我們利用a[100]來蓋掉vptr，因此程式流程導向我們的table最後到達heap spray。<br><br><h2> Drive-by Download Attacks  </h2>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://eastl.github.io/2015/11/05/The-Attack-and-Defense-of-Computers-6/" data-id="ciglls4qn0003r5on0apu8gvw" class="article-share-link">Share</a>
+      
+        <a href="http://eastl.github.io/2015/11/05/The-Attack-and-Defense-of-Computers-6/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/The-Attack-and-Defense-of-Computers/">The Attack and Defense of Computers</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-Linux-Operating-System-6" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2015/11/01/Linux-Operating-System-6/" class="article-date">
@@ -142,7 +185,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/11/01/Linux-Operating-System-6/" data-id="cigknp3zg000aygon9bnlb86f" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/11/01/Linux-Operating-System-6/" data-id="ciglls4r7000cr5ons0guo9rk" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/11/01/Linux-Operating-System-6/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -276,7 +319,7 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/28/Applied-Cryptography-6/" data-id="cigknp407000nygonrewdubq5" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/28/Applied-Cryptography-6/" data-id="ciglls4rx000pr5onvvw57iee" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/28/Applied-Cryptography-6/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -358,7 +401,7 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/26/Linux-Operating-System-5/" data-id="cigknp3zl000dygonaedxzy56" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/26/Linux-Operating-System-5/" data-id="ciglls4rb000fr5onfezt0oaj" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/26/Linux-Operating-System-5/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -433,7 +476,7 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/25/The-Attack-and-Defense-of-Computers-5/" data-id="cigknp3z00003ygonjjaea1eo" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/25/The-Attack-and-Defense-of-Computers-5/" data-id="ciglls4qs0006r5onp5spui57" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/25/The-Attack-and-Defense-of-Computers-5/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -526,7 +569,7 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/21/Applied-Cryptography-5/" data-id="cigknp40b000pygon1le8v7s8" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/21/Applied-Cryptography-5/" data-id="ciglls4s1000rr5on26tn3cv2" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/21/Applied-Cryptography-5/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -620,7 +663,7 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/18/Linux-Operating-System-4/" data-id="cigknp3zp000fygonjp8ddjag" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/18/Linux-Operating-System-4/" data-id="ciglls4rg000hr5onkd0vipr4" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/18/Linux-Operating-System-4/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -689,7 +732,7 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/18/The-Attack-and-Defense-of-Computers-4/" data-id="cigknp3z50006ygonj45l57sk" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/18/The-Attack-and-Defense-of-Computers-4/" data-id="ciglls4qz0008r5on6i4p81rk" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/18/The-Attack-and-Defense-of-Computers-4/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -755,7 +798,7 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/17/Applied-Cryptography-4/" data-id="cigknp40g000rygon37kh8sew" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/17/Applied-Cryptography-4/" data-id="ciglls4s5000tr5onlsifn489" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/17/Applied-Cryptography-4/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -829,62 +872,9 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/16/Linux-Operating-System-3/" data-id="cigknp3zs000hygonv492e8zw" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/16/Linux-Operating-System-3/" data-id="ciglls4rj000jr5on569n7rq8" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/16/Linux-Operating-System-3/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux-Operating-System/">Linux Operating System</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-Linux-Operating-System-2" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/10/15/Linux-Operating-System-2/" class="article-date">
-  <time datetime="2015-10-15T12:04:06.000Z" itemprop="datePublished">2015-10-15</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/10/15/Linux-Operating-System-2/">Linux Operating System-2</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>來源：<a href="http://www.csie.ncu.edu.tw/~hsufh/COURSES/FALL2015/linuxLecture_3_9-1.ppt" target="_blank" rel="external">Introduction (64~98)</a></p>
-<p>Linux Source Code Tree Overview跟System Boot up我就跳過了…</p>
-<h2> x32 Calling Conventions </h2><br>這邊要介紹的是，當C呼叫一個function時參數的傳遞。關於stack frame我在<a href="http://eastl.github.io/2015/10/12/The-Attack-and-Defense-of-Computers-1-3/">網路攻防</a>這邊有提到一些基礎知識，重複的在這邊就不再贅述。<br><br>假設今天G function要呼叫H function，則我們稱呼叫者G為caller，被呼叫的H function我們稱callee。為了方便講解老師投影片的圖，看一下下面這段code：<br><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">G</span><span class="params">(<span class="keyword">int</span> a)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    H(<span class="number">3</span>);</span><br><span class="line">    a = a + <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">return</span> a;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">H</span><span class="params">(<span class="keyword">int</span> b)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">char</span> c[<span class="number">100</span>];</span><br><span class="line">    <span class="keyword">int</span> i = b - <span class="number">3</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span>((c[i++] = getchar()) != EOF)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"Hi"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> i;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">()</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> example = <span class="number">1</span>;</span><br><span class="line">    G(example);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br><br>可以看到main function呼叫了G function，G function再去呼叫H function。現在把焦點放在G function裡面呼叫的H(3)，當G呼叫H之前，它會先把之後要給H的參數push到stack上，之後再去call H function，下圖為上面這支程式的執行檔經過objdump產生的內容：<br><br><img src="/images/callerdump.jpg" alt=""><br><br>上圖可以看到G在call H之前將3這個值push到stack，那callee要如何使用這參數呢？看一下下面這張stack frame：<br><br><img src="/images/call_stack_frame.jpg" alt=""><br><br>當G call了H function後，它裡面會有一個動作是將return address push上去，之後到H的stack frame時會先push ebp，因此可以利用ebp的相對位置找到參數，如下圖：<br><br><img src="/images/calleedump.jpg" alt=""><br><br>由於我程式裡面做的事情是i = b - 3，可以看到compiler將ebp+8的位置載入eax，接著再將它減去3。看完caller如何傳參數給callee後，接下來我們看callee如何將參數return給caller，其實很簡單，caller只要把要return的值塞進去eax暫存器就好了：<br><br><img src="/images/return_conv.jpg" alt=""><br><br>看一下剛剛G function，我直接將傳進來的參數a return回去，所以assembler就直接將ebp + 8位置的值丟進eax了。<br><br><h2> x64 Calling Conventions </h2><br>x64與x32不一樣的是，如果傳遞的參數在六個以下時，它是利用暫存器去傳送的，看一下下面程式：<br><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">G</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b, <span class="keyword">int</span> c, <span class="keyword">int</span> d, <span class="keyword">int</span> e, <span class="keyword">int</span> f, <span class="keyword">int</span> g, <span class="keyword">int</span> h)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> g;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">()</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> a;</span><br><span class="line">    a = G(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br><br>我把上面的程式碼丟到64 bit ubuntu編譯後，objdump如下圖：<br><br><img src="/images/x64_call.jpg" alt=""><br><br>可以看到紅色框的部分6個參數都移到了暫存器當中，而當到第七個參數時，compiler是把它放到了rsp的位置，從stack底端往上放。<br><br><img src="/images/x64_callerstack.jpg" alt=""><br><br>而callee要拿參數時，前六個當然是從暫存器拿，第七個開始就從rbp + 16開始：<br><br><img src="/images/x64_callee.jpg" alt=""><br><br>由於我是return g，它是第七個參數，所以將rbp + 10(hex)移到eax。<br><br><img src="/images/x64_calleestack.jpg" alt=""><br><br><h2> Callee-Save Register vs. Caller-Save Register </h2><br>這可能會被文字混淆…<br><br>caller saved register意思是當caller要呼叫callee時，caller會預先把某幾個暫存器的值存在stack上，然後呼叫了callee後callee可以使用者些暫存器。所以caller saved register是給callee用的。<br><br>而callee saved register是當caller呼叫了callee時，為了確保不會更動到register的值，callee會先把暫存器的值存起來，等到做完所有動作要return回caller之前再把剛存起來的值還給暫存器，所以callee saved register是callee幫caller存的。<br><br><h2> IA32 Process Address Space Layout </h2>
-
-<p>Address space意思是一堆address的集合，在32bit的linux環境中每個process都會有4G byte的address space，前3G byte為user address space，從0x00000000 ~ 0xBFFFFFFF；最後1G byte則是kernel address space，從0xC0000000 ~ 0xFFFFFFFF，所以學linux kernel的人要知道0xC0000000，這非常重要!!!!(老師說的XDD)。下圖就是IA32 linux的address space：</p>
-<p><img src="/images/IA32_address_space.jpg" alt="IA32 Linux Process Address Space Layout"></p>
-<h2> x64 Process Address Space Layout </h2>
-
-<p>x64的address space比較特別，由於他有<span>$2^{64}$</span><!-- Has MathJax -->bit的address，相當於16EB，如果要將這麼大的virtual address都implement到實際的記憶體上的話，會造成page table複雜度提升，況且正常作業系統也用不到這麼龐大的記憶體空間，於是AMD決定只用前48bit的address，使用空間大概是256TB，創造了一個叫做canonical form的規則。</p>
-<p><img src="/images/cannonical.jpg" alt="canonical form"></p>
-<p>這規則其實還蠻人性化的(?  看一下目前48bit的設計，整個address space分為兩大區塊，一邊從底部長另一邊從頂部長，先說明一下canonical form的規則，它除了規定只能用前48個bit之外還外加了一個規定，就是沒用到的bit，從第49個bit開始往後都要跟第48個bit一樣，也就是說如果第48個bit為0之後就全部都要是0，如果第48個bit為1之後就都要是1，有了這個規則後，如果你的記憶體是單向長的話，當你長到00008000 00000000的時候，你的第48個bit為1，但第49bit後卻全都是0，這樣就違反了canonical form。</p>
-<p>而user space跟kernel space剛好一人一半(從kernel 2.6.11版本後)，高位址的部分是kernel address，另一半低位址則是user space。下面的位址分部是參考<a href="https://www.kernel.org/doc/Documentation/x86/x86_64/mm.txt" target="_blank" rel="external">這邊</a>。</p>
-<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0000000000000000</span> - <span class="number">00007</span>fffffffffff (<span class="number">=47</span> <span class="keyword">bits) </span>user <span class="preprocessor">space</span>, different per mm</span><br><span class="line"><span class="label">hole</span> caused <span class="keyword">by </span>[<span class="number">48</span>:<span class="number">63</span>] sign extension</span><br><span class="line"><span class="label">ffff800000000000</span> - ffff87ffffffffff (<span class="number">=43</span> <span class="keyword">bits) </span>guard hole, reserved for hypervisor</span><br><span class="line"><span class="label">ffff880000000000</span> - ffffc7ffffffffff (<span class="number">=64</span> TB) direct mapping of all phys. memory</span><br><span class="line"><span class="label">ffffc80000000000</span> - ffffc8ffffffffff (<span class="number">=40</span> <span class="keyword">bits) </span>hole</span><br><span class="line"><span class="label">ffffc90000000000</span> - ffffe8ffffffffff (<span class="number">=45</span> <span class="keyword">bits) </span>vmalloc/ioremap <span class="preprocessor">space</span></span><br><span class="line"><span class="label">ffffe90000000000</span> - ffffe9ffffffffff (<span class="number">=40</span> <span class="keyword">bits) </span>hole</span><br><span class="line"><span class="label">ffffea0000000000</span> - ffffeaffffffffff (<span class="number">=40</span> <span class="keyword">bits) </span>virtual memory <span class="preprocessor">map</span> (<span class="number">1</span>TB)</span><br><span class="line"><span class="label">...</span> unused hole ...</span><br><span class="line"><span class="label">ffffec0000000000</span> - fffffc0000000000 (<span class="number">=44</span> <span class="keyword">bits) </span>kasan shadow memory (<span class="number">16</span>TB)</span><br><span class="line"><span class="label">...</span> unused hole ...</span><br><span class="line"><span class="label">ffffff0000000000</span> - ffffff7fffffffff (<span class="number">=39</span> <span class="keyword">bits) </span>%esp fixup stacks</span><br><span class="line"><span class="label">...</span> unused hole ...</span><br><span class="line"><span class="label">ffffffff80000000</span> - ffffffffa0000000 (<span class="number">=512</span> MB)  kernel text mapping, from phys <span class="number">0</span></span><br><span class="line"><span class="label">ffffffffa0000000</span> - ffffffffff5fffff (<span class="number">=1525</span> MB) module mapping <span class="preprocessor">space</span></span><br><span class="line"><span class="label">ffffffffff600000</span> - ffffffffffdfffff (<span class="number">=8</span> MB) vsyscalls</span><br><span class="line"><span class="label">ffffffffffe00000</span> - ffffffffffffffff (<span class="number">=2</span> MB) unused hole</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/15/Linux-Operating-System-2/" data-id="cigknp3zx000jygonoh9nts9k" class="article-share-link">Share</a>
-      
-        <a href="http://eastl.github.io/2015/10/15/Linux-Operating-System-2/#disqus_thread" class="article-comment-link">Comments</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux-Operating-System/">Linux Operating System</a></li></ul>
@@ -911,7 +901,7 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux-Operating-System/">Linux Operating System</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/The-Attack-and-Defense-of-Computers/">The Attack and Defense of Computers</a><span class="tag-list-count">3</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux-Operating-System/">Linux Operating System</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/The-Attack-and-Defense-of-Computers/">The Attack and Defense of Computers</a><span class="tag-list-count">4</span></li></ul>
     </div>
   </div>
 
@@ -929,7 +919,7 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a><span class="archive-list-count">2</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a><span class="archive-list-count">2</span></li></ul>
     </div>
   </div>
 
@@ -939,6 +929,10 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
     <h3 class="widget-title">Recents</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2015/11/05/The-Attack-and-Defense-of-Computers-6/">The Attack and Defense of Computers-6</a>
+          </li>
         
           <li>
             <a href="/2015/11/01/Linux-Operating-System-6/">Linux Operating System-6</a>
@@ -954,10 +948,6 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
         
           <li>
             <a href="/2015/10/25/The-Attack-and-Defense-of-Computers-5/">The Attack and Defense of Computers-5</a>
-          </li>
-        
-          <li>
-            <a href="/2015/10/21/Applied-Cryptography-5/">Applied Cryptography-5</a>
           </li>
         
       </ul>
