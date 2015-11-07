@@ -84,6 +84,80 @@ ga('send', 'pageview');
       <div class="outer">
         <section id="main">
   
+    <article id="post-Linux-Operating-System-3" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/10/16/Linux-Operating-System-3/" class="article-date">
+  <time datetime="2015-10-16T04:19:29.000Z" itemprop="datePublished">2015-10-16</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/10/16/Linux-Operating-System-3/">Linux Operating System-3</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>來源：<a href="http://www.csie.ncu.edu.tw/~hsufh/COURSES/FALL2015/linuxLecture_3_9-1.ppt" target="_blank" rel="external">Introduction (99 ~ 116)</a>，<a href="http://www.csie.ncu.edu.tw/~hsufh/COURSES/FALL2015/linuxLecture_3_9-2.ppt" target="_blank" rel="external">Introduction and Memory Addressing: Segmentation Unit (1 ~ 20)</a></p>
+<p></p><h2> Execution Mode of IA32 </h2><br>在x86架構的processor分為real mode以及protected mode，而在protected mode底下又分為ring0、ring1、ring2、ring3，linux kernel只用到了ring0以及ring3，分別是kernel mode以及user mode，這兩種mode有著不同的權限，在上一堂課講到的address space分為kernel space跟user space，在kernel mode底下所有的address space都能夠執行，但是在user mode底下是無法執行kernel space的。在user space底下存放了以下這些東西：<p></p>
+<ul>
+<li>user-level functions</li>
+<li>variables</li>
+<li>user-level data</li>
+<li>library functions</li>
+<li>the heap</li>
+<li>the user-level stack</li>
+</ul>
+<p>而kernel address space裡面有存放這些東西：</p>
+<ul>
+<li>Kernel data</li>
+<li>Kernel functions</li>
+<li>each process’s kernel-level stack</li>
+</ul>
+<p>既然在user mode底下無法執行kernel space的東西，那使用者在使用電腦時是如何做一些kernel才能做的事情呢？這邊有一個概念叫做mode switch，如果在user mode底下有需要用到kernel space東西時，會經由system call才能變為kernel mode，此時才有辦法存取”特定”kernel space的東西。這邊講的特定是：當你經由system call進到kernel mode前，你會先告訴system call你要做的事情，而當你通過system call進到kernel mode時，你就只能做你剛剛預告的事情，這邊先提個大概，在之後的課程會完整的說明流程。</p>
+<p>而有些process是專門處理kernel的，他完全不會跟user溝通，只會run 在kernel address space裡，這種process叫做kernel threads，通常system剛啟動時或者系統被關閉時才會出現的程序。</p>
+<p></p><h4> Uniprocessors vs. Multiprocessing </h4><br>不管是Uniprocessors或是Multiprocessing，一顆processor只能執行一個process，那我們的電腦是如何執行這麼多程式的？其實在CPU中會不會的切換process，才會讓使用者有同時執行很多程式的錯覺，那麼OS是如何切換程式呢？<p></p>
+<ul>
+<li><p>Context Switch<br>也可以稱做process switch，當一個process要切換到另一個process時，必須先切換到kernel mode，然後在kernel mode底下將控制權轉移給另一個process。通常有下列四種事件發生時會進行context switch：</p>
+<ul>
+<li>System calls</li>
+<li>Exceptions</li>
+<li>Interrupts</li>
+<li>Kernel thread</li>
+</ul>
+<p>下圖為mode切換示意圖：<br><img src="/images/mode_switch.jpg" alt=""></p>
+<p>Exceptions通常是process造成的，可能是page fault、除以零或者是有違法的address出現等，而Interrupts通常是硬體有事件發生，造成其他process先暫停，先處理interrupt，由interrupt handler處理。</p>
+</li>
+<li><p>Reentrant Kernels<br>如果有兩個process同時要執行時，必須先暫停一個process，直到另一個process執行完畢。Interrupts可以利用此機制暫停目前正在執行的process，執行interrupt handler。</p>
+</li>
+</ul>
+<p>Interrupts與Exceptions其實蠻常發生的，process常常會被切換來切換去。<br><img src="/images/interleaving.jpg" alt=""></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://eastl.github.io/2015/10/16/Linux-Operating-System-3/" data-id="cigopuysi000jcgonhhv366vx" class="article-share-link">Share</a>
+      
+        <a href="http://eastl.github.io/2015/10/16/Linux-Operating-System-3/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux-Operating-System/">Linux Operating System</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-Linux-Operating-System-2" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2015/10/15/Linux-Operating-System-2/" class="article-date">
@@ -123,7 +197,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/15/Linux-Operating-System-2/" data-id="cigns13u2000l3aonmaoebri2" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/15/Linux-Operating-System-2/" data-id="cigopuysn000lcgonq5hj2hnr" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/15/Linux-Operating-System-2/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -186,7 +260,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/14/Linux-Operating-System-1/" data-id="cigns13u9000n3aonwfuuh4nz" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/14/Linux-Operating-System-1/" data-id="cigopuysr000ncgonsnwqnt7f" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/14/Linux-Operating-System-1/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -245,7 +319,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/12/The-Attack-and-Defense-of-Computers-1-3/" data-id="cigns13ra000a3aonlbz1s20k" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/12/The-Attack-and-Defense-of-Computers-1-3/" data-id="cigopuys1000acgonpuq53ond" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/12/The-Attack-and-Defense-of-Computers-1-3/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -302,7 +376,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/10/Applied-Cryptography-3/" data-id="cigns13uu000v3aon44smw0j4" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/10/Applied-Cryptography-3/" data-id="cigopuytj000xcgon1quz04k5" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/10/Applied-Cryptography-3/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -388,7 +462,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/09/29/Applied-Cryptography-2/" data-id="cigns13v0000x3aonl6lan3qn" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/09/29/Applied-Cryptography-2/" data-id="cigopuytn000zcgonnrvh7ehq" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/09/29/Applied-Cryptography-2/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -448,7 +522,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/09/28/Applied-Cryptography-1/" data-id="cigns13of00003aoneu4dfthp" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/09/28/Applied-Cryptography-1/" data-id="cigopuyph0000cgonguqvoatf" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/09/28/Applied-Cryptography-1/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -477,7 +551,7 @@ ga('send', 'pageview');
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux-Operating-System/">Linux Operating System</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/The-Attack-and-Defense-of-Computers/">The Attack and Defense of Computers</a><span class="tag-list-count">4</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux-Operating-System/">Linux Operating System</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/The-Attack-and-Defense-of-Computers/">The Attack and Defense of Computers</a><span class="tag-list-count">4</span></li></ul>
     </div>
   </div>
 
@@ -486,7 +560,7 @@ ga('send', 'pageview');
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Applied-Cryptography/" style="font-size: 20px;">Applied Cryptography</a> <a href="/tags/Linux-Operating-System/" style="font-size: 20px;">Linux Operating System</a> <a href="/tags/The-Attack-and-Defense-of-Computers/" style="font-size: 10px;">The Attack and Defense of Computers</a>
+      <a href="/tags/Applied-Cryptography/" style="font-size: 20px;">Applied Cryptography</a> <a href="/tags/Linux-Operating-System/" style="font-size: 15px;">Linux Operating System</a> <a href="/tags/The-Attack-and-Defense-of-Computers/" style="font-size: 10px;">The Attack and Defense of Computers</a>
     </div>
   </div>
 
@@ -495,7 +569,7 @@ ga('send', 'pageview');
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a><span class="archive-list-count">2</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a><span class="archive-list-count">2</span></li></ul>
     </div>
   </div>
 
@@ -505,6 +579,10 @@ ga('send', 'pageview');
     <h3 class="widget-title">Recents</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2015/11/07/Applied-Cryptography-7/">Applied Cryptography-7</a>
+          </li>
         
           <li>
             <a href="/2015/11/05/The-Attack-and-Defense-of-Computers-6/">The Attack and Defense of Computers-6</a>
@@ -520,10 +598,6 @@ ga('send', 'pageview');
         
           <li>
             <a href="/2015/10/26/Linux-Operating-System-5/">Linux Operating System-5</a>
-          </li>
-        
-          <li>
-            <a href="/2015/10/25/The-Attack-and-Defense-of-Computers-5/">The Attack and Defense of Computers-5</a>
           </li>
         
       </ul>

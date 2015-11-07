@@ -84,6 +84,61 @@ ga('send', 'pageview');
       <div class="outer">
         <section id="main">
   
+    <article id="post-Applied-Cryptography-7" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/11/07/Applied-Cryptography-7/" class="article-date">
+  <time datetime="2015-11-07T06:00:25.000Z" itemprop="datePublished">2015-11-07</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/11/07/Applied-Cryptography-7/">Applied Cryptography-7</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>來源：<a href="http://staff.csie.ncu.edu.tw/yensm/lecture/Cryptography/Chapter-3%20Number%20Theory.pdf" target="_blank" rel="external">chapter 3(50 ~ 54)</a>，<a href="http://staff.csie.ncu.edu.tw/yensm/lecture/Cryptography/Chapter-4%20Public-Key%20Cryptography%28v2%29.pdf" target="_blank" rel="external">chapter 4(1 ~ 18)</a></p>
+<p></p><h2> Primitive Root </h2><br>上禮拜有講到generator的概念，剛好我自己補充的東西也有提到order的概念，這邊會統整一下所有的概念。<p></p>
+<p>Theorem: If λ is the order of α, then λ|(p-1).<br>proof: 這邊利用反證法，令 λ 不是p-1的因數，則 p-1 = t*λ + k，1≤ k ≤ λ −1，則：</p>
+<center> <span>$\alpha^{p-1} \ \ \equiv \ \ \alpha^{t \lambda} \ \ \times \ \ \alpha^{k} \ \ \equiv \ \ 1 \ \ \times \ \ \alpha^{k} \ \ \equiv \ \ \alpha^{k} \ \ \equiv \ \ 1 \ \ (mod \ \ p)$</span><!-- Has MathJax --> </center><br>得到 k &lt; λ，<span>$\alpha^{k} \ \ \equiv \ \ 1 \ \ (mod \ \ p) \ \ \rightarrow \leftarrow$</span><!-- Has MathJax -->得證。<br><br>給定一正整數n，n的RSR(Reduced set of residues)標記為<span>$Z_{n}^{*}$</span><!-- Has MathJax -->，若a的次方mod n底下能夠產生<span>$Z_{n}^{*}$</span><!-- Has MathJax -->的所有元素，也就是a為<span>$Z_{n}^{*}$</span><!-- Has MathJax -->集合的generator，則我們稱a為n的Primitive Root。而<span>$Z_{n}^{*}$</span><!-- Has MathJax -->的個數尤拉定義為φ(n)，因此如果a為n的Primitive Root，則a必須產生所有的<span>$Z_{n}^{*}$</span><!-- Has MathJax -->，也就是說a的order必須為φ(n)，如果a的order比φ(n)小的話，代表a的次方還沒到達φ(n)就已經是一個周期了，此時不可能產生出<span>$Z_{n}^{*}$</span><!-- Has MathJax -->集合的所有元素。下圖是摘錄自<a href="https://en.wikipedia.org/wiki/Primitive_root_modulo_n" target="_blank" rel="external">wiki</a>，圖中可以看到n選的數為14，3跟5都能夠將14所有的RSR產生出來，因此3跟5為14的primitive root：<br><br><img src="/images/Primitive_root_modulo_n.jpg" alt=""><br><br>這邊值得注意的是，並不是所有的正整數n都能夠找到primitive root，像剛剛wiki裡面就有舉例子，15就會找不到primitive root了。那麼如果是有primitive root的數，那麼這個數的primitive root會有幾個？這邊查了一下蠻多文獻都寫(Burton 1989)但是都查不到證明….n的primitive root個數為φ(φ(n))。在之後的密碼系統會用到的是質數居多，這邊我就以p來表示質數，因此的primitive root個數就是φ(p-1)，從這邊可以看得出來質數的generator還蠻多的，不用怕找不到。<br><br>接下來介紹老師51頁投影片紅色框框的式子，這邊我用wiki上的<a href="https://en.wikipedia.org/wiki/Euler%27s_totient_function" target="_blank" rel="external">Eulers totient function</a>來介紹。這式子是由高斯所發現的，他發現正整數可以用尤拉函式的和來表示：<br>Divisor sum:<br><center> <span>$n \ \ = \ \ \sum_{d | n} \phi (d)$</span><!-- Has MathJax --> </center>
+
+<p>這式子乍看之下蠻神奇的，也就是說把n的所有因數經過totient function後的總和會得到n。這邊我用n=10來舉例子，我將0~1切成10等分，所有的分數形式如下：</p>
+<p><center> <span>$\frac{1}{10}, \ \ \frac{2}{10}, \ \ \frac{3}{10}, \ \ \frac{4}{10}, \ \ \frac{5}{10}, \ \ \frac{6}{10}, \ \ \frac{7}{10}, \ \ \frac{8}{10}, \ \ \frac{9}{10}, \frac{10}{10}$</span><!-- Has MathJax --> </center><br>接著我們約分：</p>
+<p><center> <span>$\frac{1}{10}, \ \ \frac{1}{5}, \ \ \frac{3}{10}, \ \ \frac{2}{5}, \ \ \frac{1}{2}, \ \ \frac{3}{5}, \ \ \frac{7}{10}, \ \ \frac{4}{5}, \ \ \frac{9}{10}, \ \ \frac{1}{1}$</span><!-- Has MathJax --> </center><br>到這邊可能還有點模糊，我們將上列數字依照分母分類然後由小排到大：</p>
+<p><center> <span>$\frac{1}{1}, \ \ \frac{1}{2}, \ \ \frac{1}{5}, \ \ \frac{2}{5}, \ \ \frac{3}{5}, \ \ \frac{4}{5}, \ \ \frac{1}{10}, \ \ \frac{3}{10}, \ \ \frac{7}{10}, \ \ \frac{9}{10}$</span><!-- Has MathJax --> </center><br>有沒有發現一件神奇的事情，分類完後分母就是10的因數，分子是分母無法整除的數(廢話嗎不然怎叫約分)，既然如此上面不就可以表示成各個因數的totient function總和了？理解完畢後老師的投影片的式子就比較容易理解：</p>
+<p><img src="/images/divisor_sum.jpg" alt=""></p>
+<p>接著來看在mod 質數p之下如何找出generator：剛剛有講過generator的特性，假設g為p的generator，則g的order必須為φ(p)，也就是說g的次方在p-1之前都不能等於一，利用這一個特性我們可以在小於p的所有數都拿來測，只要他一次方兩次方三次方到p-2次方都不為一，只有在p-1次方mod p等於一時就是generator了。</p>
+<p>不過這麼做好像有點暴力，我們剛剛有一個理論是” If λ is the order of α, then λ|(p-1). “，這樣就好辦多了，既然order只會發生在p-1的因數裡面，那我們只需要檢查p-1的因數就行了。至於該如何檢查p-1的因數呢？這邊可以不用每一個因數都試，舉個簡單的小例子：假設p-1 = a<em>b</em>c，那我們只需要測ab,bc,ac這三個看看這些次方會不會等於一就好了。因為如果$g^{ab}$ mod p不等於一，那麼$g^{a}$跟$g^{b}$都不會等於一了，以此類推，但相反的如果只測試a,b,c這三個，那麼有可能$g^{a}$跟$g^{b}$都不是1，但是$g^{ab}$卻是1這種狀況。</p>
+<p>接著我們看實際的演算法，用剛剛的例子套用到這上面來看的話，他每次就是挑掉一個因數，然後測試其餘的乘積的次方是否為一：</p>
+<p><img src="/images/generator_try_and_error.jpg" alt=""></p>
+<p>有了這個演算法後我們就能找出質數p的generator了～但是實際上並沒有這麼順利，在現實生活中p是個很大的質數，所以要將p-1做質因數分解是很難的，那我們剛剛不就白解了嗎….實際運用上通常都是設定p-1等於兩倍的令一個質數，這樣質因數分解就是2跟剛剛設定的質數，之後會講到如何製造質數。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://eastl.github.io/2015/11/07/Applied-Cryptography-7/" data-id="cigopuysu000pcgonpq80pmy5" class="article-share-link">Share</a>
+      
+        <a href="http://eastl.github.io/2015/11/07/Applied-Cryptography-7/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-The-Attack-and-Defense-of-Computers-6" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2015/11/05/The-Attack-and-Defense-of-Computers-6/" class="article-date">
@@ -130,7 +185,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/11/05/The-Attack-and-Defense-of-Computers-6/" data-id="cigns13qw00033aonhhkaxd4m" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/11/05/The-Attack-and-Defense-of-Computers-6/" data-id="cigopuyrm0003cgona42oq2zt" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/11/05/The-Attack-and-Defense-of-Computers-6/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -202,7 +257,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/11/01/Linux-Operating-System-6/" data-id="cigns13rf000c3aon2p6ns6j3" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/11/01/Linux-Operating-System-6/" data-id="cigopuys6000ccgonx9zvye8b" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/11/01/Linux-Operating-System-6/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -336,7 +391,7 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/28/Applied-Cryptography-6/" data-id="cigns13ud000p3aonbenj5dyi" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/28/Applied-Cryptography-6/" data-id="cigopuysz000rcgoncbifwn9u" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/28/Applied-Cryptography-6/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -418,7 +473,7 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/26/Linux-Operating-System-5/" data-id="cigns13rj000f3aonoq4s0z6c" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/26/Linux-Operating-System-5/" data-id="cigopuysa000fcgon8cz2iud7" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/26/Linux-Operating-System-5/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -493,7 +548,7 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/25/The-Attack-and-Defense-of-Computers-5/" data-id="cigns13r100063aongvehvyz9" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/25/The-Attack-and-Defense-of-Computers-5/" data-id="cigopuyrr0006cgonrirxl4su" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/25/The-Attack-and-Defense-of-Computers-5/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -586,7 +641,7 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/21/Applied-Cryptography-5/" data-id="cigns13ui000r3aonhjo0fgcw" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/21/Applied-Cryptography-5/" data-id="cigopuyt4000tcgonugjo4dho" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/21/Applied-Cryptography-5/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -680,7 +735,7 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/18/Linux-Operating-System-4/" data-id="cigns13rm000h3aonejr3rk8v" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/18/Linux-Operating-System-4/" data-id="cigopuyse000hcgonv8vcrlf2" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/18/Linux-Operating-System-4/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -749,7 +804,7 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/18/The-Attack-and-Defense-of-Computers-4/" data-id="cigns13r600083aon8trp18sh" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/18/The-Attack-and-Defense-of-Computers-4/" data-id="cigopuyrx0008cgonw5rkit8e" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/18/The-Attack-and-Defense-of-Computers-4/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -815,86 +870,12 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/17/Applied-Cryptography-4/" data-id="cigns13uo000t3aonxdinozdg" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/17/Applied-Cryptography-4/" data-id="cigopuyta000vcgonsnft4w4j" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/17/Applied-Cryptography-4/#disqus_thread" class="article-comment-link">Comments</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-Linux-Operating-System-3" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/10/16/Linux-Operating-System-3/" class="article-date">
-  <time datetime="2015-10-16T04:19:29.000Z" itemprop="datePublished">2015-10-16</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/10/16/Linux-Operating-System-3/">Linux Operating System-3</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>來源：<a href="http://www.csie.ncu.edu.tw/~hsufh/COURSES/FALL2015/linuxLecture_3_9-1.ppt" target="_blank" rel="external">Introduction (99 ~ 116)</a>，<a href="http://www.csie.ncu.edu.tw/~hsufh/COURSES/FALL2015/linuxLecture_3_9-2.ppt" target="_blank" rel="external">Introduction and Memory Addressing: Segmentation Unit (1 ~ 20)</a></p>
-<p></p><h2> Execution Mode of IA32 </h2><br>在x86架構的processor分為real mode以及protected mode，而在protected mode底下又分為ring0、ring1、ring2、ring3，linux kernel只用到了ring0以及ring3，分別是kernel mode以及user mode，這兩種mode有著不同的權限，在上一堂課講到的address space分為kernel space跟user space，在kernel mode底下所有的address space都能夠執行，但是在user mode底下是無法執行kernel space的。在user space底下存放了以下這些東西：<p></p>
-<ul>
-<li>user-level functions</li>
-<li>variables</li>
-<li>user-level data</li>
-<li>library functions</li>
-<li>the heap</li>
-<li>the user-level stack</li>
-</ul>
-<p>而kernel address space裡面有存放這些東西：</p>
-<ul>
-<li>Kernel data</li>
-<li>Kernel functions</li>
-<li>each process’s kernel-level stack</li>
-</ul>
-<p>既然在user mode底下無法執行kernel space的東西，那使用者在使用電腦時是如何做一些kernel才能做的事情呢？這邊有一個概念叫做mode switch，如果在user mode底下有需要用到kernel space東西時，會經由system call才能變為kernel mode，此時才有辦法存取”特定”kernel space的東西。這邊講的特定是：當你經由system call進到kernel mode前，你會先告訴system call你要做的事情，而當你通過system call進到kernel mode時，你就只能做你剛剛預告的事情，這邊先提個大概，在之後的課程會完整的說明流程。</p>
-<p>而有些process是專門處理kernel的，他完全不會跟user溝通，只會run 在kernel address space裡，這種process叫做kernel threads，通常system剛啟動時或者系統被關閉時才會出現的程序。</p>
-<p></p><h4> Uniprocessors vs. Multiprocessing </h4><br>不管是Uniprocessors或是Multiprocessing，一顆processor只能執行一個process，那我們的電腦是如何執行這麼多程式的？其實在CPU中會不會的切換process，才會讓使用者有同時執行很多程式的錯覺，那麼OS是如何切換程式呢？<p></p>
-<ul>
-<li><p>Context Switch<br>也可以稱做process switch，當一個process要切換到另一個process時，必須先切換到kernel mode，然後在kernel mode底下將控制權轉移給另一個process。通常有下列四種事件發生時會進行context switch：</p>
-<ul>
-<li>System calls</li>
-<li>Exceptions</li>
-<li>Interrupts</li>
-<li>Kernel thread</li>
-</ul>
-<p>下圖為mode切換示意圖：<br><img src="/images/mode_switch.jpg" alt=""></p>
-<p>Exceptions通常是process造成的，可能是page fault、除以零或者是有違法的address出現等，而Interrupts通常是硬體有事件發生，造成其他process先暫停，先處理interrupt，由interrupt handler處理。</p>
-</li>
-<li><p>Reentrant Kernels<br>如果有兩個process同時要執行時，必須先暫停一個process，直到另一個process執行完畢。Interrupts可以利用此機制暫停目前正在執行的process，執行interrupt handler。</p>
-</li>
-</ul>
-<p>Interrupts與Exceptions其實蠻常發生的，process常常會被切換來切換去。<br><img src="/images/interleaving.jpg" alt=""></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/16/Linux-Operating-System-3/" data-id="cigns13rs000j3aonvg1toi6x" class="article-share-link">Share</a>
-      
-        <a href="http://eastl.github.io/2015/10/16/Linux-Operating-System-3/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux-Operating-System/">Linux Operating System</a></li></ul>
 
     </footer>
   </div>
@@ -918,7 +899,7 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux-Operating-System/">Linux Operating System</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/The-Attack-and-Defense-of-Computers/">The Attack and Defense of Computers</a><span class="tag-list-count">4</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux-Operating-System/">Linux Operating System</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/The-Attack-and-Defense-of-Computers/">The Attack and Defense of Computers</a><span class="tag-list-count">4</span></li></ul>
     </div>
   </div>
 
@@ -927,7 +908,7 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Applied-Cryptography/" style="font-size: 20px;">Applied Cryptography</a> <a href="/tags/Linux-Operating-System/" style="font-size: 20px;">Linux Operating System</a> <a href="/tags/The-Attack-and-Defense-of-Computers/" style="font-size: 10px;">The Attack and Defense of Computers</a>
+      <a href="/tags/Applied-Cryptography/" style="font-size: 20px;">Applied Cryptography</a> <a href="/tags/Linux-Operating-System/" style="font-size: 15px;">Linux Operating System</a> <a href="/tags/The-Attack-and-Defense-of-Computers/" style="font-size: 10px;">The Attack and Defense of Computers</a>
     </div>
   </div>
 
@@ -936,7 +917,7 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a><span class="archive-list-count">2</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a><span class="archive-list-count">2</span></li></ul>
     </div>
   </div>
 
@@ -946,6 +927,10 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
     <h3 class="widget-title">Recents</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2015/11/07/Applied-Cryptography-7/">Applied Cryptography-7</a>
+          </li>
         
           <li>
             <a href="/2015/11/05/The-Attack-and-Defense-of-Computers-6/">The Attack and Defense of Computers-6</a>
@@ -961,10 +946,6 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
         
           <li>
             <a href="/2015/10/26/Linux-Operating-System-5/">Linux Operating System-5</a>
-          </li>
-        
-          <li>
-            <a href="/2015/10/25/The-Attack-and-Defense-of-Computers-5/">The Attack and Defense of Computers-5</a>
           </li>
         
       </ul>
