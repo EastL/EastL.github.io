@@ -126,17 +126,28 @@ m \ \ mod \ \ q \ \ = \ \ ap \ \ mod \ \ q$$</span><!-- Has MathJax --><br></cen
 <center><br><span>$C \ \ \rightarrow \ \ (0^e \ \ mod \ \ p, \ \ (ap)^e \ \ mod \ \ q)$</span><!-- Has MathJax --><br></center>
 
 <p>解密：</p>
-<p><center><br><span>$$C^d \ \ mod \ \ n \rightarrow \ \ (0^e \ \ mod \ \ p, \ \ (ap)^{ed} \ \ mod \ \ q) \\
+<center><br><span>$$C^d \ \ mod \ \ n \rightarrow \ \ (0^e \ \ mod \ \ p, \ \ (ap)^{ed} \ \ mod \ \ q) \\
 = \ \ (0, \ \ (ap)^{1+k \phi (n)} \ \ mod \ \ q) \\
 = \ \ (0, \ \ (ap)^{1+k(p-1)(q-1)} \ \ mod \ \ q) \\
 = \ \ (0, \ \ (ap) \ \ \times \ \ [(ap)^{(q-1)}]^{k(p-1)} \ \ mod \ \ q)  \\
 = \ \ (0, \ \ (ap) \ \ mod \ \ q) \\
-= \ \ m$$</span><!-- Has MathJax --><br></center><br>太神奇了，在m跟n不互質狀況下居然解的回來，這邊是因為雖然在原本大的世界n是不互質的，但是到了小世界p跟q之後一個變成0一個依然是互質，所以可以看到在q的世界一樣是尤拉定理讓ed消掉。</p>
+= \ \ m$$</span><!-- Has MathJax --><br></center>
+
+<p>太神奇了，在m跟n不互質狀況下居然解的回來，這邊是因為雖然在原本大的世界n是不互質的，但是到了小世界p跟q之後一個變成0一個依然是互質，所以可以看到在q的世界一樣是尤拉定理讓ed消掉。</p>
+<p>接著我們來談RSA的 Reblocking 問題：當A要簽暑並加密文件再傳給B，那麼A必須先用自己的private key做簽署，之後再用B的public key加密。但如果B所選的模數比A小的時後，此時便會發生Reblocking，下面例子是擷取自<a href="http://cacr.uwaterloo.ca/hac/about/chap11.pdf" target="_blank" rel="external">Handbook of Applied Cryptography</a>：</p>
+<p><img src="/images/reblocking_pro.jpg" alt=""></p>
+<p>可以看到最後解回m時與原本的不同。要解決此問題可以先看模數大小，模數較小的一方先做，這樣就不會造成reblocking，但基於安全性的考量，如果先進行加密在進行簽署，簽署就不會被加密所保護，攻擊者可能會從此處下手，因此另一種方式是規定兩種key，以t bit來劃分界線，小於此界線的就拿來做簽章，大於此界線的拿來做加解密。</p>
+<p>而RSA的加密方式在加密訊息時，會先將訊息切成故定大小再進行簽署，若此時攻擊者調換了不同的block接收方並不會曉得，因此我們會先將訊息經由hash function得到digest，再對這個digest進行簽署，如此一來接收方接收到訊息時，先將訊息經過hash function得到digest，再比對看看這個digest值與傳送方送來的值是否一樣便能得知傳送過程中是否有被竄改過。</p>
+<p>接著我們來看比RSA更早之前秘密組織就已經有的類似RSA的演算法：</p>
+<p><center><br>n = pq<br>public key : n, private key : p’, q’<br>(<span>$p&apos; \ \ \times \ \ p \ \ \equiv \ \ 1 \ \ (mod \ \ \phi (n)), \ \  q&apos; \ \ \times \ \ q \ \ \equiv \ \ 1 \ \ (mod \ \ \phi (n))$</span><!-- Has MathJax -->)<br></center><br>Encryption: <span>$C \ \ = \ \ m^n \ \ mod \ \ n$</span><!-- Has MathJax --><br>Decryption: <span>$m \ \ = \ \ C^{p&apos; q&apos;} \ \ mod \ \ n$</span><!-- Has MathJax --></p>
+<p>這邊跟RSA非常相像，找了p跟q的乘法反元素來消掉n，而令人驚訝的是，RSA加速的方法(中國餘數定理)是在RSA提出後幾年才被提出來了，而這個人居然連加速的方法也想到了：</p>
+<p>n = pq, gcd(p, q-1) = 1, gcd(q, p-1) = 1<br>public key : n, private key : p’, q’<br>(<span>$p&apos; \ \ \times \ \ p \ \ \equiv \ \ 1 \ \ (mod \ \ q-1), \ \ q&apos; \ \ \times \ \ q \ \ \equiv \ \ 1 \ \ (mod \ \ p-1)$</span><!-- Has MathJax -->)<br>Encryption: <span>$C_p \ \ \equiv \ \ (m_{p})^{q} \ \ (mod \ \ p) \ \ ,  \ \ C_q \ \ \equiv \ \ (m_{q})^{p} \ \ (mod \ \ q)$</span><!-- Has MathJax --><br>Decryption: <span>$m_p \ \ \equiv \ \ (C_{p})^{q&apos;} \ \ (mod \ \ p), \ \ m_q \ \ \equiv \ \ (C_{q})^{p&apos;} \ \ (mod \ \ q)$</span><!-- Has MathJax --></p>
+<p>最後再利用中國餘數定理merge回m就完成了。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/11/07/Applied-Cryptography-7/" data-id="cigq0cfbm000p16onhrxydi4v" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/11/07/Applied-Cryptography-7/" data-id="cigq7ebxi000pqgonybjxd5dr" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/11/07/Applied-Cryptography-7/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -196,7 +207,7 @@ m \ \ mod \ \ q \ \ = \ \ ap \ \ mod \ \ q$$</span><!-- Has MathJax --><br></cen
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/11/05/The-Attack-and-Defense-of-Computers-6/" data-id="cigq0cfad000316onsvwknrcl" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/11/05/The-Attack-and-Defense-of-Computers-6/" data-id="cigq7ebw90003qgondq705tzw" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/11/05/The-Attack-and-Defense-of-Computers-6/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -268,7 +279,7 @@ m \ \ mod \ \ q \ \ = \ \ ap \ \ mod \ \ q$$</span><!-- Has MathJax --><br></cen
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/11/01/Linux-Operating-System-6/" data-id="cigq0cfav000c16onpdjszbx0" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/11/01/Linux-Operating-System-6/" data-id="cigq7ebws000cqgon0kqx3r82" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/11/01/Linux-Operating-System-6/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -402,7 +413,7 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/28/Applied-Cryptography-6/" data-id="cigq0cfbr000r16onzsfdmkzu" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/28/Applied-Cryptography-6/" data-id="cigq7ebxn000rqgon7nlz9mmu" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/28/Applied-Cryptography-6/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -484,7 +495,7 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/26/Linux-Operating-System-5/" data-id="cigq0cfaz000f16onifond9j3" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/26/Linux-Operating-System-5/" data-id="cigq7ebww000fqgon6olykvef" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/26/Linux-Operating-System-5/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -559,7 +570,7 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/25/The-Attack-and-Defense-of-Computers-5/" data-id="cigq0cfai000616onwbayin5e" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/25/The-Attack-and-Defense-of-Computers-5/" data-id="cigq7ebwe0006qgonhnzikrgp" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/25/The-Attack-and-Defense-of-Computers-5/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -652,7 +663,7 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/21/Applied-Cryptography-5/" data-id="cigq0cfbw000t16one2wv6sl9" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/21/Applied-Cryptography-5/" data-id="cigq7ebxs000tqgon8u65ju5n" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/21/Applied-Cryptography-5/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -746,7 +757,7 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/18/Linux-Operating-System-4/" data-id="cigq0cfb3000h16ony2iehhee" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/18/Linux-Operating-System-4/" data-id="cigq7ebwz000hqgonvu841rka" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/18/Linux-Operating-System-4/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -815,7 +826,7 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/18/The-Attack-and-Defense-of-Computers-4/" data-id="cigq0cfan000816onlvqu5eni" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/18/The-Attack-and-Defense-of-Computers-4/" data-id="cigq7ebwj0008qgonxbo60yo4" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/18/The-Attack-and-Defense-of-Computers-4/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -881,7 +892,7 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/17/Applied-Cryptography-4/" data-id="cigq0cfc2000v16on6awme8hq" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/17/Applied-Cryptography-4/" data-id="cigq7ebxy000vqgon6kxsnmc9" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/17/Applied-Cryptography-4/#disqus_thread" class="article-comment-link">Comments</a>
       
