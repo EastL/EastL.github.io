@@ -18,7 +18,7 @@ Theorem: If λ is the order of α, then λ|(p-1).proof: 這邊利用反證法，
 <meta property="og:image" content="http://eastl.github.io/images/Primitive_root_modulo_n.jpg">
 <meta property="og:image" content="http://eastl.github.io/images/divisor_sum.jpg">
 <meta property="og:image" content="http://eastl.github.io/images/generator_try_and_error.jpg">
-<meta property="og:updated_time" content="2015-11-07T09:33:18.000Z">
+<meta property="og:updated_time" content="2015-11-08T02:23:20.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Applied Cryptography-7">
 <meta name="twitter:description" content="來源：chapter 3(50 ~ 54)，chapter 4(1 ~ 18)
@@ -129,11 +129,19 @@ ga('send', 'pageview');
 <p>接著我們看實際的演算法，用剛剛的例子套用到這上面來看的話，他每次就是挑掉一個因數，然後測試其餘的乘積的次方是否為一：</p>
 <p><img src="/images/generator_try_and_error.jpg" alt=""></p>
 <p>有了這個演算法後我們就能找出質數p的generator了～但是實際上並沒有這麼順利，在現實生活中p是個很大的質數，所以要將p-1做質因數分解是很難的，那我們剛剛不就白解了嗎….實際運用上通常都是設定p-1等於兩倍的令一個質數，這樣質因數分解就是2跟剛剛設定的質數，之後會講到如何製造質數。</p>
+<hr>
+
+<p></p><h2> Introduction to Public-Key Cryptography </h2><br>終於要進到近代密碼系統了，近代密碼系統主要精神就是將資訊透過現階段的難題進行編碼，但這難題可以透過知道某些key information進而變為簡單的題目。下面將舉一個Knapsack problem來當例子：<p></p>
+<p></p><h4> Knapsack problem </h4><br>聖誕節快到了，聖誕老公公招集了一群小朋友到一間禮物房，裡面擺滿了各式各樣的禮物。在這間房間裡的每一個禮物上面都貼著一個標籤，上面寫著該禮物的重量，每個禮物重量都不相同。此時聖誕老公公拿了一個大袋子裡面裝滿了東西，他說：「這裡面都是你們在這間房間看的到的禮物，而且裡面並不會有重複一樣的禮物。但我只會告訴你們這個大袋子裡面裝的東西的總重量，如果有哪個小朋友知道這裡面總共有哪些禮物，那你就能得到這一袋」。<p></p>
+<p>突然覺得這個聖誕老公公有點壞心…其實這就是一個Knapsack problem，當然他還有其他很多種變型，這邊我們要用的是：知道總重量求個別物品。我們可以設計一個長度為t的亂數陣列，在這陣列當中取m個的總和，這時如果要將這m個總合求原本是哪些亂數就變成了Knapsack problem。那Knapsack problem要如何運用到加密呢？我們可以設計取m個的總和的取法就是message，那他們的總和就是密文。</p>
+<p>given <span>$(r_t, \ \ r_{t-1}, \ \ ... \ \ , \ \ r_1, \ \ r_0)$</span><!-- Has MathJax --> and <span>$(m_t, \ \ m_{t-1}, \ \ ... \ \ , \ \ m_1, \ \ m_0)$</span><!-- Has MathJax --> r就是剛剛講的亂數陣列，m就是取法，m為bit 陣列，$m_n$為1代表$r_n$要選，為0代表$r_n$不選。</p>
+<p>因此 <span>$C \ \ = \ \ \sum_{i=0}^{t} r_i \ \ \times \ \ m_i$</span><!-- Has MathJax --> C為密文，C非常容易計算出來，但是要從C推回m是個難題。但如果從C推回m為難題對於解密方不就也是難題了？因此我們必須設計一個key information來讓解密方知道key之後就不是難題：設計 <span>$r_i \ \ = \ \ 2^i \ \ \times \ \ K \ \ mod \ \ p \ \ (where \ \ p \ \ \geq \ \ 2^{t+1} )$</span><!-- Has MathJax -->，K就是key，對於知道key的人來說，這個亂數陣列的組合就會變成將C從十進位轉為二進位表示，因為亂數都是2的次方，那不知道K的人這問題依舊是一個難題。</p>
+<p>近代密碼系統就是建立在理論上解的出來，但計算上所耗費的時間成本會讓人不想去解這密碼，因此之後的量子電腦出現後很多的難題對他來說都變成簡單的題目，而加解密又是建立在這難題之上，所以量子電腦出現後可能密碼世界會再被改寫也不一定…</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/11/07/Applied-Cryptography-7/" data-id="cigopuysu000pcgonpq80pmy5" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/11/07/Applied-Cryptography-7/" data-id="cigpw8sya000peton5oqsq3i8" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/11/07/Applied-Cryptography-7/#disqus_thread" class="article-comment-link">Comments</a>
       
