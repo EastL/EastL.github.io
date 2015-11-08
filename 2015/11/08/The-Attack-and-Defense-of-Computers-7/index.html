@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>The Attack and Defense of Computers-7 | Justice Shadower</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="來源：Botnet (11 ~ 66)
+ Botnet Botnet是指一群被入侵的電腦，這些電腦可以同時被一個攻擊者下指令來操控，而這攻擊者又叫做botmaster，bot為被入侵的電腦。那botnet可以用來幹嘛呢？botnet所控制的電腦數量可大可小，大至五萬台bot都有可能，有五萬台的殭屍電腦相當於有五萬個不同的IP，這可不是開玩笑的，接下來來看運用botnet可以做什麼樣的攻擊。
+ Di">
+<meta property="og:type" content="article">
+<meta property="og:title" content="The Attack and Defense of Computers-7">
+<meta property="og:url" content="http://eastl.github.io/2015/11/08/The-Attack-and-Defense-of-Computers-7/index.html">
+<meta property="og:site_name" content="Justice Shadower">
+<meta property="og:description" content="來源：Botnet (11 ~ 66)
+ Botnet Botnet是指一群被入侵的電腦，這些電腦可以同時被一個攻擊者下指令來操控，而這攻擊者又叫做botmaster，bot為被入侵的電腦。那botnet可以用來幹嘛呢？botnet所控制的電腦數量可大可小，大至五萬台bot都有可能，有五萬台的殭屍電腦相當於有五萬個不同的IP，這可不是開玩笑的，接下來來看運用botnet可以做什麼樣的攻擊。
+ Di">
+<meta property="og:image" content="http://eastl.github.io/images/spamming_capacity.jpg">
+<meta property="og:image" content="http://eastl.github.io/images/advertisment.jpg">
+<meta property="og:image" content="http://eastl.github.io/images/IRC-network.jpg">
+<meta property="og:image" content="http://eastl.github.io/images/timeline_of_p2p.jpg">
+<meta property="og:updated_time" content="2015-11-08T14:48:18.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="The Attack and Defense of Computers-7">
+<meta name="twitter:description" content="來源：Botnet (11 ~ 66)
+ Botnet Botnet是指一群被入侵的電腦，這些電腦可以同時被一個攻擊者下指令來操控，而這攻擊者又叫做botmaster，bot為被入侵的電腦。那botnet可以用來幹嘛呢？botnet所控制的電腦數量可大可小，大至五萬台bot都有可能，有五萬台的殭屍電腦相當於有五萬個不同的IP，這可不是開玩笑的，接下來來看運用botnet可以做什麼樣的攻擊。
+ Di">
+<meta name="twitter:creator" content="@coolwuxing">
+  
+    <link rel="alternative" href="/atom.xml" title="Justice Shadower" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/images/cube.jpg">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+  <link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-43935113-3', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <div id="header">
+  <div id="banner">
+    <div id="cover"></div>
+    <div id="stars"></div>
+  </div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Justice Shadower</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">This world around you is not what it seems.</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://eastl.github.io"></form>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="outer">
+        <section id="main"><article id="post-The-Attack-and-Defense-of-Computers-7" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/11/08/The-Attack-and-Defense-of-Computers-7/" class="article-date">
+  <time datetime="2015-11-08T07:50:58.000Z" itemprop="datePublished">2015-11-08</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      The Attack and Defense of Computers-7
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>來源：<a href="http://www.csie.ncu.edu.tw/~hsufh/COURSES/FALL2015/2_1_Botnet.ppt" target="_blank" rel="external">Botnet (11 ~ 66)</a></p>
+<p></p><h2> Botnet </h2><br>Botnet是指一群被入侵的電腦，這些電腦可以同時被一個攻擊者下指令來操控，而這攻擊者又叫做botmaster，bot為被入侵的電腦。那botnet可以用來幹嘛呢？botnet所控制的電腦數量可大可小，大至五萬台bot都有可能，有五萬台的殭屍電腦相當於有五萬個不同的IP，這可不是開玩笑的，接下來來看運用botnet可以做什麼樣的攻擊。<p></p>
+<p></p><h4> Distributed Denial-of-Service Attacks </h4><br>這就是我們常聽到的DDos攻擊，他可以造成某個使用者無法使用某個服務，或者吃掉受害者使用的網路，甚至阻斷某個線上服務。<p></p>
+<p></p><h4> Spamming </h4><br>發送垃圾信件，當一個受害的電腦被開啟sock proxy，那麼他就會幫攻擊者傳送垃圾信件。在2010年全球所有的信件當中有89%都是垃圾信件，數字非常驚人，而Grum Botnet在當時發送的垃圾信件佔了全球垃圾信件的18%，是當時發送最多垃圾信件的botnet，同時也是全球第三大的botnet。<p></p>
+<p>不光是正常的電腦或手機會發送垃圾信件，現在大多數智慧聯網的家電都沒有做任何的防護措施，因此有蠻多的垃圾信件都是藉由家裡的冰箱冷氣等連上網的家電發送而來。攻擊者能利用這點，對他的botnet下達指令，同時送100000份的垃圾信件，這些垃圾信件可能來自電腦或是行動裝置甚至是家電，同時有100000個IP在發送垃圾信件，造成防禦者很難封鎖IP。而在所有的垃圾信件當中，來源是從家電發出的大概佔了所有垃圾信件的25%。下圖為各個botnet的垃圾信件發送量：</p>
+<p><img src="/images/spamming_capacity.jpg" alt=""></p>
+<p></p><h4> Sniffing Traffic </h4><br>當然有些bot可以拿來當作sniffer，觀察該網路的封包，如果受害電腦的網段中有使用沒有加密的軟體，那麼便有機會拿到敏感資訊。<p></p>
+<p></p><h4> Keylogging </h4><br>如果攻擊者想竊取一些bot的資料，那麼他就能夠使用keylogger，紀錄受害者的鍵盤歷史紀錄。<p></p>
+<p></p><h4> Spreading New Malware </h4><br>攻擊者也可以利用這些bot來傳送病毒或惡意程式，來擴充自己的botnet。<p></p>
+<p></p><h4> Installing Advertisement Addons </h4><br>這是個利用botnet賺錢的好方法XD google打廣告的方式如下：<p></p>
+<p><img src="/images/advertisment.jpg" alt=""></p>
+<p>只要有使用者點進上圖的有黃色廣告字眼的連結，那麼google就可以跟向google買廣告的人收費。通常google做法是給消費者一個額度，只要有人點進這個聯結就會扣取一些，直到額度被扣完後這個廣告就會被google移除。而google除了自己可以賺廣告費外，他也提供了<a href="https://www.google.com/adsense/start/?subid=ww-zh_tw-ha-adsense" target="_blank" rel="external">Google AdSense</a>，他能讓任何人都能賺廣告費用，申請後只要將google給你的廣告貼在你的部落格上，凡是只要從你的部落格點廣告進去的你就能收取一定的費用。</p>
+<p>由於google是靠他自己的service來判斷是從哪邊點進去的，他只能夠依靠使用者給的資訊來判斷，因此只要有人點進網址google就會算錢，而這些只點進去就跳走的人google沒辦法知道，只有跟google買廣告的人才知道他的網站流量，而這些廣告費用就這樣浪費掉了，這些損失就會落在買廣告的廠商。而這些廠商當然會不服器找google理論，而google為了維持名譽所以只要廠商提供證據google就照單全收，平均而言這些點擊次數有15%左右都是充人數用的，如果這問題有辦法解決的話google每年就不會平白損失了這些金額了。</p>
+<p>那攻擊者要如何利用botnet來點擊這些廣告呢？由於攻擊者擁有非常大量不同的IP，google根本無從判斷是否為同一個人，而攻擊者又能夠在受害電腦上安裝一些程式，使受害電腦的使用者只要一瀏覽網頁就會自動去點擊攻擊者指定連結，如此一來攻擊者的網站就會有數萬個IP點擊他的廣告了。</p>
+<p></p><h4> Manipulating online Polls/Games </h4><br>因為攻擊者擁有不同的IP，而現在大多的投票系統也都是用IP來區分使用者，因此攻擊者就能操控網路上的投票結果了。而現在的線上遊戲也都是用IP來區分不同玩家，所以當同一個人擁有多個IP可以做的事情也就更多了。<p></p>
+<p></p><h4> Mass Identity Theft </h4><br>這也是個嚴重的問題，當攻擊者擁有botnet，這時他能夠操作數萬台電腦，也就是說這數萬台電腦裡面所擁有的個資他都能夠掌控，搭配釣魚網站跟keylogger，攻擊者能蒐集到的個資非常可觀。<p></p>
+<hr>
+
+<p></p><h2> IRC (Internet Relay Chat)  </h2><br>IRC是個線上聊天平台，當你連上IRC server時會有很多個channel，這些channel有的是公開的有的不公開，你可以在特定的channel跟特定的群組聊天。下圖是IRC網路架構：<p></p>
+<p><img src="/images/IRC-network.jpg" alt=""></p>
+<p>圖中可以看到每一個client都會連到某個server，這些client當中可能存在一些bot。IRC bot是指一些script或是程式，他會像一般使用者一樣掛在線上，但他不會回你，他做的事情是等待控制者下達命令或者是做一些被預設指定的事情。而Command and Control (C&amp;C) server是botmaster所設定的，通常會利用C&amp;C server來對IRC bot下command，通常一個IRC botnet會加入某個channel來竊聽訊息。</p>
+<p>C&amp;C server大致可分為幾種類型，第一種是centralized model，他的特性是所有的IRC bot都會經由他下達命令，因此攻擊者會找一個頻寬較高的host來當C&amp;C server。一些知名的bot像是AgoBot、SDBot跟 RBot都屬於centralized model，因為此種模式botmaster容易控制他底下的bot，而且Messaging latencies較低，因此botmaster與這些botnet溝通上非常快速，發起攻擊會較順利。水能載舟亦能覆舟，此方法雖然便利，但同時也非常脆弱，因為botmaster所有的指令都要透過C&amp;C server來跟botnet溝通，因此C&amp;C server是最常有訊息出入的地方，因此如果要攻擊這個攻擊者的話打他的C&amp;C server就好了，而且只要C&amp;C server掛掉整個botnet都不能使喚了。</p>
+<p>由於centralized model有上述缺失因此有了另一種類型：P2P-Based C&amp;C Model。此種類型相較於centralized model之下較不易被發現，也比較不容易被摧毀。但相對的同時能夠下達命令的botnet也較少，能夠同時間對話的只有10 ~ 50個user，而對centralized model來說1000個botnet都算小數字；而P2P systems也沒有保證message delivery 與propagation latency，所以在發動攻擊時可能會有botnet loss掉訊息，導致攻擊失敗。雖然P2P-Based C&amp;C Model相對於centralized model有不少缺點，但因為他比較難被察覺與攻擊，因此被使用的趨勢逐漸升高，下圖是使用P2P protocol的時間軸：</p>
+<p><img src="/images/timeline_of_p2p.jpg" alt=""></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://eastl.github.io/2015/11/08/The-Attack-and-Defense-of-Computers-7/" data-id="cigql5qq90003rdon309q0cd2" class="article-share-link">Share</a>
+      
+        <a href="http://eastl.github.io/2015/11/08/The-Attack-and-Defense-of-Computers-7/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/The-Attack-and-Defense-of-Computers/">The Attack and Defense of Computers</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2015/11/07/Applied-Cryptography-7/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Applied Cryptography-7</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<section id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux-Operating-System/">Linux Operating System</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/The-Attack-and-Defense-of-Computers/">The Attack and Defense of Computers</a><span class="tag-list-count">5</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Applied-Cryptography/" style="font-size: 20px;">Applied Cryptography</a> <a href="/tags/Linux-Operating-System/" style="font-size: 15px;">Linux Operating System</a> <a href="/tags/The-Attack-and-Defense-of-Computers/" style="font-size: 10px;">The Attack and Defense of Computers</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a><span class="archive-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2015/11/08/The-Attack-and-Defense-of-Computers-7/">The Attack and Defense of Computers-7</a>
+          </li>
+        
+          <li>
+            <a href="/2015/11/07/Applied-Cryptography-7/">Applied Cryptography-7</a>
+          </li>
+        
+          <li>
+            <a href="/2015/11/05/The-Attack-and-Defense-of-Computers-6/">The Attack and Defense of Computers-6</a>
+          </li>
+        
+          <li>
+            <a href="/2015/11/01/Linux-Operating-System-6/">Linux Operating System-6</a>
+          </li>
+        
+          <li>
+            <a href="/2015/10/28/Applied-Cryptography-6/">Applied Cryptography-6</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <div id="footer">
+  
+  <div id='foot-stars'></div>
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2015 EastL<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</div>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+<script>
+  var disqus_shortname = 'EastL';
+  
+  var disqus_url = 'http://eastl.github.io/2015/11/08/The-Attack-and-Defense-of-Computers-7/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+  <script src="/fancybox/jquery.fancybox.pack.js" type="text/javascript"></script>
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+  </div>
+</body>
+</html>

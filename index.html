@@ -84,6 +84,70 @@ ga('send', 'pageview');
       <div class="outer">
         <section id="main">
   
+    <article id="post-The-Attack-and-Defense-of-Computers-7" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/11/08/The-Attack-and-Defense-of-Computers-7/" class="article-date">
+  <time datetime="2015-11-08T07:50:58.000Z" itemprop="datePublished">2015-11-08</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/11/08/The-Attack-and-Defense-of-Computers-7/">The Attack and Defense of Computers-7</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>來源：<a href="http://www.csie.ncu.edu.tw/~hsufh/COURSES/FALL2015/2_1_Botnet.ppt" target="_blank" rel="external">Botnet (11 ~ 66)</a></p>
+<p></p><h2> Botnet </h2><br>Botnet是指一群被入侵的電腦，這些電腦可以同時被一個攻擊者下指令來操控，而這攻擊者又叫做botmaster，bot為被入侵的電腦。那botnet可以用來幹嘛呢？botnet所控制的電腦數量可大可小，大至五萬台bot都有可能，有五萬台的殭屍電腦相當於有五萬個不同的IP，這可不是開玩笑的，接下來來看運用botnet可以做什麼樣的攻擊。<p></p>
+<p></p><h4> Distributed Denial-of-Service Attacks </h4><br>這就是我們常聽到的DDos攻擊，他可以造成某個使用者無法使用某個服務，或者吃掉受害者使用的網路，甚至阻斷某個線上服務。<p></p>
+<p></p><h4> Spamming </h4><br>發送垃圾信件，當一個受害的電腦被開啟sock proxy，那麼他就會幫攻擊者傳送垃圾信件。在2010年全球所有的信件當中有89%都是垃圾信件，數字非常驚人，而Grum Botnet在當時發送的垃圾信件佔了全球垃圾信件的18%，是當時發送最多垃圾信件的botnet，同時也是全球第三大的botnet。<p></p>
+<p>不光是正常的電腦或手機會發送垃圾信件，現在大多數智慧聯網的家電都沒有做任何的防護措施，因此有蠻多的垃圾信件都是藉由家裡的冰箱冷氣等連上網的家電發送而來。攻擊者能利用這點，對他的botnet下達指令，同時送100000份的垃圾信件，這些垃圾信件可能來自電腦或是行動裝置甚至是家電，同時有100000個IP在發送垃圾信件，造成防禦者很難封鎖IP。而在所有的垃圾信件當中，來源是從家電發出的大概佔了所有垃圾信件的25%。下圖為各個botnet的垃圾信件發送量：</p>
+<p><img src="/images/spamming_capacity.jpg" alt=""></p>
+<p></p><h4> Sniffing Traffic </h4><br>當然有些bot可以拿來當作sniffer，觀察該網路的封包，如果受害電腦的網段中有使用沒有加密的軟體，那麼便有機會拿到敏感資訊。<p></p>
+<p></p><h4> Keylogging </h4><br>如果攻擊者想竊取一些bot的資料，那麼他就能夠使用keylogger，紀錄受害者的鍵盤歷史紀錄。<p></p>
+<p></p><h4> Spreading New Malware </h4><br>攻擊者也可以利用這些bot來傳送病毒或惡意程式，來擴充自己的botnet。<p></p>
+<p></p><h4> Installing Advertisement Addons </h4><br>這是個利用botnet賺錢的好方法XD google打廣告的方式如下：<p></p>
+<p><img src="/images/advertisment.jpg" alt=""></p>
+<p>只要有使用者點進上圖的有黃色廣告字眼的連結，那麼google就可以跟向google買廣告的人收費。通常google做法是給消費者一個額度，只要有人點進這個聯結就會扣取一些，直到額度被扣完後這個廣告就會被google移除。而google除了自己可以賺廣告費外，他也提供了<a href="https://www.google.com/adsense/start/?subid=ww-zh_tw-ha-adsense" target="_blank" rel="external">Google AdSense</a>，他能讓任何人都能賺廣告費用，申請後只要將google給你的廣告貼在你的部落格上，凡是只要從你的部落格點廣告進去的你就能收取一定的費用。</p>
+<p>由於google是靠他自己的service來判斷是從哪邊點進去的，他只能夠依靠使用者給的資訊來判斷，因此只要有人點進網址google就會算錢，而這些只點進去就跳走的人google沒辦法知道，只有跟google買廣告的人才知道他的網站流量，而這些廣告費用就這樣浪費掉了，這些損失就會落在買廣告的廠商。而這些廠商當然會不服器找google理論，而google為了維持名譽所以只要廠商提供證據google就照單全收，平均而言這些點擊次數有15%左右都是充人數用的，如果這問題有辦法解決的話google每年就不會平白損失了這些金額了。</p>
+<p>那攻擊者要如何利用botnet來點擊這些廣告呢？由於攻擊者擁有非常大量不同的IP，google根本無從判斷是否為同一個人，而攻擊者又能夠在受害電腦上安裝一些程式，使受害電腦的使用者只要一瀏覽網頁就會自動去點擊攻擊者指定連結，如此一來攻擊者的網站就會有數萬個IP點擊他的廣告了。</p>
+<p></p><h4> Manipulating online Polls/Games </h4><br>因為攻擊者擁有不同的IP，而現在大多的投票系統也都是用IP來區分使用者，因此攻擊者就能操控網路上的投票結果了。而現在的線上遊戲也都是用IP來區分不同玩家，所以當同一個人擁有多個IP可以做的事情也就更多了。<p></p>
+<p></p><h4> Mass Identity Theft </h4><br>這也是個嚴重的問題，當攻擊者擁有botnet，這時他能夠操作數萬台電腦，也就是說這數萬台電腦裡面所擁有的個資他都能夠掌控，搭配釣魚網站跟keylogger，攻擊者能蒐集到的個資非常可觀。<p></p>
+<hr>
+
+<p></p><h2> IRC (Internet Relay Chat)  </h2><br>IRC是個線上聊天平台，當你連上IRC server時會有很多個channel，這些channel有的是公開的有的不公開，你可以在特定的channel跟特定的群組聊天。下圖是IRC網路架構：<p></p>
+<p><img src="/images/IRC-network.jpg" alt=""></p>
+<p>圖中可以看到每一個client都會連到某個server，這些client當中可能存在一些bot。IRC bot是指一些script或是程式，他會像一般使用者一樣掛在線上，但他不會回你，他做的事情是等待控制者下達命令或者是做一些被預設指定的事情。而Command and Control (C&amp;C) server是botmaster所設定的，通常會利用C&amp;C server來對IRC bot下command，通常一個IRC botnet會加入某個channel來竊聽訊息。</p>
+<p>C&amp;C server大致可分為幾種類型，第一種是centralized model，他的特性是所有的IRC bot都會經由他下達命令，因此攻擊者會找一個頻寬較高的host來當C&amp;C server。一些知名的bot像是AgoBot、SDBot跟 RBot都屬於centralized model，因為此種模式botmaster容易控制他底下的bot，而且Messaging latencies較低，因此botmaster與這些botnet溝通上非常快速，發起攻擊會較順利。水能載舟亦能覆舟，此方法雖然便利，但同時也非常脆弱，因為botmaster所有的指令都要透過C&amp;C server來跟botnet溝通，因此C&amp;C server是最常有訊息出入的地方，因此如果要攻擊這個攻擊者的話打他的C&amp;C server就好了，而且只要C&amp;C server掛掉整個botnet都不能使喚了。</p>
+<p>由於centralized model有上述缺失因此有了另一種類型：P2P-Based C&amp;C Model。此種類型相較於centralized model之下較不易被發現，也比較不容易被摧毀。但相對的同時能夠下達命令的botnet也較少，能夠同時間對話的只有10 ~ 50個user，而對centralized model來說1000個botnet都算小數字；而P2P systems也沒有保證message delivery 與propagation latency，所以在發動攻擊時可能會有botnet loss掉訊息，導致攻擊失敗。雖然P2P-Based C&amp;C Model相對於centralized model有不少缺點，但因為他比較難被察覺與攻擊，因此被使用的趨勢逐漸升高，下圖是使用P2P protocol的時間軸：</p>
+<p><img src="/images/timeline_of_p2p.jpg" alt=""></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://eastl.github.io/2015/11/08/The-Attack-and-Defense-of-Computers-7/" data-id="cigql5qq90003rdon309q0cd2" class="article-share-link">Share</a>
+      
+        <a href="http://eastl.github.io/2015/11/08/The-Attack-and-Defense-of-Computers-7/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/The-Attack-and-Defense-of-Computers/">The Attack and Defense of Computers</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-Applied-Cryptography-7" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2015/11/07/Applied-Cryptography-7/" class="article-date">
@@ -147,7 +211,7 @@ m \ \ mod \ \ q \ \ = \ \ ap \ \ mod \ \ q$$</span><!-- Has MathJax --><br></cen
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/11/07/Applied-Cryptography-7/" data-id="cigq7ebxi000pqgonybjxd5dr" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/11/07/Applied-Cryptography-7/" data-id="cigql5qry000rrdonqh6y1c0v" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/11/07/Applied-Cryptography-7/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -207,7 +271,7 @@ m \ \ mod \ \ q \ \ = \ \ ap \ \ mod \ \ q$$</span><!-- Has MathJax --><br></cen
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/11/05/The-Attack-and-Defense-of-Computers-6/" data-id="cigq7ebw90003qgondq705tzw" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/11/05/The-Attack-and-Defense-of-Computers-6/" data-id="cigql5qqg0006rdona7104ri1" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/11/05/The-Attack-and-Defense-of-Computers-6/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -279,7 +343,7 @@ m \ \ mod \ \ q \ \ = \ \ ap \ \ mod \ \ q$$</span><!-- Has MathJax --><br></cen
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/11/01/Linux-Operating-System-6/" data-id="cigq7ebws000cqgon0kqx3r82" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/11/01/Linux-Operating-System-6/" data-id="cigql5qr1000erdon1a7u013v" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/11/01/Linux-Operating-System-6/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -413,7 +477,7 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/28/Applied-Cryptography-6/" data-id="cigq7ebxn000rqgon7nlz9mmu" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/28/Applied-Cryptography-6/" data-id="cigql5qs3000trdonyj3ax7gy" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/28/Applied-Cryptography-6/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -495,7 +559,7 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/26/Linux-Operating-System-5/" data-id="cigq7ebww000fqgon6olykvef" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/26/Linux-Operating-System-5/" data-id="cigql5qr6000hrdon9a40cgaj" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/26/Linux-Operating-System-5/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -570,7 +634,7 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/25/The-Attack-and-Defense-of-Computers-5/" data-id="cigq7ebwe0006qgonhnzikrgp" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/25/The-Attack-and-Defense-of-Computers-5/" data-id="cigql5qql0008rdon41jxojti" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/25/The-Attack-and-Defense-of-Computers-5/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -663,7 +727,7 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/21/Applied-Cryptography-5/" data-id="cigq7ebxs000tqgon8u65ju5n" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/21/Applied-Cryptography-5/" data-id="cigql5qsc000vrdont7gxf913" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/21/Applied-Cryptography-5/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -757,7 +821,7 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/18/Linux-Operating-System-4/" data-id="cigq7ebwz000hqgonvu841rka" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/18/Linux-Operating-System-4/" data-id="cigql5qrc000jrdonmfnabfrs" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/18/Linux-Operating-System-4/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -826,78 +890,12 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/18/The-Attack-and-Defense-of-Computers-4/" data-id="cigq7ebwj0008qgonxbo60yo4" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/18/The-Attack-and-Defense-of-Computers-4/" data-id="cigql5qqq000ardon64rftykh" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/18/The-Attack-and-Defense-of-Computers-4/#disqus_thread" class="article-comment-link">Comments</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/The-Attack-and-Defense-of-Computers/">The Attack and Defense of Computers</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-Applied-Cryptography-4" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/10/17/Applied-Cryptography-4/" class="article-date">
-  <time datetime="2015-10-17T03:18:48.000Z" itemprop="datePublished">2015-10-17</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/10/17/Applied-Cryptography-4/">Applied Cryptography-4</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>來源：<a href="http://eastl.github.io/papers/Chapter2.pdf">chapter 2(51~54)</a>，<a href="http://staff.csie.ncu.edu.tw/yensm/lecture/Cryptography/Chapter-3%20Number%20Theory.pdf" target="_blank" rel="external">chapter 3(1~23)</a></p>
-<h2> CBC Mode attack </h2>
-
-<h4> concatenation attack  </h4><br>假設今天CBC不用來加密，它只用來進行MAC檢查碼計算，如果沒有處理好的話可能會遭受concatenation attack。它攻擊的樣貌是這樣的：假設今天有兩個合法字串P跟Q，P跟Q的檢查碼假如攻擊者都能接收的到，那麼攻擊者就能發送”類似”P+Q的字串給受害者，並且受害者接收到P+Q字串後經過MAC比對還是正確的。下面舉個實際例子：<br><br>假設P: <span>$(P_1, \ \ P_2, \ \ ,..., \ \ P_n)$</span><!-- Has MathJax -->，Q: <span>$(Q_1, \ \ Q_2, \ \ ,..., \ \ Q_t)$</span><!-- Has MathJax -->，P的檢查碼為<span>$MAC_1$</span><!-- Has MathJax -->，Q的檢查碼為<span>$MAC_2$</span><!-- Has MathJax -->，如下圖所示：<br><br><img src="/images/CBC_twostring.jpg" alt=""><br><br>假如今天傳送方將P跟Q用明文傳送給接收方，並且後面附帶檢查碼，那麼攻擊者能夠將P跟Q串在一起，並且讓這串P+Q的檢查碼為<span>$MAC_2$</span><!-- Has MathJax -->。如果要將這兩個字串串在一起應該會長的像下圖：<br><br><img src="/images/concenation1.jpg" alt=""><br><br>但這樣子串的話最後檢查碼一定不是<span>$MAC_2$</span><!-- Has MathJax -->，沒關係，既然他是明碼，我們可以在<span>$Q_1$</span><!-- Has MathJax -->上動手腳，假設他現在叫做x：<br><br><img src="/images/concenation2.jpg" alt=""><br><br>如果要讓最後的檢查碼為<span>$MAC_2$</span><!-- Has MathJax -->的話，那麼就要讓<span>$x \bigoplus MAC_1 \ \ = \ \ Q_1 \bigoplus IV$</span><!-- Has MathJax --> ，因此 <span>$x \ \ = \ \ Q_1 \bigoplus IV \bigoplus MAC_1$</span><!-- Has MathJax -->，如此一來攻擊者就能自行串接合法字串了。<br><br>假設傳送方知道了此種攻擊方法，那他就可能想說：阿我就把MAC在加密一次就好了啊~這樣攻擊者要XOR MAC時就崩潰了，沒錯，但是如果傳送方是直接用剛剛CBC計算的那把key加密，這樣攻擊者還是能夠自行連接字串的。假設今天攻擊者接收到的是加密過後的檢查碼，以及明文的字串P跟Q，如果要按照剛剛的攻擊的話必須要知道<span>$MAC_1$</span><!-- Has MathJax -->的明文才有辦法，但是其實也可以這樣子做，由於0 XOR任何數會等於任何數，所以我在P跟Q中間多加了0，這樣會發生什麼事呢？<br><br><img src="/images/concenation3.jpg" alt=""><br><br>沒錯，這樣字串串在一起CBC計算時就會變成了把加密後的<span>$MAC_1$</span><!-- Has MathJax -->拿去跟<span>$Q_1$</span><!-- Has MathJax -->做XOR了，而加密後的<span>$MAC_1$</span><!-- Has MathJax -->攻擊者也有，這麼一來問題就又回到了跟剛剛一樣的要如何把這整串檢查碼變為<span>$MAC_2$</span><!-- Has MathJax -->了。所以攻擊者的連接字串只要變成<span>$(P \ \ || \ \ 0 \ \ || \ \ (Q_1 \ \ &CirclePlus; \ \ IV \ \ &CirclePlus; \ \ E_K(MAC_1)), \ \ Q2,&hellip;, \ \ Qt)$</span><!-- Has MathJax -->，則最後的檢查碼就會是<span>$MAC_2$</span><!-- Has MathJax -->。<br><br>所以比較安全的做法是將檢查碼用另外一把key來加密在傳送出去。<br><br><h4> Attack-2: when CBC used as both encryption &amp; MAC with a same key “K” </h4><br>這邊要談的是當傳送密文時，你最後的檢查碼如果是直接將密文的最後一個cipher傳送出去，代表著你檢查碼跟加密用的是同一把key，這樣檢查碼基本上是無效的。因為攻擊者只要不改你的檢查碼改其他的cipher，你根本無從得知此訊息是否被竄改過(這是因為你收到的是密文，所以你並不知道正確的明文長什麼樣子，如果你將密文解密在加密一次，得到的會是一模一樣的密文)。因此你需要兩把key，一把拿來加密用一把拿來計算最後的檢查碼用。這樣子資料被竄改的話檢查碼會不一樣，因為檢查碼是從正確的明文計算得到的。<br><br>那如果拿第二把鑰匙只加密最後的檢查碼呢？其實仔細想想你最後的檢查碼如果是用原本加密那把key算出來的，你的用意應該是要辨別的出是否訊息被竄改過，而不是在MAC會不會被知道，所以一樣攻擊者不要改掉你的檢查碼就好了。<br><br><hr><br><br><h2> Number Theory </h2><br><br><h4> Infinitely Many Primes </h4><br>這邊要證明的是質數有無限多個…..<br><br>這邊利用反證法：假設質數有限個，總共有n個質數，<span>$\{ p_1, \ \ p_2, \ \ p_3, \ \ ... \ \ , \ \ p_n \}$</span><!-- Has MathJax -->，全宇宙就只有這些質數，那我今天做一件事情，把這些質數全部相乘再加一，<span>$P \ \ = \ \ p_1 \ \ \times \ \ p_2 \ \ \times \ \ p_3 \ \ \times \ \ ... \ \ \times \ \ p_n \ \ + \ \ 1$</span><!-- Has MathJax -->，照剛剛的定義P這個數一定不是質數，那P一定可以被質因數分解，但是問題來了，看一下P是怎麼算出來的，發現P是所有質數的乘積加一，也就是說不管除哪個質數都會餘一無法整除，所以P是剛剛那群質數以外的質數，那這樣就造成矛盾了，因此質數為無限多個。<br><br>中間的一些基本定義我就直接跳過了…<br><br><h4> Computing Inverse </h4><br>假設我給你一個區間[1, n-1]，在這區間內有一個值叫做a，a在這區間內的反元素為x，則我們定義ax mod n = 1。(由於加解密時我們不希望出現浮點數，因此我們用同餘的概念來解決反元素會出現浮點數的問題)。<br><br>證明：If gcd(a, n) = 1, then (ai mod n)≠(aj mod n) for each i, j such that 0 ≤ j &lt; i &lt; n.<br><br>這裡也是利用反證法：假設(ai mod n)=(aj mod n)，則(ai - aj) mod n = 0，故 n | a(i-j)，又gcd(a,n) = 1，所以 n | (i-j)，而題目一開始講0 ≤ j &lt; i &lt; n，矛盾，得證(ai mod n)≠(aj mod n)。<br><br>在上述證明可以得出一個結果：任一x在小於n的情況下，ax mod n都不會重覆，而x範圍是0 ~ n-1，ax mod n的範圍也是0 ~ n-1，那麼假設今天輸入的值是依序從0到n-1，那麼輸出的值就會是這n個值的重新排列。既然是重新排列那麼ax mod n = 1一定存在且唯一。<br><br><br>證明：If gcd(a, n) = t &gt; 1, then there does not exist x, 0 &lt; x &lt; n, such that ax mod n = 1<br><br>反證法：gcd(a, n) = t，所以 a = ta’, n = tn’，而ax mod n = 1，得到ax-1 = kn；ax - kn = 1, t(a’x-n’k) = 1，由於(a’x-n’k)為整數，所以t &lt; 1，而題目一開始說t &gt; 1，矛盾。<br><br><h4> Reduced set of residues and Euler totient function </h4>
-
-<p>Reduced set of residues(RSR) mod n：意思是在小於n的正整數中所有與n互質的整數集合。<br>ex: For n=10, the RSR mod 10 is {1,3,7,9}<br>For n=7, the RSR mod 7 is {1 2 3 4 5 6}<br>Euler totient function:φ(n)  φ(n)的意思是n的RSR個數。如果n為質數，則φ(n) = n - 1。</p>
-<p>證明(1)：For n = pq, p and q are primes, φ(n) = φ(p)φ(q) = (p-1)(q-1)<br>給定一集合s，此集合包含mod n之所有元素，s = {0, 1, 2, 3, … , pq-1}，現在要算出RSR，要扣掉與n不互質的數，由於n只有兩個因數q和p，而s裡面是p的倍數有P = {p, 2p, 3p, … , (q-1)p}，是q的倍數有Q = {q, 2q, 3q, … , (p-1)q}，故n的RSR為s - (Q + P + {0})，所以φ(n) = pq - [(p-1) + (q-1) + 1] = pq - p - q + 1 = (p-1)(q-1)。</p>
-<p>證明(2)：p為質數，<span>$\phi (p^k) \ \ = \ \ p^k \ \ - \ \ p^{k-1}$</span><!-- Has MathJax --><br>此證明與上述證明蠻相向的，給定集合s = {0, 1, 2, 3, …, <span>$p^k - 1$</span><!-- Has MathJax -->}，由於<span>$p^k$</span><!-- Has MathJax -->}的因數只有p，所以要扣掉與<span>$p^k$</span><!-- Has MathJax -->}不互質的只要扣掉p的倍數就好，需要被扣掉的集合為P = {p, 2p, 3p, … ,<span>$p^{k-1}p$</span><!-- Has MathJax -->}，因此<span>$p^k$</span><!-- Has MathJax -->的RSR為s - P，故<span>$\phi (p^k) \ \ = \ \ p^k \ \ - \ \ p^{k-1}$</span><!-- Has MathJax -->。</p>
-<p>證明(3)：<span>$n \ \ = \ \ p_1^{k_1}p_2^{k_2}p_3^{k_3}...p_r^{k_r}$</span><!-- Has MathJax -->, p is prime, then<span>$\phi (n) \ \ = \ \ \prod_{i=1}^r \ \ p_i^{k_i-1}(p_i \ \ - \ \ 1)$</span><!-- Has MathJax --><br>此證明結合了上述兩個證明：</p>
-<center> <span>$\phi (n) = \ \  \phi (p_1^{k_1}) \phi (p_2^{k_2}) ‧‧‧ \phi (p_r^{k_r})$</span><!-- Has MathJax --> —————–證明(1)</center><br><center> <span>$= \ \ (p_1^{k_1} \ \ - \ \ p_1^{k_1-1})(p_2^{k_2} \ \ - \ \ p_2^{k_2-1})...(p_r^{k_r} \ \ - \ \ p_r^{k_r-1})$</span><!-- Has MathJax --> -證明(2)</center><br><center> <span>$= \ \ [p_1^{k_1-1}(p_1 \ \ - \ \ 1)][p_2^{k_2-1}(p_2 \ \ - \ \ 1)]...[p_r^{k_r-1}(p_r \ \ - \ \ 1)]$</span><!-- Has MathJax -->  </center><br><center> <span>$= \ \ \prod_{i=1}^r \ \ p_i^{k_i-1}(p_i \ \ - \ \ 1)$</span><!-- Has MathJax --> </center>
-
-
-
-<p></p><h4> Fermat’s theorem and Euler’s Generalization  </h4><p></p>
-<p></p><h6> Fermat’s Theorem </h6><br>Let p be a prime. For every a such that gcd(a,p) = 1, then<p></p>
-<center> <span>$a^{p-1} \ \ mod \ \ p \ \ = \ \ 1$</span><!-- Has MathJax --> </center>
-
-<p></p><h6> Euler’s Generalization of  Fermat’ s Theorem </h6><br>For every a and n such that gcd(a,n) = 1, then<p></p>
-<center> <span>$a^{ \phi (n)} \ \ mod \ \ n \ \ = \ \ 1$</span><!-- Has MathJax --> </center>
-
-<p>證明：定義一集合為n的RSR，{ <span>$r_1, \ \ r_2, \ \ ... \ \ , \ \ r_{ \phi (n) }$</span><!-- Has MathJax --> }，則我們能利用類似compute inverse的證明，{ <span>$ar_1 \ \ mod \ \ n,.....,ar_{ \phi (n) } \ \ mod \ \ n$</span><!-- Has MathJax --> }為{ <span>$r_1, \ \ r_2, \ \ ... \ \ , \ \ r_{ \phi (n) }$</span><!-- Has MathJax --> }的重排，因此</p>
-<center> <span>$\prod_{i=1}^{ \phi (n) }(ar_i \ \ mod \ \ n) \ \ \equiv \ \ \prod_{i=1}^{ \phi (n) }r_i \ \ (mod \ \ n)$</span><!-- Has MathJax --> </center><br><center> <span>$(a^{ \phi (n)}) \prod_{i=1}^{ \phi (n) } r_i \ \ \equiv \ \ \prod_{i=1}^{ \phi (n) } r_i \ \ (mod \ \ n)$</span><!-- Has MathJax --> </center><br><center> <span>$\because gcd( \prod_{i=1}^{ \phi (n) }r_i, \ \ n ) \ \ = \ \ 1$</span><!-- Has MathJax --> </center><br><center> <span>$\therefore \prod_{i=1}^{ \phi (n) }r_i$</span><!-- Has MathJax --> 有反元素 </center><br><center> <span>$(a^{ \phi (n)}) \prod_{i=1}^{ \phi (n) } r_i (\prod_{i=1}^{ \phi (n) } r_i)^{-1} \equiv \ \ \prod_{i=1}^{ \phi (n) } r_i (\prod_{i=1}^{ \phi (n) } r_i)^{-1} \ \ (mod \ \ n)$</span><!-- Has MathJax --> </center><br><center> <span>$a^{ \phi (n) } \ \ \equiv \ \ 1 \ \ (mod \ \ n)$</span><!-- Has MathJax --> </center>
-
-<p>在上述的證明中有一點值得探討，之前證明的Computing Inverse是指小於n的所有數值帶入ai mod n的話會有重牌效果，但是這邊的{ <span>$r_1, \ \ r_2, \ \ ... \ \ , \ \ r_{ \phi (n) }$</span><!-- Has MathJax --> }只包含了n的RSR，所以老師額外的證明了當a &lt; n時此狀況還是能成立(由於之後的加密系統所用到的a都是小於n，大於n的狀況我之後有時間會去查)。由於a &lt; n，且a與n互質，故a也是n的RSR裡的元素：</p>
-<p>證明：Let a and b <span>$\in$</span><!-- Has MathJax --> RSR, then (a*b mod n) <span>$\in$</span><!-- Has MathJax --> RSR這邊利用反證法：</p>
-<center> <span>$r \ \ = \ \ (a*b \ \ mod \ \ n) \ \ \notin \ \ RSR \ \ and \ \ gcd(r,n) \ \ = \ \ t&gt;1$</span><!-- Has MathJax --> </center><br><center> <span>$\because ab \ \ = \ \ r \ \ + \ \ kn$</span><!-- Has MathJax --> </center><br><center> <span>$\therefore \frac{ab}{t} \ \ = \ \ \frac{r}{t} \ \ + \ \ k \frac{n}{t}$</span><!-- Has MathJax --> </center><br><center> so, t|a or t|b and t|n <span>$\Rightarrow a \ \ or \ \ b \ \ \notin \ \ RSR \ \ \rightarrow \leftarrow$</span><!-- Has MathJax --> </center><br><center>得證(a*b mod n) <span>$\in$</span><!-- Has MathJax --> RSR</center>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/17/Applied-Cryptography-4/" data-id="cigq7ebxy000vqgon6kxsnmc9" class="article-share-link">Share</a>
-      
-        <a href="http://eastl.github.io/2015/10/17/Applied-Cryptography-4/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a></li></ul>
 
     </footer>
   </div>
@@ -921,7 +919,7 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux-Operating-System/">Linux Operating System</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/The-Attack-and-Defense-of-Computers/">The Attack and Defense of Computers</a><span class="tag-list-count">4</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux-Operating-System/">Linux Operating System</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/The-Attack-and-Defense-of-Computers/">The Attack and Defense of Computers</a><span class="tag-list-count">5</span></li></ul>
     </div>
   </div>
 
@@ -939,7 +937,7 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a><span class="archive-list-count">2</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a><span class="archive-list-count">2</span></li></ul>
     </div>
   </div>
 
@@ -949,6 +947,10 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
     <h3 class="widget-title">Recents</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2015/11/08/The-Attack-and-Defense-of-Computers-7/">The Attack and Defense of Computers-7</a>
+          </li>
         
           <li>
             <a href="/2015/11/07/Applied-Cryptography-7/">Applied Cryptography-7</a>
@@ -964,10 +966,6 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
         
           <li>
             <a href="/2015/10/28/Applied-Cryptography-6/">Applied Cryptography-6</a>
-          </li>
-        
-          <li>
-            <a href="/2015/10/26/Linux-Operating-System-5/">Linux Operating System-5</a>
           </li>
         
       </ul>
