@@ -28,7 +28,7 @@ Quadratic Residue ($QR">
 <meta property="og:image" content="http://eastl.github.io/images/QR_NQR_system.jpg">
 <meta property="og:image" content="http://eastl.github.io/images/Rabin_VS_RSA.jpg">
 <meta property="og:image" content="http://eastl.github.io/images/generator_2.jpg">
-<meta property="og:updated_time" content="2015-10-30T14:59:31.000Z">
+<meta property="og:updated_time" content="2015-11-11T12:56:53.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Applied Cryptography-6">
 <meta name="twitter:description" content="來源：chapter 3 (33 ~ 49)
@@ -209,7 +209,7 @@ therefore  \\
 x+y \ \ \equiv \ \ 0 \ \ (mod \ \ q)  \\
 x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><br>所以只要四個根都知道的話就能拿不同pair的密碼來破解pq了。</p>
 <p>接著我們看另外一種情境：假設帳號是使用者可以決定，而且儲存帳密的表被攻擊者拿到而且有寫入的權限，那麼攻擊者就能夠自己設定密碼，將密碼平方後mod n，此數即為帳號，之後在將表格的密碼欄位寫為(1,1)，此時系統在查要與帳號相乘的數就會是1，因此攻擊者就可以自行創造帳號與密碼了。</p>
-<p>上述情境是在ID可易讓使用者選擇，而且帳密的表可以被寫入，那麼如果儲存帳密的表不能寫的情況，ID還是可以讓使用者自行選擇，還有辦法攻擊嗎？這題老師明講了是其中考題。</p>
+<p>上述情境是在ID可易讓使用者選擇，而且帳密的表可以被寫入，那麼如果儲存帳密的表不能寫的情況，ID還是可以讓使用者自行選擇，還有辦法攻擊嗎？這題老師明講了是其中考題。(其中考過了~補上<a href="/papers/attack-on-a-password-authentication.pdf">解答</a>)</p>
 <hr>
 
 <p></p><h2> Rabin Encryption V.S. RSA </h2><br>QR跟NQR的概念應用在Rabin Encryption，加密時將明文平方變為密文，解密時開根號回來為明文，安全性一樣是落在將合成數拆成兩質數相乘。<p></p>
@@ -224,7 +224,7 @@ x-y \ \ \equiv \ \ 0 \ \ (mod \ \ p)$$</span><!-- Has MathJax --><br></center><b
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/28/Applied-Cryptography-6/" data-id="cigql5qs3000trdonyj3ax7gy" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/28/Applied-Cryptography-6/" data-id="ciguta850000td8onwzi6j439" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/28/Applied-Cryptography-6/#disqus_thread" class="article-comment-link">Comments</a>
       

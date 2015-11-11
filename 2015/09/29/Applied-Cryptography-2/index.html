@@ -26,7 +26,7 @@ Lagrange polynomial interpolation定義：給定一集合，此集合有k+1個�
 <meta property="og:image" content="http://eastl.github.io/images/CFB_error.jpg">
 <meta property="og:image" content="http://eastl.github.io/images/MFB.jpg">
 <meta property="og:image" content="http://eastl.github.io/images/MFB_example.jpg">
-<meta property="og:updated_time" content="2015-10-10T15:41:42.000Z">
+<meta property="og:updated_time" content="2015-11-11T12:44:33.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Applied Cryptography-2">
 <meta name="twitter:description" content="來源 ： chapter 1 (24~28)，chapter 2 (1~22)，wiki(Lagrange polynomial)，Cracking a linear congruential generator
@@ -137,7 +137,7 @@ ga('send', 'pageview');
 <p>如上圖所示，這是一個4bit的LFSR，右邊電路的4bit暫存器就是我們要的亂數，他每次把右邊兩個bit拉出來做xor後，將暫存器往右shift一個bit，並將xor結果放到最左邊的bit，注意左邊的15個狀態，除了0000其餘都有在上面，因為只要出現全0之後狀態就都是0了 (0 xor 0 = 0)。在這張圖上是拉最後兩bit，那要如何知道拉哪些bit會讓亂數最亂呢？</p>
 <p>The max period of LFSR</p>
 <p>當一串數為亂數時，代表此串亂數不可預測，既然不可預測那這串數就沒有週期，換句話說這串數的週期為無限大。所以這邊要討論如何讓LFSR的週期最大。設定<span>$b_n$</span><!-- Has MathJax -->為二進位數，當第n個bit要拉下來作xor時，<span>$b_n$</span><!-- Has MathJax -->為1，反之不拉下來時<span>$b_n$</span><!-- Has MathJax -->為0，<span>$b(x) \ \ = \ \ b_4x^4 \ \ + \ \ b_3x^3 \ \ + \ \ b_2x^2 \ \ + \ \ b_1x \ \ + \ \ 1$</span><!-- Has MathJax -->，如果<span>$b(x)$</span><!-- Has MathJax -->是primitive多項式，則此LFSR週期最大，可產生m-sequence。<br>(Primitive polynomial之後上課會證明)   </p>
-<p>cryptanalysis(可預測)：LFSR若長度為n，則已知2n個連續output就可以得知後續所有(2n-1-2n)個output，解N元一次方程式。</p>
+<p>cryptanalysis(可預測)：LFSR若長度為n，則已知2n個連續output就可以得知後續所有($2^n$-1-2n)個output，解N元一次方程式。</p>
 <p>由於有上述預測攻擊，後來就有利用Nonlinear mapping的方法產生PN sequence。</p>
 <p><img src="/images/LFSR.jpg" alt="PN Sequence Generator"></p>
 <hr>
@@ -172,7 +172,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/09/29/Applied-Cryptography-2/" data-id="cigql5qsr0011rdonci6c2102" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/09/29/Applied-Cryptography-2/" data-id="ciguta85j0011d8onj8pe9ecu" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/09/29/Applied-Cryptography-2/#disqus_thread" class="article-comment-link">Comments</a>
       

@@ -21,7 +21,7 @@
 <meta property="og:image" content="http://eastl.github.io/images/concenation1.jpg">
 <meta property="og:image" content="http://eastl.github.io/images/concenation2.jpg">
 <meta property="og:image" content="http://eastl.github.io/images/concenation3.jpg">
-<meta property="og:updated_time" content="2015-10-17T16:53:04.000Z">
+<meta property="og:updated_time" content="2015-11-11T12:54:53.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Applied Cryptography-4">
 <meta name="twitter:description" content="來源：chapter 2(51~54)，chapter 3(1~23)
@@ -125,7 +125,7 @@ ga('send', 'pageview');
 
 <p>Reduced set of residues(RSR) mod n：意思是在小於n的正整數中所有與n互質的整數集合。<br>ex: For n=10, the RSR mod 10 is {1,3,7,9}<br>For n=7, the RSR mod 7 is {1 2 3 4 5 6}<br>Euler totient function:φ(n)  φ(n)的意思是n的RSR個數。如果n為質數，則φ(n) = n - 1。</p>
 <p>證明(1)：For n = pq, p and q are primes, φ(n) = φ(p)φ(q) = (p-1)(q-1)<br>給定一集合s，此集合包含mod n之所有元素，s = {0, 1, 2, 3, … , pq-1}，現在要算出RSR，要扣掉與n不互質的數，由於n只有兩個因數q和p，而s裡面是p的倍數有P = {p, 2p, 3p, … , (q-1)p}，是q的倍數有Q = {q, 2q, 3q, … , (p-1)q}，故n的RSR為s - (Q + P + {0})，所以φ(n) = pq - [(p-1) + (q-1) + 1] = pq - p - q + 1 = (p-1)(q-1)。</p>
-<p>證明(2)：p為質數，<span>$\phi (p^k) \ \ = \ \ p^k \ \ - \ \ p^{k-1}$</span><!-- Has MathJax --><br>此證明與上述證明蠻相向的，給定集合s = {0, 1, 2, 3, …, <span>$p^k - 1$</span><!-- Has MathJax -->}，由於<span>$p^k$</span><!-- Has MathJax -->}的因數只有p，所以要扣掉與<span>$p^k$</span><!-- Has MathJax -->}不互質的只要扣掉p的倍數就好，需要被扣掉的集合為P = {p, 2p, 3p, … ,<span>$p^{k-1}p$</span><!-- Has MathJax -->}，因此<span>$p^k$</span><!-- Has MathJax -->的RSR為s - P，故<span>$\phi (p^k) \ \ = \ \ p^k \ \ - \ \ p^{k-1}$</span><!-- Has MathJax -->。</p>
+<p>證明(2)：p為質數，<span>$\phi (p^k) \ \ = \ \ p^k \ \ - \ \ p^{k-1}$</span><!-- Has MathJax --><br>此證明與上述證明蠻相向的，給定集合s = {0, 1, 2, 3, …, <span>$p^k - 1$</span><!-- Has MathJax -->}，由於<span>$p^k$</span><!-- Has MathJax -->的因數只有p，所以要扣掉與<span>$p^k$</span><!-- Has MathJax -->不互質的只要扣掉p的倍數就好，需要被扣掉的集合為P = {p, 2p, 3p, … ,<span>$p^{k-1}p$</span><!-- Has MathJax -->}，因此<span>$p^k$</span><!-- Has MathJax -->的RSR為s - P，故<span>$\phi (p^k) \ \ = \ \ p^k \ \ - \ \ p^{k-1}$</span><!-- Has MathJax -->。</p>
 <p>證明(3)：<span>$n \ \ = \ \ p_1^{k_1}p_2^{k_2}p_3^{k_3}...p_r^{k_r}$</span><!-- Has MathJax -->, p is prime, then<span>$\phi (n) \ \ = \ \ \prod_{i=1}^r \ \ p_i^{k_i-1}(p_i \ \ - \ \ 1)$</span><!-- Has MathJax --><br>此證明結合了上述兩個證明：</p>
 <center> <span>$\phi (n) = \ \  \phi (p_1^{k_1}) \phi (p_2^{k_2}) ‧‧‧ \phi (p_r^{k_r})$</span><!-- Has MathJax --> —————–證明(1)</center><br><center> <span>$= \ \ (p_1^{k_1} \ \ - \ \ p_1^{k_1-1})(p_2^{k_2} \ \ - \ \ p_2^{k_2-1})...(p_r^{k_r} \ \ - \ \ p_r^{k_r-1})$</span><!-- Has MathJax --> -證明(2)</center><br><center> <span>$= \ \ [p_1^{k_1-1}(p_1 \ \ - \ \ 1)][p_2^{k_2-1}(p_2 \ \ - \ \ 1)]...[p_r^{k_r-1}(p_r \ \ - \ \ 1)]$</span><!-- Has MathJax -->  </center><br><center> <span>$= \ \ \prod_{i=1}^r \ \ p_i^{k_i-1}(p_i \ \ - \ \ 1)$</span><!-- Has MathJax --> </center>
 
@@ -148,7 +148,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/17/Applied-Cryptography-4/" data-id="cigql5qsi000xrdonh4jqzpk5" class="article-share-link">Share</a>
+      <a data-url="http://eastl.github.io/2015/10/17/Applied-Cryptography-4/" data-id="ciguta85b000xd8on5m90gg36" class="article-share-link">Share</a>
       
         <a href="http://eastl.github.io/2015/10/17/Applied-Cryptography-4/#disqus_thread" class="article-comment-link">Comments</a>
       
