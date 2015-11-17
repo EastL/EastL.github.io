@@ -4,7 +4,7 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-  <title>The Attack and Defense of Computers (1~3) | Justice Shadower</title>
+  <title>Category: Applied Cryptography | Justice Shadower</title>
   <meta name="description" content="This world around you is not what it seems." />
   <meta name="HandheldFriendly" content="True" />
   <meta name="MobileOptimized" content="320" />
@@ -260,7 +260,7 @@
                 
                 <div id="nav-container">
                     <div class="post-navbar" style="line-height: 63px;display:none">
-                        <li id="navbar-title"><a href="#">The Attack and Defense of Computers (1~3)</a></li>
+                        <li id="navbar-title"><a href="#">undefined</a></li>
                         <li id="navbar-toc" style="border-left: none">
                             <a style="padding-right: 15px">
                                 <span id="toc-content" >Introduction</span><i class="fa fa-chevron-down" ></i>
@@ -279,69 +279,248 @@
 
 
 <!-- -->
-<!--<body class="post-template">-->
+<!--<body class="home-template">-->
 <!---->
   
-
 <main class="content" role="main">
-    <article class="post" >
-    <span class="post-meta">
-                  <div class="tag-tile">
-                      
-                      
-                      <a data-pjax href='/tags/The-Attack-and-Defense-of-Computers/' style='color:#D5D5D5'>The Attack and Defense of Computers</a>
-                      
-                      
-                  </div>
-                <h1 class="post-title" style="margin: 14px 0;color:#50585D">The Attack and Defense of Computers (1~3)</h1>
 
-                    <div class="post-meta">
-                        Post on<span class="fa fa-clock-o"></span>
-                        <time datetime="2015-10-12T13:06:59.000Z"
-                              itemprop="datePublished">2015-10-12</time>
-                    </div>
-    </span>
+    
+    <article class="post">
 
-        <section class="post-content">
-            <p>來源：<a href="http://www.csie.ncu.edu.tw/~hsufh/COURSES/FALL2015/1_malware.ppt" target="_blank" rel="external">Malware: Logic Bombs, Key Logger, URL Injection, Browser Hijackers, Trojan Horses, and Spyware</a>，<a href="http://www.csie.ncu.edu.tw/~hsufh/COURSES/FALL2015/2_BOA.ppt" target="_blank" rel="external">Internet Worms, Buffer Overflow Attacks, and Heap Overflow Attacks (1~20)</a></p>
-<p>由於前兩次上課名詞解釋部分較多，這邊做筆記感覺也是把投影片再抄一次(汗…<br>所以就從第三堂課開始~~(絕對不是偷懶XDD</p>
-<p></p><h2> Buffer Overflow Attacks </h2><p></p>
-<p></p><h4> Stack Smashing attacks </h4><br>Stack Smashing attacks 簡單來說就是你預先寫好一段程式碼，然後將它放到正在執行的程式的stack裡，再利用正常流程會執行到的function，將它的return address換成你剛剛放進的位置。聽起來好像有點複雜，這邊一步一步講解。<p></p>
-<p>首先要先了解電腦中正在執行的程式在記憶體裡面是長什麼樣子。以下的例子環境是在linux 32bit的OS上：</p>
-<p><img src="/images/code_memory.jpg" alt="圖一"></p>
-<p>上圖左半部是程式的原始C檔，右邊是process正在執行時記憶體內容(注意這邊記憶體位置不是實體位置)，由於此攻擊是針對stack，所以要先懂stack(紫色區域)跟code(紅色區域)這兩塊在幹嘛。<br>當你編譯C程式成為執行檔，它會先轉成組合語言再變成binary，而那些binary就放在紅色框框的code裡面。而你所寫的程式轉成組合語言後，基本上做的事情就是一直存取stack，所以stack上放的東西是你要執行時會用到的資料。當你開始執行程式時，code段裡面會有eip指著你現在執行到哪一行指令，stack段會有esp指著stack目前的頂端。下面我寫一個簡單的C程式：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> w;</span><br><span class="line"><span class="keyword">int</span> x;</span><br><span class="line"><span class="keyword">int</span> y = <span class="number">5</span>;</span><br><span class="line"><span class="keyword">int</span> z = <span class="number">6</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">addTwoValues</span><span class="params">(<span class="keyword">int</span> first, <span class="keyword">int</span> second)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> first + second;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    w = <span class="number">1</span>;</span><br><span class="line">    x = <span class="number">2</span>;</span><br><span class="line">    y = <span class="number">3</span>;</span><br><span class="line">    z = <span class="number">4</span>;</span><br><span class="line">    z = addTwoValues(w, x);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>這裡宣告了四個global變數，然後main function裡面對這四個變數assign值後呼叫了addTwoValues function。接下來將此檔案編譯成執行檔用objdump -d來看：</p>
-<p><img src="/images/add_od.jpg" alt="objdump file"></p>
-<p>我只擷取了main function，最左邊(紅色)那排是程式碼所在的位置，也就是圖一中code那個地方，中間那欄(藍色)就是code裡面放的內容，由於binary不易閱讀，objdump很好心的幫我們翻譯成組合語言，在右邊那欄(黃色)。這邊可以看到組合語言做的事情都是在記憶體位置以及暫存器之間搬動值，而所有的push、pop以及接下來call的function都在stack裡面。<br>這邊額外補充一下老師所講的global變數儲存位置，在linux中C如果宣告了global變數，有初始值的會被放在圖一中的data段，沒有初始的會被放在bss段(BlockStarted by Symbol)，可以看一下剛剛的程式，w跟x沒有初始值，y跟z有初始值：</p>
-<p><img src="/images/cvsas.jpg" alt=""></p>
-<p>在原始C檔的main function裡，w,x,y,z分別assign了1,2,3,4，對應到組語可以看到有四個記憶體位置被放置了1,2,3,4。上圖中可以看到，w跟x是連續記憶體，但y開始並沒有連續下去，代表y跟z被放到另一個區段。會區分這兩個區段是因為沒有初始值的變數c compiler並不會將它存在執行檔裡，不然當你宣告了很多變數沒有初始值，而這些又要存在執行檔的話，執行檔會變的超大。</p>
-<p>接下來看stack frame裡面長什麼樣子，下圖中G function裡呼叫了H function，H function裡面可以讓使用者輸入字串。右邊的圖是在使用者輸入了abc之後產生的stack frame，最上面是G function的stack frame，接下來的b是G function push的參數要給H function用的，接著是return address，這邊的return address是給code段的eip用的，它裡面存的是G function裡呼叫H function之後下一行指令的位置，以這張圖來講就是add_g這個tag的位置，當H function執行完畢後eip才知道要回到哪行指令繼續執行下去。接下來就是ebp，ebp裡面存的位置是上一個呼叫此function的ebp，由於stack執行完後會有回收的動作，H function被回收掉時需要知道上一個ebp位置，而ebp暫存器又只有一個，所以就將它存在這個地方。ebp之後就是H function的local變數，首先是100個字元陣列c，這邊注意的是，雖然stack是由高位置往低位置長，但是local變數的低位置一樣是在低位置的地方，所以c[0]是在最下方，裡面存的是使用者輸入的a，以此類推a的上面是b，接著是c。最後是integer i的位置，目前這個位置是stack的頂端，所以esp會指著這個地方。</p>
-<p><img src="/images/sf.jpg" alt="stack frame"></p>
-<p>了解stack frame長什麼樣子後，接下來看如何攻擊，當使用者不是像剛剛那樣乖乖的輸入合法字串，而是輸入超過指定範圍的字串，也就是超過c陣列定義的100byte，輸入的資訊會在stack裡面繼續往上長，也就是會蓋掉剛剛所講的ebp，接下來蓋掉return address，此時H function執行完畢後會執行return address裡面存的位置的指令，如果使用者是隨意輸入的話他會找不到位置，然後就segment fault，但如果攻擊者是輸入將要執行的攻擊碼位置，那執行完H function後就會跳到攻擊者要執行的程式了。</p>
-<p><img src="/images/sf_attack.jpg" alt="stack smashing attack"></p>
-<p>上圖可以看到攻擊者先輸入一段Injected Code，之後在return address的地方輸入Injected Code的位置，攻擊便能執行。通常攻擊者會想辦法拿到shell，這樣之後才能做更多事情，所以Injected Code通常都是執行shell居多，而執行shell是以這支受害程式的權限去執行的，所以當此受害程式有root權限時，攻擊者就能夠利用此漏洞拿到root shell了。通常server上會掛一些程式，這些程式會提供使用者輸入，攻擊者會利用剛剛所講的漏洞執行shell並將它導到socket連回自己電腦，這樣就可以遠端拿到server的控制權。</p>
-<p>但此攻擊會遇到一個問題，攻擊者輸入的資訊是在stack上的某個變數，要如何知道這個變數距離return address多遠？如果攻擊者有受害程式的原始碼也是沒用的，因為大多數compiler都不會按照原始碼宣告變數的順序來排stack上的順序，再來，如果攻擊者擁有原始執行檔也是沒用的，server上執行時的stack可能跟你local執行時的stack長的不一樣，所以該如何知道變數跟return address的offset呢？</p>
-<p><img src="/images/buf_offset.jpg" alt="buffer offset"></p>
-<p>為了解決此問題，可以在快接近return address時，重複return address，雖然我不知道正確位置，但總有一個會蓋到真正的return address吧？再來我到底要從什麼地方開始注入我的攻擊碼呢？有一個東西叫做NOP，它的代碼是0x90，它做的事情是不做任何事情跳到下一行指令，這下好辦拉，我可以在我的攻擊碼前面加一堆NOP，這樣我的return address只要跳到這堆NOP，就可以一路滑到我的攻擊代碼了。因為之後防禦者知道有這種攻擊，在偵測病毒時會偵測有無0x90，攻擊者因而發展出其他的NOP sled，像是0x41、0x43，或者是mutiple byte的，像是0x0d0d0d0d，它做的事情是跟暫存器eax做or，對攻擊者來說也算沒做事情，加一堆0x0d後最後再補幾個NOP就能到達攻擊者的攻擊程式了。這邊有個<a href="https://www.onlinedisassembler.com/odaweb/" target="_blank" rel="external">網站</a>可以將十六進位碼轉成組合語言。</p>
+        <header class="post-header">
+            <div class="tag-tile">
+                
+                
+                <a data-pjax href='/tags/Applied-Cryptography/'>Applied Cryptography</a>
+                
+                
+                <span class="fa fa-bookmark" style="float:right;color:#f39c12"></span>
+            </div>
+            <h1 class="post-title"><a data-pjax href="/2015/11/07/Applied-Cryptography-7/">Applied Cryptography-7</a>
+            </h1>
 
+            <div class="post-meta">
+                Post on<span class="fa fa-clock-o"></span>
+                <time datetime="2015-11-07T06:00:25.000Z"
+                      itemprop="datePublished">2015-11-07</time>
+            </div>
+        </header>
+        <section class="post-excerpt">
+            <p>
+                
+                來源：chapter 3(50 ~ 54)，chapter 4(1 ~ 18)
+ Primitive Root 上禮拜有講到generator的概念，剛好我自己補充的東西也有提到order的概念，這邊會統整一下所有的概念。
+Theorem: If λ is the order of α, then λ|(p-1).proof: 這邊利用反證法，令 λ 不是p-1的因數，則 p-1 = t*λ + k，1≤ k ≤ λ −1，則：
+ $\
+                
+            </p>
+            
         </section>
-        <hr/>
-        <nav class="pagination" style="width:auto" role="pagination">
-            
-            <a data-pjax class="newer-posts" href="/2015/10/14/Linux-Operating-System-1/">← Prev Post</a>
-            
-            <a class="share-button" data-original-title title>Share this Post</a>
-            
-            <a data-pjax class="older-posts" href="/2015/10/10/Applied-Cryptography-3/">Next Post →</a>
-            
-        </nav>
-        <br/>
-        <br/>
-        <section id="comment">
-            <div id="comment-box"></div>
-        </section>
-
-
     </article>
+    
+    <article class="post">
+
+        <header class="post-header">
+            <div class="tag-tile">
+                
+                
+                <a data-pjax href='/tags/Applied-Cryptography/'>Applied Cryptography</a>
+                
+                
+                <span class="fa fa-bookmark" style="float:right;color:#f39c12"></span>
+            </div>
+            <h1 class="post-title"><a data-pjax href="/2015/10/28/Applied-Cryptography-6/">Applied Cryptography-6</a>
+            </h1>
+
+            <div class="post-meta">
+                Post on<span class="fa fa-clock-o"></span>
+                <time datetime="2015-10-28T08:25:35.000Z"
+                      itemprop="datePublished">2015-10-28</time>
+            </div>
+        </header>
+        <section class="post-excerpt">
+            <p>
+                
+                來源：chapter 3 (33 ~ 49)
+上禮拜最後講中國餘數定理，可以將大世界的複雜計算分給很多個小世界，小世界計算完後透過中國餘數定理merge回來，接下來的二次剩餘將會運用到中國餘數定理。
+ Quadratic Residues Quadratic Residues探討在模數世界開根號的問題，既然是開根號就分為兩種：可以開根號跟不能開根號。
+
+Quadratic Residue ($QR_p$)定義p為質數，若某數平方後mod
+                
+            </p>
+            
+        </section>
+    </article>
+    
+    <article class="post">
+
+        <header class="post-header">
+            <div class="tag-tile">
+                
+                
+                <a data-pjax href='/tags/Applied-Cryptography/'>Applied Cryptography</a>
+                
+                
+                <span class="fa fa-bookmark" style="float:right;color:#f39c12"></span>
+            </div>
+            <h1 class="post-title"><a data-pjax href="/2015/10/21/Applied-Cryptography-5/">Applied Cryptography-5</a>
+            </h1>
+
+            <div class="post-meta">
+                Post on<span class="fa fa-clock-o"></span>
+                <time datetime="2015-10-21T13:20:38.000Z"
+                      itemprop="datePublished">2015-10-21</time>
+            </div>
+        </header>
+        <section class="post-excerpt">
+            <p>
+                
+                來源：chapter 3(23~32)，Number Theory II (3 ~ 4)
+在上一次的尤拉函數中，我們推得了費瑪理論的通式$a^{ \phi (n) } \ \ mod \ \ n \ \ = \ \ 1 \ \ if \ \ gcd(a,n)=1$，這個式子對於餘數系統的乘法反元素非常有幫助，以上面例子來說，a在餘數系統中的乘法反元素就是$a^{ \phi (n) - 1}$，但如果考慮到計算量的話我們會想讓a的指數越小
+                
+            </p>
+            
+        </section>
+    </article>
+    
+    <article class="post">
+
+        <header class="post-header">
+            <div class="tag-tile">
+                
+                
+                <a data-pjax href='/tags/Applied-Cryptography/'>Applied Cryptography</a>
+                
+                
+                <span class="fa fa-bookmark" style="float:right;color:#f39c12"></span>
+            </div>
+            <h1 class="post-title"><a data-pjax href="/2015/10/17/Applied-Cryptography-4/">Applied Cryptography-4</a>
+            </h1>
+
+            <div class="post-meta">
+                Post on<span class="fa fa-clock-o"></span>
+                <time datetime="2015-10-17T03:18:48.000Z"
+                      itemprop="datePublished">2015-10-17</time>
+            </div>
+        </header>
+        <section class="post-excerpt">
+            <p>
+                
+                來源：chapter 2(51~54)，chapter 3(1~23)
+ CBC Mode attack 
+
+ concatenation attack  假設今天CBC不用來加密，它只用來進行MAC檢查碼計算，如果沒有處理好的話可能會遭受concatenation attack。它攻擊的樣貌是這樣的：假設今天有兩個合法字串P跟Q，P跟Q的檢查碼假如攻擊者都能接收的到，那麼攻擊者就能發送”類似”P+Q的字串給受害者，並且受害者接收到P+
+                
+            </p>
+            
+        </section>
+    </article>
+    
+    <article class="post">
+
+        <header class="post-header">
+            <div class="tag-tile">
+                
+                
+                <a data-pjax href='/tags/Applied-Cryptography/'>Applied Cryptography</a>
+                
+                
+                <span class="fa fa-bookmark" style="float:right;color:#f39c12"></span>
+            </div>
+            <h1 class="post-title"><a data-pjax href="/2015/10/10/Applied-Cryptography-3/">Applied Cryptography-3</a>
+            </h1>
+
+            <div class="post-meta">
+                Post on<span class="fa fa-clock-o"></span>
+                <time datetime="2015-10-10T15:38:40.000Z"
+                      itemprop="datePublished">2015-10-10</time>
+            </div>
+        </header>
+        <section class="post-excerpt">
+            <p>
+                
+                來源：chapter 2 (23~51)
+在進入Block Cipher之前，先來思考一個問題：
+ Question: 加解密，錯誤更正碼(encoder、decoder)，壓縮先後順序 假設今天你要將資料m透過網路傳給別人，但資料量太大必須壓縮，而且資料必須保密不能讓第三者看到因此要加密，並且需要保證接收方收到的資料正確無誤所以你希望加個錯誤更正碼降低接收方的錯誤率，問題來了，這三道程序的先後順序要如何排列呢？如果不按照”正確”的程序
+                
+            </p>
+            
+        </section>
+    </article>
+    
+    <article class="post">
+
+        <header class="post-header">
+            <div class="tag-tile">
+                
+                
+                <a data-pjax href='/tags/Applied-Cryptography/'>Applied Cryptography</a>
+                
+                
+                <span class="fa fa-bookmark" style="float:right;color:#f39c12"></span>
+            </div>
+            <h1 class="post-title"><a data-pjax href="/2015/09/29/Applied-Cryptography-2/">Applied Cryptography-2</a>
+            </h1>
+
+            <div class="post-meta">
+                Post on<span class="fa fa-clock-o"></span>
+                <time datetime="2015-09-28T21:56:36.000Z"
+                      itemprop="datePublished">2015-09-29</time>
+            </div>
+        </header>
+        <section class="post-excerpt">
+            <p>
+                
+                來源 ： chapter 1 (24~28)，chapter 2 (1~22)，wiki(Lagrange polynomial)，Cracking a linear congruential generator
+在前一篇提到金鑰管理，是利用方程式上的點來分散管理，那麼要如何將點還原成方程式呢？
+Lagrange polynomial interpolation定義：給定一集合，此集合有k+1個不重複的點 
+ $(x_0,y_0) \ 
+                
+            </p>
+            
+        </section>
+    </article>
+    
+    <article class="post">
+
+        <header class="post-header">
+            <div class="tag-tile">
+                
+                
+                <a data-pjax href='/tags/Applied-Cryptography/'>Applied Cryptography</a>
+                
+                
+                <span class="fa fa-bookmark" style="float:right;color:#f39c12"></span>
+            </div>
+            <h1 class="post-title"><a data-pjax href="/2015/09/28/Applied-Cryptography-1/">Applied Cryptography-1</a>
+            </h1>
+
+            <div class="post-meta">
+                Post on<span class="fa fa-clock-o"></span>
+                <time datetime="2015-09-28T03:21:06.000Z"
+                      itemprop="datePublished">2015-09-28</time>
+            </div>
+        </header>
+        <section class="post-excerpt">
+            <p>
+                
+                來源 ： chapter 1 (1~23 and 29), Prove equivalence of Diffie-Hellman shared secret
+對稱式加密系統(Symmetric Key Cryptography, SKC)此加密系統特點是加解密所用的key為同一把，所以又稱為對稱式加密。
+
+對稱式加密系統主要加密方式有兩種：取代與重排
+
+問題：(1)疊了很多個取代後，能否只用一個取代器來達到相同效果?(2)重排與取代相
+                
+            </p>
+            
+        </section>
+    </article>
+    
+    <nav class="pagination" role="pagination">
+        
+        <span class="page-number">Page 1 of 1</span>
+        
+    </nav>
 </main>
 
 
@@ -393,7 +572,7 @@
         var dsq = document.createElement('script');
         dsq.type = 'text/javascript';
         dsq.async = true;
-        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
     }());
 </script>
@@ -401,5 +580,35 @@
 
 
 
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
 </body>
 </html>
