@@ -1,127 +1,288 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-  <meta charset="utf-8">
-  
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
   <title>Linux Operating System-2 | Justice Shadower</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="來源：Introduction (64~98)
-Linux Source Code Tree Overview跟System Boot up我就跳過了…
- x32 Calling Conventions 這邊要介紹的是，當C呼叫一個function時參數的傳遞。關於stack frame我在網路攻防這邊有提到一些基礎知識，重複的在這邊就不再贅述。假設今天G function要呼叫H functio">
-<meta property="og:type" content="article">
-<meta property="og:title" content="Linux Operating System-2">
-<meta property="og:url" content="http://eastl.github.io/2015/10/15/Linux-Operating-System-2/index.html">
-<meta property="og:site_name" content="Justice Shadower">
-<meta property="og:description" content="來源：Introduction (64~98)
-Linux Source Code Tree Overview跟System Boot up我就跳過了…
- x32 Calling Conventions 這邊要介紹的是，當C呼叫一個function時參數的傳遞。關於stack frame我在網路攻防這邊有提到一些基礎知識，重複的在這邊就不再贅述。假設今天G function要呼叫H functio">
-<meta property="og:image" content="http://eastl.github.io/images/callerdump.jpg">
-<meta property="og:image" content="http://eastl.github.io/images/call_stack_frame.jpg">
-<meta property="og:image" content="http://eastl.github.io/images/calleedump.jpg">
-<meta property="og:image" content="http://eastl.github.io/images/return_conv.jpg">
-<meta property="og:image" content="http://eastl.github.io/images/x64_call.jpg">
-<meta property="og:image" content="http://eastl.github.io/images/x64_callerstack.jpg">
-<meta property="og:image" content="http://eastl.github.io/images/x64_callee.jpg">
-<meta property="og:image" content="http://eastl.github.io/images/x64_calleestack.jpg">
-<meta property="og:image" content="http://eastl.github.io/images/IA32_address_space.jpg">
-<meta property="og:image" content="http://eastl.github.io/images/cannonical.jpg">
-<meta property="og:updated_time" content="2015-10-17T04:41:18.000Z">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Linux Operating System-2">
-<meta name="twitter:description" content="來源：Introduction (64~98)
-Linux Source Code Tree Overview跟System Boot up我就跳過了…
- x32 Calling Conventions 這邊要介紹的是，當C呼叫一個function時參數的傳遞。關於stack frame我在網路攻防這邊有提到一些基礎知識，重複的在這邊就不再贅述。假設今天G function要呼叫H functio">
-<meta name="twitter:creator" content="@coolwuxing">
-  
-    <link rel="alternative" href="/atom.xml" title="Justice Shadower" type="application/atom+xml">
+  <meta name="description" content="This world around you is not what it seems." />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" type="text/css" href="/css/component.css" />
+  <link rel="stylesheet" type="text/css" href="/css/screen.css" />
+  <meta name="generator" content="Justice Shadower">
+  <script src="http://static.duoshuo.com/embed.js"></script>
   
   
-    <link rel="icon" href="/images/cube.jpg">
   
-  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
-  <link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
-  <link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
-  <link rel="stylesheet" href="/css/style.css" type="text/css">
-  
-<!-- Google Analytics -->
-<script type="text/javascript">
-(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-ga('create', 'UA-43935113-3', 'auto');
-ga('send', 'pageview');
-
-</script>
-<!-- End Google Analytics -->
-
+  
 
 </head>
 <body>
-  <div id="container">
-    <div id="wrap">
-      <div id="header">
-  <div id="banner">
-    <div id="cover"></div>
-    <div id="stars"></div>
-  </div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">Justice Shadower</a>
-      </h1>
-      
-        <h2 id="subtitle-wrap">
-          <a href="/" id="subtitle">This world around you is not what it seems.</a>
-        </h2>
-      
-    </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
-        
-          <a class="main-nav-link" href="/">Home</a>
-        
-          <a class="main-nav-link" href="/archives">Archives</a>
-        
-      </nav>
-      <nav id="sub-nav">
-        
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
-        
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://eastl.github.io"></form>
-      </div>
-    </div>
-  </div>
-</div>
-      <div class="outer">
-        <section id="main"><article id="post-Linux-Operating-System-2" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/10/15/Linux-Operating-System-2/" class="article-date">
-  <time datetime="2015-10-15T12:04:06.000Z" itemprop="datePublished">2015-10-15</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 class="article-title" itemprop="name">
-      Linux Operating System-2
-    </h1>
+<div class="container">
+    <div class="mp-pusher" id="mp-pusher">
+        <i id="scroll-up" class="fa fa-angle-up"></i>
+        <nav id="mp-menu" class="mp-menu">
+            <div class="mp-level">
+                <a data-pjax class="back-home" style="font-size: 20px" href="/"><h2 ><i class="fa fa-home"></i>
+                        Home</h2></a>
+                <ul class="first-level">
+                    <li>
+                        <a class="fa fa-archive" href="#"><i class="fa fa-angle-left">
+                            </i>&nbsp;&nbsp;Archive</a>
+                        <div class="mp-level page-list">
+                            <h2 ><i class="fa fa-archive"></i>
+                                Archive</h2>
+                            <a class="mp-back" href="#">back</a>
+                            <form id="search-form" action="">
+                                <input type="text" class="search search-archive" placeholder="Search.."/>
+                            </form>
+                            <ul>
+                                <div class="mp-scroll">
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2015/11/15/Linux-Operating-System-7/">Linux Operating System-7</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2015/11/08/The-Attack-and-Defense-of-Computers-7/">The Attack and Defense of Computers-7</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2015/11/07/Applied-Cryptography-7/">Applied Cryptography-7</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2015/11/05/The-Attack-and-Defense-of-Computers-6/">The Attack and Defense of Computers-6</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2015/11/01/Linux-Operating-System-6/">Linux Operating System-6</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2015/10/28/Applied-Cryptography-6/">Applied Cryptography-6</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2015/10/26/Linux-Operating-System-5/">Linux Operating System-5</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2015/10/25/The-Attack-and-Defense-of-Computers-5/">The Attack and Defense of Computers-5</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2015/10/21/Applied-Cryptography-5/">Applied Cryptography-5</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2015/10/18/Linux-Operating-System-4/">Linux Operating System-4</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2015/10/18/The-Attack-and-Defense-of-Computers-4/">The Attack and Defense of Computers-4</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2015/10/17/Applied-Cryptography-4/">Applied Cryptography-4</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2015/10/16/Linux-Operating-System-3/">Linux Operating System-3</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2015/10/15/Linux-Operating-System-2/">Linux Operating System-2</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2015/10/14/Linux-Operating-System-1/">Linux Operating System-1</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2015/10/12/The-Attack-and-Defense-of-Computers-1-3/">The Attack and Defense of Computers (1~3)</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2015/10/10/Applied-Cryptography-3/">Applied Cryptography-3</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2015/09/29/Applied-Cryptography-2/">Applied Cryptography-2</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2015/09/28/Applied-Cryptography-1/">Applied Cryptography-1</a>
+                                </li>
+                                
+                                </div>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <a class="fa fa-copy" href="#"><i class="fa fa-angle-left">
+                            </i>&nbsp;&nbsp;Categories</a>
+
+                        <div class="mp-level page-list">
+                            <h2 ><i class="fa fa-copy"></i>
+                                Categories</h2>
+                            <a class="mp-back" href="#">back</a>
+                            <form id="search-form" action="">
+                                <input type="text" class="search search-category" placeholder="Search.."/>
+                            </form>
+                            <ul>
+                                <div class="mp-scroll">
+                                
+                                </div>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <a class="fa fa-tags" href="#"><i class="fa fa-angle-left">
+                            </i>&nbsp;&nbsp;Tags</a>
+                        <div class="mp-level page-list">
+                            <h2 ><i class="fa fa-tags"></i>
+                                Tags</h2>
+                            <a class="mp-back" href="#">back</a>
+                            <form id="search-form" action="">
+                                <input type="text" class="search search-tag" placeholder="Search.."/>
+                            </form>
+                            <ul>
+                                <div class="mp-scroll">
+                                
+                                <li class="search-tag-li mp-pjax">
+                                    <a href="/tags/Applied-Cryptography/">&nbsp;&nbsp;&nbsp;Applied Cryptography</a>
+                                    <small>7</small>
+                                </li>
+                                
+                                <li class="search-tag-li mp-pjax">
+                                    <a href="/tags/Linux-Operating-System/">&nbsp;&nbsp;&nbsp;Linux Operating System</a>
+                                    <small>7</small>
+                                </li>
+                                
+                                <li class="search-tag-li mp-pjax">
+                                    <a href="/tags/The-Attack-and-Defense-of-Computers/">&nbsp;&nbsp;&nbsp;The Attack and Defense of Computers</a>
+                                    <small>5</small>
+                                </li>
+                                
+                                </div>
+                            </ul>
+                        </div>
+                    </li>
+                    
+                    <li class="mp-pjax"><a class="fa fa-user" href="http://adl.tw/~eastl/" target="_blank">&nbsp;&nbsp;&nbsp;About me</a></li>
+                    <li><a class="fa fa-github" href="https://github.com/EastL" target = "_blank">&nbsp;&nbsp;&nbsp;Github</a></li>
+
+                </ul>
+
+            </div>
+        </nav>
+        <div id="pjax">
+            <div class="pjax-hidden" style="display: none">
+                
+                    <a  data-pjax href="/2015/11/15/Linux-Operating-System-7/">Linux Operating System-7</a>
+                
+                    <a  data-pjax href="/2015/11/08/The-Attack-and-Defense-of-Computers-7/">The Attack and Defense of Computers-7</a>
+                
+                    <a  data-pjax href="/2015/11/07/Applied-Cryptography-7/">Applied Cryptography-7</a>
+                
+                    <a  data-pjax href="/2015/11/05/The-Attack-and-Defense-of-Computers-6/">The Attack and Defense of Computers-6</a>
+                
+                    <a  data-pjax href="/2015/11/01/Linux-Operating-System-6/">Linux Operating System-6</a>
+                
+                    <a  data-pjax href="/2015/10/28/Applied-Cryptography-6/">Applied Cryptography-6</a>
+                
+                    <a  data-pjax href="/2015/10/26/Linux-Operating-System-5/">Linux Operating System-5</a>
+                
+                    <a  data-pjax href="/2015/10/25/The-Attack-and-Defense-of-Computers-5/">The Attack and Defense of Computers-5</a>
+                
+                    <a  data-pjax href="/2015/10/21/Applied-Cryptography-5/">Applied Cryptography-5</a>
+                
+                    <a  data-pjax href="/2015/10/18/Linux-Operating-System-4/">Linux Operating System-4</a>
+                
+                    <a  data-pjax href="/2015/10/18/The-Attack-and-Defense-of-Computers-4/">The Attack and Defense of Computers-4</a>
+                
+                    <a  data-pjax href="/2015/10/17/Applied-Cryptography-4/">Applied Cryptography-4</a>
+                
+                    <a  data-pjax href="/2015/10/16/Linux-Operating-System-3/">Linux Operating System-3</a>
+                
+                    <a  data-pjax href="/2015/10/15/Linux-Operating-System-2/">Linux Operating System-2</a>
+                
+                    <a  data-pjax href="/2015/10/14/Linux-Operating-System-1/">Linux Operating System-1</a>
+                
+                    <a  data-pjax href="/2015/10/12/The-Attack-and-Defense-of-Computers-1-3/">The Attack and Defense of Computers (1~3)</a>
+                
+                    <a  data-pjax href="/2015/10/10/Applied-Cryptography-3/">Applied Cryptography-3</a>
+                
+                    <a  data-pjax href="/2015/09/29/Applied-Cryptography-2/">Applied Cryptography-2</a>
+                
+                    <a  data-pjax href="/2015/09/28/Applied-Cryptography-1/">Applied Cryptography-1</a>
+                
+                
+                
+                    <a data-pjax href="/tags/Applied-Cryptography/">&nbsp;&nbsp;Applied Cryptography</a>
+                
+                    <a data-pjax href="/tags/Linux-Operating-System/">&nbsp;&nbsp;Linux Operating System</a>
+                
+                    <a data-pjax href="/tags/The-Attack-and-Defense-of-Computers/">&nbsp;&nbsp;The Attack and Defense of Computers</a>
+                
+                <a data-pjax class="fa fa-user" href="http://adl.tw/~eastl/" target="_blank">&nbsp;&nbsp;&nbsp;About me</a>
+            </div>
+            <nav class="nexus">
+                <li  style="border-left: 1px solid #c6d0da;">
+                    <a id="trigger" href="#"><i class="fa fa-bars"></i></a>
+                </li>
+                <li ><a id="nexus-back" data-pjax href="/">Justice Shadower</a></li>
+                
+                <div id="nav-container">
+                    <div class="post-navbar" style="line-height: 63px;display:none">
+                        <li id="navbar-title"><a href="#">Linux Operating System-2</a></li>
+                        <li id="navbar-toc" style="border-left: none">
+                            <a style="padding-right: 15px">
+                                <span id="toc-content" >Introduction</span><i class="fa fa-chevron-down" ></i>
+                            </a>
+                            <div class="hidden-box">
+                                <ul id="toc"></ul>
+                            </div>
+                        </li>
+                    </div>
+                </div>
+                
+            </nav>
+
+            <div class="scroller">
+            <div class="scroller-inner">
+
+
+<!-- -->
+<!--<body class="post-template">-->
+<!---->
   
 
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>來源：<a href="http://www.csie.ncu.edu.tw/~hsufh/COURSES/FALL2015/linuxLecture_3_9-1.ppt" target="_blank" rel="external">Introduction (64~98)</a></p>
+<main class="content" role="main">
+    <article class="post" >
+    <span class="post-meta">
+                  <div class="tag-tile">
+                      
+                      
+                      <a data-pjax href='/tags/Linux-Operating-System/' style='color:#D5D5D5'>Linux Operating System</a>
+                      
+                      
+                  </div>
+                <h1 class="post-title" style="margin: 14px 0;color:#50585D">Linux Operating System-2</h1>
+
+                    <div class="post-meta">
+                        Post on<span class="fa fa-clock-o"></span>
+                        <time datetime="2015-10-15T12:04:06.000Z"
+                              itemprop="datePublished">2015-10-15</time>
+                    </div>
+    </span>
+
+        <section class="post-content">
+            <p>來源：<a href="http://www.csie.ncu.edu.tw/~hsufh/COURSES/FALL2015/linuxLecture_3_9-1.ppt" target="_blank" rel="external">Introduction (64~98)</a></p>
 <p>Linux Source Code Tree Overview跟System Boot up我就跳過了…</p>
 <h2> x32 Calling Conventions </h2><br>這邊要介紹的是，當C呼叫一個function時參數的傳遞。關於stack frame我在<a href="http://eastl.github.io/2015/10/12/The-Attack-and-Defense-of-Computers-1-3/">網路攻防</a>這邊有提到一些基礎知識，重複的在這邊就不再贅述。<br><br>假設今天G function要呼叫H function，則我們稱呼叫者G為caller，被呼叫的H function我們稱callee。為了方便講解老師投影片的圖，看一下下面這段code：<br><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">G</span><span class="params">(<span class="keyword">int</span> a)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    H(<span class="number">3</span>);</span><br><span class="line">    a = a + <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">return</span> a;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">H</span><span class="params">(<span class="keyword">int</span> b)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">char</span> c[<span class="number">100</span>];</span><br><span class="line">    <span class="keyword">int</span> i = b - <span class="number">3</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span>((c[i++] = getchar()) != EOF)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"Hi"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> i;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">()</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> example = <span class="number">1</span>;</span><br><span class="line">    G(example);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br><br>可以看到main function呼叫了G function，G function再去呼叫H function。現在把焦點放在G function裡面呼叫的H(3)，當G呼叫H之前，它會先把之後要給H的參數push到stack上，之後再去call H function，下圖為上面這支程式的執行檔經過objdump產生的內容：<br><br><img src="/images/callerdump.jpg" alt=""><br><br>上圖可以看到G在call H之前將3這個值push到stack，那callee要如何使用這參數呢？看一下下面這張stack frame：<br><br><img src="/images/call_stack_frame.jpg" alt=""><br><br>當G call了H function後，它裡面會有一個動作是將return address push上去，之後到H的stack frame時會先push ebp，因此可以利用ebp的相對位置找到參數，如下圖：<br><br><img src="/images/calleedump.jpg" alt=""><br><br>由於我程式裡面做的事情是i = b - 3，可以看到compiler將ebp+8的位置載入eax，接著再將它減去3。看完caller如何傳參數給callee後，接下來我們看callee如何將參數return給caller，其實很簡單，caller只要把要return的值塞進去eax暫存器就好了：<br><br><img src="/images/return_conv.jpg" alt=""><br><br>看一下剛剛G function，我直接將傳進來的參數a return回去，所以assembler就直接將ebp + 8位置的值丟進eax了。<br><br><h2> x64 Calling Conventions </h2><br>x64與x32不一樣的是，如果傳遞的參數在六個以下時，它是利用暫存器去傳送的，看一下下面程式：<br><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">G</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b, <span class="keyword">int</span> c, <span class="keyword">int</span> d, <span class="keyword">int</span> e, <span class="keyword">int</span> f, <span class="keyword">int</span> g, <span class="keyword">int</span> h)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> g;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">()</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> a;</span><br><span class="line">    a = G(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br><br>我把上面的程式碼丟到64 bit ubuntu編譯後，objdump如下圖：<br><br><img src="/images/x64_call.jpg" alt=""><br><br>可以看到紅色框的部分6個參數都移到了暫存器當中，而當到第七個參數時，compiler是把它放到了rsp的位置，從stack底端往上放。<br><br><img src="/images/x64_callerstack.jpg" alt=""><br><br>而callee要拿參數時，前六個當然是從暫存器拿，第七個開始就從rbp + 16開始：<br><br><img src="/images/x64_callee.jpg" alt=""><br><br>由於我是return g，它是第七個參數，所以將rbp + 10(hex)移到eax。<br><br><img src="/images/x64_calleestack.jpg" alt=""><br><br><h2> Callee-Save Register vs. Caller-Save Register </h2><br>這可能會被文字混淆…<br><br>caller saved register意思是當caller要呼叫callee時，caller會預先把某幾個暫存器的值存在stack上，然後呼叫了callee後callee可以使用者些暫存器。所以caller saved register是給callee用的。<br><br>而callee saved register是當caller呼叫了callee時，為了確保不會更動到register的值，callee會先把暫存器的值存起來，等到做完所有動作要return回caller之前再把剛存起來的值還給暫存器，所以callee saved register是callee幫caller存的。<br><br><h2> IA32 Process Address Space Layout </h2>
 
@@ -135,159 +296,84 @@ ga('send', 'pageview');
 <p>而user space跟kernel space剛好一人一半(從kernel 2.6.11版本後)，高位址的部分是kernel address，另一半低位址則是user space。下面的位址分部是參考<a href="https://www.kernel.org/doc/Documentation/x86/x86_64/mm.txt" target="_blank" rel="external">這邊</a>。</p>
 <figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0000000000000000</span> - <span class="number">00007</span>fffffffffff (<span class="number">=47</span> <span class="keyword">bits) </span>user <span class="preprocessor">space</span>, different per mm</span><br><span class="line"><span class="label">hole</span> caused <span class="keyword">by </span>[<span class="number">48</span>:<span class="number">63</span>] sign extension</span><br><span class="line"><span class="label">ffff800000000000</span> - ffff87ffffffffff (<span class="number">=43</span> <span class="keyword">bits) </span>guard hole, reserved for hypervisor</span><br><span class="line"><span class="label">ffff880000000000</span> - ffffc7ffffffffff (<span class="number">=64</span> TB) direct mapping of all phys. memory</span><br><span class="line"><span class="label">ffffc80000000000</span> - ffffc8ffffffffff (<span class="number">=40</span> <span class="keyword">bits) </span>hole</span><br><span class="line"><span class="label">ffffc90000000000</span> - ffffe8ffffffffff (<span class="number">=45</span> <span class="keyword">bits) </span>vmalloc/ioremap <span class="preprocessor">space</span></span><br><span class="line"><span class="label">ffffe90000000000</span> - ffffe9ffffffffff (<span class="number">=40</span> <span class="keyword">bits) </span>hole</span><br><span class="line"><span class="label">ffffea0000000000</span> - ffffeaffffffffff (<span class="number">=40</span> <span class="keyword">bits) </span>virtual memory <span class="preprocessor">map</span> (<span class="number">1</span>TB)</span><br><span class="line"><span class="label">...</span> unused hole ...</span><br><span class="line"><span class="label">ffffec0000000000</span> - fffffc0000000000 (<span class="number">=44</span> <span class="keyword">bits) </span>kasan shadow memory (<span class="number">16</span>TB)</span><br><span class="line"><span class="label">...</span> unused hole ...</span><br><span class="line"><span class="label">ffffff0000000000</span> - ffffff7fffffffff (<span class="number">=39</span> <span class="keyword">bits) </span>%esp fixup stacks</span><br><span class="line"><span class="label">...</span> unused hole ...</span><br><span class="line"><span class="label">ffffffff80000000</span> - ffffffffa0000000 (<span class="number">=512</span> MB)  kernel text mapping, from phys <span class="number">0</span></span><br><span class="line"><span class="label">ffffffffa0000000</span> - ffffffffff5fffff (<span class="number">=1525</span> MB) module mapping <span class="preprocessor">space</span></span><br><span class="line"><span class="label">ffffffffff600000</span> - ffffffffffdfffff (<span class="number">=8</span> MB) vsyscalls</span><br><span class="line"><span class="label">ffffffffffe00000</span> - ffffffffffffffff (<span class="number">=2</span> MB) unused hole</span><br></pre></td></tr></table></figure>
 
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/15/Linux-Operating-System-2/" data-id="ciguta84o000nd8onotkvky8u" class="article-share-link">Share</a>
-      
-        <a href="http://eastl.github.io/2015/10/15/Linux-Operating-System-2/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux-Operating-System/">Linux Operating System</a></li></ul>
+        </section>
+        <hr/>
+        <nav class="pagination" style="width:auto" role="pagination">
+            
+            <a data-pjax class="newer-posts" href="/2015/10/16/Linux-Operating-System-3/">← Prev Post</a>
+            
+            <a class="share-button" data-original-title title>Share this Post</a>
+            
+            <a data-pjax class="older-posts" href="/2015/10/14/Linux-Operating-System-1/">Next Post →</a>
+            
+        </nav>
+        <br/>
+        <br/>
+        <section id="comment">
+            <div id="comment-box"></div>
+        </section>
 
-    </footer>
-  </div>
+
+    </article>
+</main>
+
+
   
+<footer class="site-footer">
     
-<nav id="article-nav">
-  
-    <a href="/2015/10/16/Linux-Operating-System-3/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          Linux Operating System-3
-        
-      </div>
-    </a>
-  
-  
-    <a href="/2015/10/14/Linux-Operating-System-1/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">Linux Operating System-1</div>
-    </a>
-  
-</nav>
-
-  
-</article>
-
-
-<section id="comments">
-  <div id="disqus_thread">
-    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-  </div>
-</section>
-</section>
-        
-          <aside id="sidebar">
-  
-    
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tags</h3>
-    <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux-Operating-System/">Linux Operating System</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/The-Attack-and-Defense-of-Computers/">The Attack and Defense of Computers</a><span class="tag-list-count">5</span></li></ul>
+    <div class="inner">
+        <section class="copyright"><a href="/"></a> &copy; Justice Shadower 2014</section>
+        <section class="poweredby">Published with <a target="_blank" href="http://hexo.io/">Hexo   </a> and Theme by <a target="_blank" href="https://github.com/yuche/hexo-theme-kael">Kael</a></section>
     </div>
-  </div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tag Cloud</h3>
-    <div class="widget tagcloud">
-      <a href="/tags/Applied-Cryptography/" style="font-size: 20px;">Applied Cryptography</a> <a href="/tags/Linux-Operating-System/" style="font-size: 15px;">Linux Operating System</a> <a href="/tags/The-Attack-and-Defense-of-Computers/" style="font-size: 10px;">The Attack and Defense of Computers</a>
-    </div>
-  </div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a><span class="archive-list-count">2</span></li></ul>
-    </div>
-  </div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Recents</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/2015/11/08/The-Attack-and-Defense-of-Computers-7/">The Attack and Defense of Computers-7</a>
-          </li>
-        
-          <li>
-            <a href="/2015/11/07/Applied-Cryptography-7/">Applied Cryptography-7</a>
-          </li>
-        
-          <li>
-            <a href="/2015/11/05/The-Attack-and-Defense-of-Computers-6/">The Attack and Defense of Computers-6</a>
-          </li>
-        
-          <li>
-            <a href="/2015/11/01/Linux-Operating-System-6/">Linux Operating System-6</a>
-          </li>
-        
-          <li>
-            <a href="/2015/10/28/Applied-Cryptography-6/">Applied Cryptography-6</a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
-
-  
-</aside>
-        
-      </div>
-      <div id="footer">
-  
-  <div id='foot-stars'></div>
-  <div class="outer">
-    <div id="footer-info" class="inner">
-      &copy; 2015 EastL<br>
-      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
-    </div>
-  </div>
+</footer>
 </div>
+</div><!-- /scroller -->
+
+</div><!-- /pusher -->
+</div><!-- /container -->
+</div>
+
+<!-- Easter eggs -->
+
+<div class="egg animated">
+    <a id="close-button" href="#">X</a>
+    <div class="block">
+        <div class="loading">
+            <span class="ball1"></span>
+            <span class="ball2"></span>
+        </div>
     </div>
-    <nav id="mobile-nav">
+</div>
   
-    <a href="/" class="mobile-nav-link">Home</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
-</nav>
-    
+<script src="//cdn.staticfile.org/jquery/1.11.0/jquery.min.js"></script>
 <script>
-  var disqus_shortname = 'EastL';
-  
-  var disqus_url = 'http://eastl.github.io/2015/10/15/Linux-Operating-System-2/';
-  
-  (function(){
-    var dsq = document.createElement('script');
-    dsq.type = 'text/javascript';
-    dsq.async = true;
-    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-  })();
+    if (!window.jQuery) {
+        var script = document.createElement('script');
+        script.src = "/js/jquery.min.js";
+        document.body.appendChild(script);
+    }
+</script>
+<script type="text/javascript" src="/js/lib.js"></script>
+<script type="text/javascript" src="/js/main.js"></script>
+
+
+
+
+<script type="text/javascript">
+    var disqus_shortname = 'EastL';
+
+    (function(){
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
 </script>
 
 
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
 
-  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
-  <script src="/fancybox/jquery.fancybox.pack.js" type="text/javascript"></script>
-
-
-<script src="/js/script.js" type="text/javascript"></script>
-
-  </div>
 <!-- mathjax config similar to math.stackexchange -->
 
 <script type="text/x-mathjax-config">

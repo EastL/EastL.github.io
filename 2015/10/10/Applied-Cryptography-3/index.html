@@ -1,137 +1,288 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-  <meta charset="utf-8">
-  
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
   <title>Applied Cryptography-3 | Justice Shadower</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="來源：chapter 2 (23~51)
-在進入Block Cipher之前，先來思考一個問題：
- Question: 加解密，錯誤更正碼(encoder、decoder)，壓縮先後順序 假設今天你要將資料m透過網路傳給別人，但資料量太大必須壓縮，而且資料必須保密不能讓第三者看到因此要加密，並且需要保證接收方收到的資料正確無誤所以你希望加個錯誤更正碼降低接收方的錯誤率，問題來了，這三道程序的先後順">
-<meta property="og:type" content="article">
-<meta property="og:title" content="Applied Cryptography-3">
-<meta property="og:url" content="http://eastl.github.io/2015/10/10/Applied-Cryptography-3/index.html">
-<meta property="og:site_name" content="Justice Shadower">
-<meta property="og:description" content="來源：chapter 2 (23~51)
-在進入Block Cipher之前，先來思考一個問題：
- Question: 加解密，錯誤更正碼(encoder、decoder)，壓縮先後順序 假設今天你要將資料m透過網路傳給別人，但資料量太大必須壓縮，而且資料必須保密不能讓第三者看到因此要加密，並且需要保證接收方收到的資料正確無誤所以你希望加個錯誤更正碼降低接收方的錯誤率，問題來了，這三道程序的先後順">
-<meta property="og:image" content="http://eastl.github.io/images/QAQ.gif">
-<meta property="og:image" content="http://eastl.github.io/images/AC3_Q.jpg">
-<meta property="og:image" content="http://eastl.github.io/images/cry_coder.jpg">
-<meta property="og:image" content="http://eastl.github.io/images/err_1.jpg">
-<meta property="og:image" content="http://eastl.github.io/images/err_2.jpg">
-<meta property="og:image" content="http://eastl.github.io/images/err_3.jpg">
-<meta property="og:image" content="http://eastl.github.io/images/cry_comp.jpg">
-<meta property="og:image" content="http://eastl.github.io/images/block_cipher.jpg">
-<meta property="og:image" content="http://eastl.github.io/images/DES.jpg">
-<meta property="og:image" content="http://eastl.github.io/images/Feistel_cipher.jpg">
-<meta property="og:image" content="http://eastl.github.io/images/SP.jpg">
-<meta property="og:image" content="http://eastl.github.io/images/DES1.jpg">
-<meta property="og:image" content="http://eastl.github.io/images/expper.jpg">
-<meta property="og:image" content="http://eastl.github.io/images/DES_pbox.jpg">
-<meta property="og:image" content="http://eastl.github.io/images/DES_sbox.jpg">
-<meta property="og:image" content="http://eastl.github.io/images/DES2.jpg">
-<meta property="og:image" content="http://eastl.github.io/images/key_schedule.jpg">
-<meta property="og:image" content="http://eastl.github.io/images/PC1and2.jpg">
-<meta property="og:image" content="http://eastl.github.io/images/DES_decrypt.jpg">
-<meta property="og:image" content="http://eastl.github.io/images/CBC.jpg">
-<meta property="og:updated_time" content="2015-11-11T12:47:01.000Z">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Applied Cryptography-3">
-<meta name="twitter:description" content="來源：chapter 2 (23~51)
-在進入Block Cipher之前，先來思考一個問題：
- Question: 加解密，錯誤更正碼(encoder、decoder)，壓縮先後順序 假設今天你要將資料m透過網路傳給別人，但資料量太大必須壓縮，而且資料必須保密不能讓第三者看到因此要加密，並且需要保證接收方收到的資料正確無誤所以你希望加個錯誤更正碼降低接收方的錯誤率，問題來了，這三道程序的先後順">
-<meta name="twitter:creator" content="@coolwuxing">
-  
-    <link rel="alternative" href="/atom.xml" title="Justice Shadower" type="application/atom+xml">
+  <meta name="description" content="This world around you is not what it seems." />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" type="text/css" href="/css/component.css" />
+  <link rel="stylesheet" type="text/css" href="/css/screen.css" />
+  <meta name="generator" content="Justice Shadower">
+  <script src="http://static.duoshuo.com/embed.js"></script>
   
   
-    <link rel="icon" href="/images/cube.jpg">
   
-  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
-  <link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
-  <link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
-  <link rel="stylesheet" href="/css/style.css" type="text/css">
-  
-<!-- Google Analytics -->
-<script type="text/javascript">
-(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-ga('create', 'UA-43935113-3', 'auto');
-ga('send', 'pageview');
-
-</script>
-<!-- End Google Analytics -->
-
+  
 
 </head>
 <body>
-  <div id="container">
-    <div id="wrap">
-      <div id="header">
-  <div id="banner">
-    <div id="cover"></div>
-    <div id="stars"></div>
-  </div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">Justice Shadower</a>
-      </h1>
-      
-        <h2 id="subtitle-wrap">
-          <a href="/" id="subtitle">This world around you is not what it seems.</a>
-        </h2>
-      
-    </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
-        
-          <a class="main-nav-link" href="/">Home</a>
-        
-          <a class="main-nav-link" href="/archives">Archives</a>
-        
-      </nav>
-      <nav id="sub-nav">
-        
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
-        
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://eastl.github.io"></form>
-      </div>
-    </div>
-  </div>
-</div>
-      <div class="outer">
-        <section id="main"><article id="post-Applied-Cryptography-3" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/10/10/Applied-Cryptography-3/" class="article-date">
-  <time datetime="2015-10-10T15:38:40.000Z" itemprop="datePublished">2015-10-10</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 class="article-title" itemprop="name">
-      Applied Cryptography-3
-    </h1>
+<div class="container">
+    <div class="mp-pusher" id="mp-pusher">
+        <i id="scroll-up" class="fa fa-angle-up"></i>
+        <nav id="mp-menu" class="mp-menu">
+            <div class="mp-level">
+                <a data-pjax class="back-home" style="font-size: 20px" href="/"><h2 ><i class="fa fa-home"></i>
+                        Home</h2></a>
+                <ul class="first-level">
+                    <li>
+                        <a class="fa fa-archive" href="#"><i class="fa fa-angle-left">
+                            </i>&nbsp;&nbsp;Archive</a>
+                        <div class="mp-level page-list">
+                            <h2 ><i class="fa fa-archive"></i>
+                                Archive</h2>
+                            <a class="mp-back" href="#">back</a>
+                            <form id="search-form" action="">
+                                <input type="text" class="search search-archive" placeholder="Search.."/>
+                            </form>
+                            <ul>
+                                <div class="mp-scroll">
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2015/11/15/Linux-Operating-System-7/">Linux Operating System-7</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2015/11/08/The-Attack-and-Defense-of-Computers-7/">The Attack and Defense of Computers-7</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2015/11/07/Applied-Cryptography-7/">Applied Cryptography-7</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2015/11/05/The-Attack-and-Defense-of-Computers-6/">The Attack and Defense of Computers-6</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2015/11/01/Linux-Operating-System-6/">Linux Operating System-6</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2015/10/28/Applied-Cryptography-6/">Applied Cryptography-6</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2015/10/26/Linux-Operating-System-5/">Linux Operating System-5</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2015/10/25/The-Attack-and-Defense-of-Computers-5/">The Attack and Defense of Computers-5</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2015/10/21/Applied-Cryptography-5/">Applied Cryptography-5</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2015/10/18/Linux-Operating-System-4/">Linux Operating System-4</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2015/10/18/The-Attack-and-Defense-of-Computers-4/">The Attack and Defense of Computers-4</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2015/10/17/Applied-Cryptography-4/">Applied Cryptography-4</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2015/10/16/Linux-Operating-System-3/">Linux Operating System-3</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2015/10/15/Linux-Operating-System-2/">Linux Operating System-2</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2015/10/14/Linux-Operating-System-1/">Linux Operating System-1</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2015/10/12/The-Attack-and-Defense-of-Computers-1-3/">The Attack and Defense of Computers (1~3)</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2015/10/10/Applied-Cryptography-3/">Applied Cryptography-3</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2015/09/29/Applied-Cryptography-2/">Applied Cryptography-2</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2015/09/28/Applied-Cryptography-1/">Applied Cryptography-1</a>
+                                </li>
+                                
+                                </div>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <a class="fa fa-copy" href="#"><i class="fa fa-angle-left">
+                            </i>&nbsp;&nbsp;Categories</a>
+
+                        <div class="mp-level page-list">
+                            <h2 ><i class="fa fa-copy"></i>
+                                Categories</h2>
+                            <a class="mp-back" href="#">back</a>
+                            <form id="search-form" action="">
+                                <input type="text" class="search search-category" placeholder="Search.."/>
+                            </form>
+                            <ul>
+                                <div class="mp-scroll">
+                                
+                                </div>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <a class="fa fa-tags" href="#"><i class="fa fa-angle-left">
+                            </i>&nbsp;&nbsp;Tags</a>
+                        <div class="mp-level page-list">
+                            <h2 ><i class="fa fa-tags"></i>
+                                Tags</h2>
+                            <a class="mp-back" href="#">back</a>
+                            <form id="search-form" action="">
+                                <input type="text" class="search search-tag" placeholder="Search.."/>
+                            </form>
+                            <ul>
+                                <div class="mp-scroll">
+                                
+                                <li class="search-tag-li mp-pjax">
+                                    <a href="/tags/Applied-Cryptography/">&nbsp;&nbsp;&nbsp;Applied Cryptography</a>
+                                    <small>7</small>
+                                </li>
+                                
+                                <li class="search-tag-li mp-pjax">
+                                    <a href="/tags/Linux-Operating-System/">&nbsp;&nbsp;&nbsp;Linux Operating System</a>
+                                    <small>7</small>
+                                </li>
+                                
+                                <li class="search-tag-li mp-pjax">
+                                    <a href="/tags/The-Attack-and-Defense-of-Computers/">&nbsp;&nbsp;&nbsp;The Attack and Defense of Computers</a>
+                                    <small>5</small>
+                                </li>
+                                
+                                </div>
+                            </ul>
+                        </div>
+                    </li>
+                    
+                    <li class="mp-pjax"><a class="fa fa-user" href="http://adl.tw/~eastl/" target="_blank">&nbsp;&nbsp;&nbsp;About me</a></li>
+                    <li><a class="fa fa-github" href="https://github.com/EastL" target = "_blank">&nbsp;&nbsp;&nbsp;Github</a></li>
+
+                </ul>
+
+            </div>
+        </nav>
+        <div id="pjax">
+            <div class="pjax-hidden" style="display: none">
+                
+                    <a  data-pjax href="/2015/11/15/Linux-Operating-System-7/">Linux Operating System-7</a>
+                
+                    <a  data-pjax href="/2015/11/08/The-Attack-and-Defense-of-Computers-7/">The Attack and Defense of Computers-7</a>
+                
+                    <a  data-pjax href="/2015/11/07/Applied-Cryptography-7/">Applied Cryptography-7</a>
+                
+                    <a  data-pjax href="/2015/11/05/The-Attack-and-Defense-of-Computers-6/">The Attack and Defense of Computers-6</a>
+                
+                    <a  data-pjax href="/2015/11/01/Linux-Operating-System-6/">Linux Operating System-6</a>
+                
+                    <a  data-pjax href="/2015/10/28/Applied-Cryptography-6/">Applied Cryptography-6</a>
+                
+                    <a  data-pjax href="/2015/10/26/Linux-Operating-System-5/">Linux Operating System-5</a>
+                
+                    <a  data-pjax href="/2015/10/25/The-Attack-and-Defense-of-Computers-5/">The Attack and Defense of Computers-5</a>
+                
+                    <a  data-pjax href="/2015/10/21/Applied-Cryptography-5/">Applied Cryptography-5</a>
+                
+                    <a  data-pjax href="/2015/10/18/Linux-Operating-System-4/">Linux Operating System-4</a>
+                
+                    <a  data-pjax href="/2015/10/18/The-Attack-and-Defense-of-Computers-4/">The Attack and Defense of Computers-4</a>
+                
+                    <a  data-pjax href="/2015/10/17/Applied-Cryptography-4/">Applied Cryptography-4</a>
+                
+                    <a  data-pjax href="/2015/10/16/Linux-Operating-System-3/">Linux Operating System-3</a>
+                
+                    <a  data-pjax href="/2015/10/15/Linux-Operating-System-2/">Linux Operating System-2</a>
+                
+                    <a  data-pjax href="/2015/10/14/Linux-Operating-System-1/">Linux Operating System-1</a>
+                
+                    <a  data-pjax href="/2015/10/12/The-Attack-and-Defense-of-Computers-1-3/">The Attack and Defense of Computers (1~3)</a>
+                
+                    <a  data-pjax href="/2015/10/10/Applied-Cryptography-3/">Applied Cryptography-3</a>
+                
+                    <a  data-pjax href="/2015/09/29/Applied-Cryptography-2/">Applied Cryptography-2</a>
+                
+                    <a  data-pjax href="/2015/09/28/Applied-Cryptography-1/">Applied Cryptography-1</a>
+                
+                
+                
+                    <a data-pjax href="/tags/Applied-Cryptography/">&nbsp;&nbsp;Applied Cryptography</a>
+                
+                    <a data-pjax href="/tags/Linux-Operating-System/">&nbsp;&nbsp;Linux Operating System</a>
+                
+                    <a data-pjax href="/tags/The-Attack-and-Defense-of-Computers/">&nbsp;&nbsp;The Attack and Defense of Computers</a>
+                
+                <a data-pjax class="fa fa-user" href="http://adl.tw/~eastl/" target="_blank">&nbsp;&nbsp;&nbsp;About me</a>
+            </div>
+            <nav class="nexus">
+                <li  style="border-left: 1px solid #c6d0da;">
+                    <a id="trigger" href="#"><i class="fa fa-bars"></i></a>
+                </li>
+                <li ><a id="nexus-back" data-pjax href="/">Justice Shadower</a></li>
+                
+                <div id="nav-container">
+                    <div class="post-navbar" style="line-height: 63px;display:none">
+                        <li id="navbar-title"><a href="#">Applied Cryptography-3</a></li>
+                        <li id="navbar-toc" style="border-left: none">
+                            <a style="padding-right: 15px">
+                                <span id="toc-content" >Introduction</span><i class="fa fa-chevron-down" ></i>
+                            </a>
+                            <div class="hidden-box">
+                                <ul id="toc"></ul>
+                            </div>
+                        </li>
+                    </div>
+                </div>
+                
+            </nav>
+
+            <div class="scroller">
+            <div class="scroller-inner">
+
+
+<!-- -->
+<!--<body class="post-template">-->
+<!---->
   
 
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>來源：<a href="/papers/Chapter2.pdf">chapter 2 (23~51)</a></p>
+<main class="content" role="main">
+    <article class="post" >
+    <span class="post-meta">
+                  <div class="tag-tile">
+                      
+                      
+                      <a data-pjax href='/tags/Applied-Cryptography/' style='color:#D5D5D5'>Applied Cryptography</a>
+                      
+                      
+                  </div>
+                <h1 class="post-title" style="margin: 14px 0;color:#50585D">Applied Cryptography-3</h1>
+
+                    <div class="post-meta">
+                        Post on<span class="fa fa-clock-o"></span>
+                        <time datetime="2015-10-10T15:38:40.000Z"
+                              itemprop="datePublished">2015-10-10</time>
+                    </div>
+    </span>
+
+        <section class="post-content">
+            <p>來源：<a href="/papers/Chapter2.pdf">chapter 2 (23~51)</a></p>
 <p>在進入Block Cipher之前，先來思考一個問題：<br><img src="/images/QAQ.gif" alt=""></p>
 <h5> Question: 加解密，錯誤更正碼(encoder、decoder)，壓縮先後順序 </h5><br>假設今天你要將資料m透過網路傳給別人，但資料量太大必須壓縮，而且資料必須保密不能讓第三者看到因此要加密，並且需要保證接收方收到的資料正確無誤所以你希望加個錯誤更正碼降低接收方的錯誤率，問題來了，這三道程序的先後順序要如何排列呢？如果不按照”正確”的程序進行會發生什麼事呢？<br><br><img src="/images/AC3_Q.jpg" alt=""><br><br>一次要看三道程序的話不免過於複雜，學資工的應要有資工的解法，這邊我們利用divide and conquer的想法(誤XDD<br>首先我們先來看看加解密與錯誤更正碼哪個應該優先做，分別為下兩a、b兩種方法：<br><br><img src="/images/cry_coder.jpg" alt=""><br><br>如果你的更正碼用的是linear block code，若你想要code自動錯誤更正n個bit，你至少要增加2n+1個bit的更正碼，不然更正碼可能會更正到另一組更正碼認為是正確的coset。這邊用簡單的圖來幫助理解，先想像一下，你今天收到的資料與原本資料假設有k個bit不一樣，也就是錯了k個bit，這樣就代表著你收到的資料與正確資料距離為k，ok，再來理解錯誤更正碼，假設你今天送的資料加了錯誤更正碼，它能夠自動錯誤更正n個bit，也就是我今天收到的資料如果錯的bit數小於n的話，他就有辦法自己更正成正確的，那也就是在方圓半徑n以內的我都有辦法將他拉到原點，如下圖所示：A點為正確資料，半徑為n，<span>$r_1$</span><!-- Has MathJax -->能夠自動更正回來，<span>$r_2$</span><!-- Has MathJax -->無法。<br><br><img src="/images/err_1.jpg" alt=""><br><br>OK，問題來了，假設今天只有一個圓，也就是只有一組正確資料，那沒什麼問題，但現實情況不可能只有傳一筆資料吧….所以當你有兩筆以上的資料時，如果每筆資料靠的太近，那就可能會發生相交甚至重疊，此時如果你剛好錯誤的地點發生在重疊部分，錯誤更正碼就可能將你導向”另一筆”正確資料。如下圖所示，<span>$r_1$</span><!-- Has MathJax -->點落在A與B重疊處，原本正確資料為A，錯誤更正完後可能會變成B。<br><br><img src="/images/err_2.jpg" alt=""><br><br>為了避免上述情況發生，我們增加了2n+1個bit的更正碼來增加正確資料的距離，避免錯誤更正範圍重疊。如下圖，只要錯誤的點不要落在錯誤更正範圍外，都能夠正確的解回來。<br><br><img src="/images/err_3.jpg" alt="A與B距離為2n+1"><br><br>有了錯誤更正碼的概念後，我們可以發現：錯誤更正碼能力是有限的，他只能容許錯誤在一定範圍內，因此如果錯誤更正碼要搭配加密，那麼必須是在加密之後再來加錯誤更正碼，因為加密後只要錯了一個bit，解回來時肯定不只錯一個bit，所以如果你用了方法b，原本只錯了一個bit的密文解密後錯更多，在進行錯誤更正碼就大亂了，因此應該要使用方法a。<br><br>接下來我們來看看加解密與壓縮，一樣分為兩種方法：<br><br><img src="/images/cry_comp.jpg" alt=""><br><br>這邊可以用效能來看，傳統加解密會需要耗費許多時間，因此需要被加解密的資料越小越好，當然選擇先壓縮再加密。而另一個角度是這兩種演算法的特性：資料壓縮的原理是將重複的pattern用特定的符號來取代，所以重複的pattern越多壓縮效果越好；而加密演算法特性是將資料打得越亂越好，因此不太有機會出現重複的pattern，所以如果先加密再壓縮的話，壓縮的效果可能不佳，甚至可能壓縮後檔案會變大。<br><br>綜合以上推論，正確順序應該為：壓縮→加解密→錯誤更正碼。<br><br><hr><br><br><h3> Block Cipher </h3><br><br>一開始先介紹Block Cipher的概念，如下圖所示，將訊息切割成n段後，每一段訊息(block)都進入加密器加密，最後再merge回完整cipher。<br><br><img src="/images/block_cipher.jpg" alt="Block Cipher"><br><br>接下來將利用典型的DES(Data Encryption Standard)來帶領大家進入Block Cipher的世界。首先DES每次取的block為64bit，而DES的key也是64個bit，那DES是如何將這64bit明文加密的呢?可以參考下圖：<br><br><img src="/images/DES.jpg" alt=""><br><br>我們可以看到明文會經過16回合後變成cipher，key會每回合shift、permuted後進來，接下來我們來看這16回合實際運作。<br><br><img src="/images/Feistel_cipher.jpg" alt=""><br><center> <a href="https://en.wikipedia.org/wiki/Feistel_cipher" target="_blank" rel="external">Feistel cipher from wiki</a> </center><br><br>DES這16回合是來自於Feistel cipher，它的概念是這樣：將明文分為左右兩部分，左半邊為<span>$L_n$</span><!-- Has MathJax -->右半邊為<span>$R_n$</span><!-- Has MathJax -->，n為回合數。首先把<span>$R_0$</span><!-- Has MathJax -->與<span>$K_0$</span><!-- Has MathJax -->當作input，丟進F後的output與<span>$L_0$</span><!-- Has MathJax -->做<span>$\bigoplus$</span><!-- Has MathJax -->，此為第一回合，第二回合開始將第一回合<span>$\bigoplus$</span><!-- Has MathJax -->結果與<span>$K_1$</span><!-- Has MathJax -->當作input再丟入F，得到output再與第一回合的<span>$R_0$</span><!-- Has MathJax -->做<span>$\bigoplus$</span><!-- Has MathJax -->，以此類推至16回合結束。解密的部分稍後再詳細說明。<br><br>接下來介紹F裡面做了什麼事情，在介紹之前先介紹第一堂課探討過的取代跟重排。取代跟重排不管你單獨重複多次或者交叉使用多次，都能夠化減為單一回合的取代。為了解決此問題，<a href="https://en.wikipedia.org/wiki/Substitution-permutation_network" target="_blank" rel="external">Substitution-permutation network</a>利用了不同size的S-box與P-box進行重排與取代，此方法經過重複多次後無法用單一回合的取代來代替。<br><br><img src="/images/SP.jpg" alt="S-P Network"><br><br>Substitution-permutation network一開始的8bit substitution為key，故每次的key不一樣導致替換的結果不同，後面的64bit permutation會造成<a href="https://en.wikipedia.org/wiki/Avalanche_effect" target="_blank" rel="external">Avalanche effect 雪崩效應</a>，所以不同input只差一個bit會導致ciphertext完全不一樣。<br><br>有了Substitution-permutation network概念後接下來看F做的事情，如下圖所示：<br><br><img src="/images/DES1.jpg" alt=""><br><br>圖中可以看到它把右邊的32bit先做Expansion以及permutation成48bit，實作如下圖：<br><br><img src="/images/expper.jpg" alt="Expansion/Permutation"><br><br>得到48bit後與key做<span>$\bigoplus$</span><!-- Has MathJax -->，XOR完之後就是S-box變形與P-box，下圖為P-box實作：<br><br><img src="/images/DES_pbox.jpg" alt="P-box"><br><br>上面兩個permutation的圖都是代表第幾個位置為原本位置的值，例如Expansion/Permutation的圖，第一個bit的值被替代後變成了原本的第32bit的值。<br>而這邊的S-box比較特殊，它是8個6bit轉4bit的替換器，替換方式如下：<span>$b_1$</span><!-- Has MathJax -->與<span>$b_6$</span><!-- Has MathJax -->代表第幾列，<span>$b_2$</span><!-- Has MathJax -->到<span>$b_5$</span><!-- Has MathJax -->代表第幾行。舉個例子：假設今天送進<span>$S_1$</span><!-- Has MathJax -->的訊息為000001，則替換的數字為第01列第0000行，所以output為0000(0)。<br><br><img src="/images/DES_sbox.jpg" alt="S-box"><br><br>這邊可以發現到S-box內容是不變的，但在之前Substitution-permutation network有提到S-box應隨著key做改變，看一下下列這張圖：<br><br><img src="/images/DES2.jpg" alt=""><br><br>在進行S-box之前會先將資訊與key作XOR，此動作會導致替換結果隨著key做改變。<br><br>下圖為DES的key schedule，key schedule是決定每次round要給予的subkey的值，圖中可以看到key拿掉8 bit的parity後經過PC1被分成左右兩半，之後分別進行left shift，每次shift有可能是1bit或2bit，取決於右邊的Number of Left Shifts，shift完之後再經由PC2從28bit當中挑選24bit，合併後傳送給DES做XOR。<br><br><img src="/images/key_schedule.jpg" alt=""><br><br>有關PC1與PC2的permutation如下(圖的看法與上面的permutation一樣)：<br><br><img src="/images/PC1and2.jpg" alt=""><br><br><h5> DES decryption </h5>
 
@@ -149,159 +300,84 @@ ga('send', 'pageview');
 <p>如上圖，第一個block會XOR一個Initial Vector(IV)，之後的block都會XOR前一個block的cipher，這麼做的好處是cipher是加密過後的，所以他的值非常難預測，幾乎是亂數值。而CBC的最後一個cipher也能拿來當作Message Authentication Code (MAC)，由於你要拿到最後一個cipher一定要將整個明文做一次CBC mode的加密才有辦法拿到，所以此cipher能拿來當作MAC，MAC概念類似於checksum或者是parity check。<a href="https://en.wikipedia.org/wiki/Message_authentication_code" target="_blank" rel="external">wiki在此</a></p>
 <p>最後老師講了一個CBC的攻擊，不過我看投影片還有其他的攻擊，這部分就保留到下次在一起寫吧。</p>
 
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/10/Applied-Cryptography-3/" data-id="ciguta85f000zd8onmn0go57d" class="article-share-link">Share</a>
-      
-        <a href="http://eastl.github.io/2015/10/10/Applied-Cryptography-3/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a></li></ul>
+        </section>
+        <hr/>
+        <nav class="pagination" style="width:auto" role="pagination">
+            
+            <a data-pjax class="newer-posts" href="/2015/10/12/The-Attack-and-Defense-of-Computers-1-3/">← Prev Post</a>
+            
+            <a class="share-button" data-original-title title>Share this Post</a>
+            
+            <a data-pjax class="older-posts" href="/2015/09/29/Applied-Cryptography-2/">Next Post →</a>
+            
+        </nav>
+        <br/>
+        <br/>
+        <section id="comment">
+            <div id="comment-box"></div>
+        </section>
 
-    </footer>
-  </div>
+
+    </article>
+</main>
+
+
   
+<footer class="site-footer">
     
-<nav id="article-nav">
-  
-    <a href="/2015/10/12/The-Attack-and-Defense-of-Computers-1-3/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          The Attack and Defense of Computers (1~3)
-        
-      </div>
-    </a>
-  
-  
-    <a href="/2015/09/29/Applied-Cryptography-2/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">Applied Cryptography-2</div>
-    </a>
-  
-</nav>
-
-  
-</article>
-
-
-<section id="comments">
-  <div id="disqus_thread">
-    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-  </div>
-</section>
-</section>
-        
-          <aside id="sidebar">
-  
-    
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tags</h3>
-    <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux-Operating-System/">Linux Operating System</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/The-Attack-and-Defense-of-Computers/">The Attack and Defense of Computers</a><span class="tag-list-count">5</span></li></ul>
+    <div class="inner">
+        <section class="copyright"><a href="/"></a> &copy; Justice Shadower 2014</section>
+        <section class="poweredby">Published with <a target="_blank" href="http://hexo.io/">Hexo   </a> and Theme by <a target="_blank" href="https://github.com/yuche/hexo-theme-kael">Kael</a></section>
     </div>
-  </div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tag Cloud</h3>
-    <div class="widget tagcloud">
-      <a href="/tags/Applied-Cryptography/" style="font-size: 20px;">Applied Cryptography</a> <a href="/tags/Linux-Operating-System/" style="font-size: 15px;">Linux Operating System</a> <a href="/tags/The-Attack-and-Defense-of-Computers/" style="font-size: 10px;">The Attack and Defense of Computers</a>
-    </div>
-  </div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a><span class="archive-list-count">2</span></li></ul>
-    </div>
-  </div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Recents</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/2015/11/08/The-Attack-and-Defense-of-Computers-7/">The Attack and Defense of Computers-7</a>
-          </li>
-        
-          <li>
-            <a href="/2015/11/07/Applied-Cryptography-7/">Applied Cryptography-7</a>
-          </li>
-        
-          <li>
-            <a href="/2015/11/05/The-Attack-and-Defense-of-Computers-6/">The Attack and Defense of Computers-6</a>
-          </li>
-        
-          <li>
-            <a href="/2015/11/01/Linux-Operating-System-6/">Linux Operating System-6</a>
-          </li>
-        
-          <li>
-            <a href="/2015/10/28/Applied-Cryptography-6/">Applied Cryptography-6</a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
-
-  
-</aside>
-        
-      </div>
-      <div id="footer">
-  
-  <div id='foot-stars'></div>
-  <div class="outer">
-    <div id="footer-info" class="inner">
-      &copy; 2015 EastL<br>
-      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
-    </div>
-  </div>
+</footer>
 </div>
+</div><!-- /scroller -->
+
+</div><!-- /pusher -->
+</div><!-- /container -->
+</div>
+
+<!-- Easter eggs -->
+
+<div class="egg animated">
+    <a id="close-button" href="#">X</a>
+    <div class="block">
+        <div class="loading">
+            <span class="ball1"></span>
+            <span class="ball2"></span>
+        </div>
     </div>
-    <nav id="mobile-nav">
+</div>
   
-    <a href="/" class="mobile-nav-link">Home</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
-</nav>
-    
+<script src="//cdn.staticfile.org/jquery/1.11.0/jquery.min.js"></script>
 <script>
-  var disqus_shortname = 'EastL';
-  
-  var disqus_url = 'http://eastl.github.io/2015/10/10/Applied-Cryptography-3/';
-  
-  (function(){
-    var dsq = document.createElement('script');
-    dsq.type = 'text/javascript';
-    dsq.async = true;
-    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-  })();
+    if (!window.jQuery) {
+        var script = document.createElement('script');
+        script.src = "/js/jquery.min.js";
+        document.body.appendChild(script);
+    }
+</script>
+<script type="text/javascript" src="/js/lib.js"></script>
+<script type="text/javascript" src="/js/main.js"></script>
+
+
+
+
+<script type="text/javascript">
+    var disqus_shortname = 'EastL';
+
+    (function(){
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
 </script>
 
 
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
 
-  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
-  <script src="/fancybox/jquery.fancybox.pack.js" type="text/javascript"></script>
-
-
-<script src="/js/script.js" type="text/javascript"></script>
-
-  </div>
 <!-- mathjax config similar to math.stackexchange -->
 
 <script type="text/x-mathjax-config">

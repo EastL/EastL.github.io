@@ -1,118 +1,288 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-  <meta charset="utf-8">
-  
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
   <title>Applied Cryptography-5 | Justice Shadower</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="來源：chapter 3(23~32)，Number Theory II (3 ~ 4)
-在上一次的尤拉函數中，我們推得了費瑪理論的通式$a^{ \phi (n) } \ \ mod \ \ n \ \ = \ \ 1 \ \ if \ \ gcd(a,n)=1$&amp;lt;!-- Has MathJax --&amp;gt;，這個式子對於餘數系統的乘法反元素非常有幫助，以上面例子來說，a在餘數系統中的乘法反元素就是$a">
-<meta property="og:type" content="article">
-<meta property="og:title" content="Applied Cryptography-5">
-<meta property="og:url" content="http://eastl.github.io/2015/10/21/Applied-Cryptography-5/index.html">
-<meta property="og:site_name" content="Justice Shadower">
-<meta property="og:description" content="來源：chapter 3(23~32)，Number Theory II (3 ~ 4)
-在上一次的尤拉函數中，我們推得了費瑪理論的通式$a^{ \phi (n) } \ \ mod \ \ n \ \ = \ \ 1 \ \ if \ \ gcd(a,n)=1$&amp;lt;!-- Has MathJax --&amp;gt;，這個式子對於餘數系統的乘法反元素非常有幫助，以上面例子來說，a在餘數系統中的乘法反元素就是$a">
-<meta property="og:image" content="http://eastl.github.io/images/pezu.jpg">
-<meta property="og:image" content="http://eastl.github.io/images/pezu2.jpg">
-<meta property="og:image" content="http://eastl.github.io/images/crt.jpg">
-<meta property="og:image" content="http://eastl.github.io/images/CRT_example.jpg">
-<meta property="og:updated_time" content="2015-10-28T00:25:21.000Z">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Applied Cryptography-5">
-<meta name="twitter:description" content="來源：chapter 3(23~32)，Number Theory II (3 ~ 4)
-在上一次的尤拉函數中，我們推得了費瑪理論的通式$a^{ \phi (n) } \ \ mod \ \ n \ \ = \ \ 1 \ \ if \ \ gcd(a,n)=1$&amp;lt;!-- Has MathJax --&amp;gt;，這個式子對於餘數系統的乘法反元素非常有幫助，以上面例子來說，a在餘數系統中的乘法反元素就是$a">
-<meta name="twitter:creator" content="@coolwuxing">
-  
-    <link rel="alternative" href="/atom.xml" title="Justice Shadower" type="application/atom+xml">
+  <meta name="description" content="This world around you is not what it seems." />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" type="text/css" href="/css/component.css" />
+  <link rel="stylesheet" type="text/css" href="/css/screen.css" />
+  <meta name="generator" content="Justice Shadower">
+  <script src="http://static.duoshuo.com/embed.js"></script>
   
   
-    <link rel="icon" href="/images/cube.jpg">
   
-  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
-  <link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
-  <link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
-  <link rel="stylesheet" href="/css/style.css" type="text/css">
-  
-<!-- Google Analytics -->
-<script type="text/javascript">
-(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-ga('create', 'UA-43935113-3', 'auto');
-ga('send', 'pageview');
-
-</script>
-<!-- End Google Analytics -->
-
+  
 
 </head>
 <body>
-  <div id="container">
-    <div id="wrap">
-      <div id="header">
-  <div id="banner">
-    <div id="cover"></div>
-    <div id="stars"></div>
-  </div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">Justice Shadower</a>
-      </h1>
-      
-        <h2 id="subtitle-wrap">
-          <a href="/" id="subtitle">This world around you is not what it seems.</a>
-        </h2>
-      
-    </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
-        
-          <a class="main-nav-link" href="/">Home</a>
-        
-          <a class="main-nav-link" href="/archives">Archives</a>
-        
-      </nav>
-      <nav id="sub-nav">
-        
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
-        
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://eastl.github.io"></form>
-      </div>
-    </div>
-  </div>
-</div>
-      <div class="outer">
-        <section id="main"><article id="post-Applied-Cryptography-5" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/10/21/Applied-Cryptography-5/" class="article-date">
-  <time datetime="2015-10-21T13:20:38.000Z" itemprop="datePublished">2015-10-21</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 class="article-title" itemprop="name">
-      Applied Cryptography-5
-    </h1>
+<div class="container">
+    <div class="mp-pusher" id="mp-pusher">
+        <i id="scroll-up" class="fa fa-angle-up"></i>
+        <nav id="mp-menu" class="mp-menu">
+            <div class="mp-level">
+                <a data-pjax class="back-home" style="font-size: 20px" href="/"><h2 ><i class="fa fa-home"></i>
+                        Home</h2></a>
+                <ul class="first-level">
+                    <li>
+                        <a class="fa fa-archive" href="#"><i class="fa fa-angle-left">
+                            </i>&nbsp;&nbsp;Archive</a>
+                        <div class="mp-level page-list">
+                            <h2 ><i class="fa fa-archive"></i>
+                                Archive</h2>
+                            <a class="mp-back" href="#">back</a>
+                            <form id="search-form" action="">
+                                <input type="text" class="search search-archive" placeholder="Search.."/>
+                            </form>
+                            <ul>
+                                <div class="mp-scroll">
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2015/11/15/Linux-Operating-System-7/">Linux Operating System-7</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2015/11/08/The-Attack-and-Defense-of-Computers-7/">The Attack and Defense of Computers-7</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2015/11/07/Applied-Cryptography-7/">Applied Cryptography-7</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2015/11/05/The-Attack-and-Defense-of-Computers-6/">The Attack and Defense of Computers-6</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2015/11/01/Linux-Operating-System-6/">Linux Operating System-6</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2015/10/28/Applied-Cryptography-6/">Applied Cryptography-6</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2015/10/26/Linux-Operating-System-5/">Linux Operating System-5</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2015/10/25/The-Attack-and-Defense-of-Computers-5/">The Attack and Defense of Computers-5</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2015/10/21/Applied-Cryptography-5/">Applied Cryptography-5</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2015/10/18/Linux-Operating-System-4/">Linux Operating System-4</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2015/10/18/The-Attack-and-Defense-of-Computers-4/">The Attack and Defense of Computers-4</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2015/10/17/Applied-Cryptography-4/">Applied Cryptography-4</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2015/10/16/Linux-Operating-System-3/">Linux Operating System-3</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2015/10/15/Linux-Operating-System-2/">Linux Operating System-2</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2015/10/14/Linux-Operating-System-1/">Linux Operating System-1</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2015/10/12/The-Attack-and-Defense-of-Computers-1-3/">The Attack and Defense of Computers (1~3)</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2015/10/10/Applied-Cryptography-3/">Applied Cryptography-3</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2015/09/29/Applied-Cryptography-2/">Applied Cryptography-2</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2015/09/28/Applied-Cryptography-1/">Applied Cryptography-1</a>
+                                </li>
+                                
+                                </div>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <a class="fa fa-copy" href="#"><i class="fa fa-angle-left">
+                            </i>&nbsp;&nbsp;Categories</a>
+
+                        <div class="mp-level page-list">
+                            <h2 ><i class="fa fa-copy"></i>
+                                Categories</h2>
+                            <a class="mp-back" href="#">back</a>
+                            <form id="search-form" action="">
+                                <input type="text" class="search search-category" placeholder="Search.."/>
+                            </form>
+                            <ul>
+                                <div class="mp-scroll">
+                                
+                                </div>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <a class="fa fa-tags" href="#"><i class="fa fa-angle-left">
+                            </i>&nbsp;&nbsp;Tags</a>
+                        <div class="mp-level page-list">
+                            <h2 ><i class="fa fa-tags"></i>
+                                Tags</h2>
+                            <a class="mp-back" href="#">back</a>
+                            <form id="search-form" action="">
+                                <input type="text" class="search search-tag" placeholder="Search.."/>
+                            </form>
+                            <ul>
+                                <div class="mp-scroll">
+                                
+                                <li class="search-tag-li mp-pjax">
+                                    <a href="/tags/Applied-Cryptography/">&nbsp;&nbsp;&nbsp;Applied Cryptography</a>
+                                    <small>7</small>
+                                </li>
+                                
+                                <li class="search-tag-li mp-pjax">
+                                    <a href="/tags/Linux-Operating-System/">&nbsp;&nbsp;&nbsp;Linux Operating System</a>
+                                    <small>7</small>
+                                </li>
+                                
+                                <li class="search-tag-li mp-pjax">
+                                    <a href="/tags/The-Attack-and-Defense-of-Computers/">&nbsp;&nbsp;&nbsp;The Attack and Defense of Computers</a>
+                                    <small>5</small>
+                                </li>
+                                
+                                </div>
+                            </ul>
+                        </div>
+                    </li>
+                    
+                    <li class="mp-pjax"><a class="fa fa-user" href="http://adl.tw/~eastl/" target="_blank">&nbsp;&nbsp;&nbsp;About me</a></li>
+                    <li><a class="fa fa-github" href="https://github.com/EastL" target = "_blank">&nbsp;&nbsp;&nbsp;Github</a></li>
+
+                </ul>
+
+            </div>
+        </nav>
+        <div id="pjax">
+            <div class="pjax-hidden" style="display: none">
+                
+                    <a  data-pjax href="/2015/11/15/Linux-Operating-System-7/">Linux Operating System-7</a>
+                
+                    <a  data-pjax href="/2015/11/08/The-Attack-and-Defense-of-Computers-7/">The Attack and Defense of Computers-7</a>
+                
+                    <a  data-pjax href="/2015/11/07/Applied-Cryptography-7/">Applied Cryptography-7</a>
+                
+                    <a  data-pjax href="/2015/11/05/The-Attack-and-Defense-of-Computers-6/">The Attack and Defense of Computers-6</a>
+                
+                    <a  data-pjax href="/2015/11/01/Linux-Operating-System-6/">Linux Operating System-6</a>
+                
+                    <a  data-pjax href="/2015/10/28/Applied-Cryptography-6/">Applied Cryptography-6</a>
+                
+                    <a  data-pjax href="/2015/10/26/Linux-Operating-System-5/">Linux Operating System-5</a>
+                
+                    <a  data-pjax href="/2015/10/25/The-Attack-and-Defense-of-Computers-5/">The Attack and Defense of Computers-5</a>
+                
+                    <a  data-pjax href="/2015/10/21/Applied-Cryptography-5/">Applied Cryptography-5</a>
+                
+                    <a  data-pjax href="/2015/10/18/Linux-Operating-System-4/">Linux Operating System-4</a>
+                
+                    <a  data-pjax href="/2015/10/18/The-Attack-and-Defense-of-Computers-4/">The Attack and Defense of Computers-4</a>
+                
+                    <a  data-pjax href="/2015/10/17/Applied-Cryptography-4/">Applied Cryptography-4</a>
+                
+                    <a  data-pjax href="/2015/10/16/Linux-Operating-System-3/">Linux Operating System-3</a>
+                
+                    <a  data-pjax href="/2015/10/15/Linux-Operating-System-2/">Linux Operating System-2</a>
+                
+                    <a  data-pjax href="/2015/10/14/Linux-Operating-System-1/">Linux Operating System-1</a>
+                
+                    <a  data-pjax href="/2015/10/12/The-Attack-and-Defense-of-Computers-1-3/">The Attack and Defense of Computers (1~3)</a>
+                
+                    <a  data-pjax href="/2015/10/10/Applied-Cryptography-3/">Applied Cryptography-3</a>
+                
+                    <a  data-pjax href="/2015/09/29/Applied-Cryptography-2/">Applied Cryptography-2</a>
+                
+                    <a  data-pjax href="/2015/09/28/Applied-Cryptography-1/">Applied Cryptography-1</a>
+                
+                
+                
+                    <a data-pjax href="/tags/Applied-Cryptography/">&nbsp;&nbsp;Applied Cryptography</a>
+                
+                    <a data-pjax href="/tags/Linux-Operating-System/">&nbsp;&nbsp;Linux Operating System</a>
+                
+                    <a data-pjax href="/tags/The-Attack-and-Defense-of-Computers/">&nbsp;&nbsp;The Attack and Defense of Computers</a>
+                
+                <a data-pjax class="fa fa-user" href="http://adl.tw/~eastl/" target="_blank">&nbsp;&nbsp;&nbsp;About me</a>
+            </div>
+            <nav class="nexus">
+                <li  style="border-left: 1px solid #c6d0da;">
+                    <a id="trigger" href="#"><i class="fa fa-bars"></i></a>
+                </li>
+                <li ><a id="nexus-back" data-pjax href="/">Justice Shadower</a></li>
+                
+                <div id="nav-container">
+                    <div class="post-navbar" style="line-height: 63px;display:none">
+                        <li id="navbar-title"><a href="#">Applied Cryptography-5</a></li>
+                        <li id="navbar-toc" style="border-left: none">
+                            <a style="padding-right: 15px">
+                                <span id="toc-content" >Introduction</span><i class="fa fa-chevron-down" ></i>
+                            </a>
+                            <div class="hidden-box">
+                                <ul id="toc"></ul>
+                            </div>
+                        </li>
+                    </div>
+                </div>
+                
+            </nav>
+
+            <div class="scroller">
+            <div class="scroller-inner">
+
+
+<!-- -->
+<!--<body class="post-template">-->
+<!---->
   
 
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>來源：<a href="http://staff.csie.ncu.edu.tw/yensm/lecture/Cryptography/Chapter-3%20Number%20Theory.pdf" target="_blank" rel="external">chapter 3(23~32)</a>，<a href="http://web.math.isu.edu.tw/yeh/2013Fall/GE/Lectures/L5/L5.pdf" target="_blank" rel="external">Number Theory II (3 ~ 4)</a></p>
+<main class="content" role="main">
+    <article class="post" >
+    <span class="post-meta">
+                  <div class="tag-tile">
+                      
+                      
+                      <a data-pjax href='/tags/Applied-Cryptography/' style='color:#D5D5D5'>Applied Cryptography</a>
+                      
+                      
+                  </div>
+                <h1 class="post-title" style="margin: 14px 0;color:#50585D">Applied Cryptography-5</h1>
+
+                    <div class="post-meta">
+                        Post on<span class="fa fa-clock-o"></span>
+                        <time datetime="2015-10-21T13:20:38.000Z"
+                              itemprop="datePublished">2015-10-21</time>
+                    </div>
+    </span>
+
+        <section class="post-content">
+            <p>來源：<a href="http://staff.csie.ncu.edu.tw/yensm/lecture/Cryptography/Chapter-3%20Number%20Theory.pdf" target="_blank" rel="external">chapter 3(23~32)</a>，<a href="http://web.math.isu.edu.tw/yeh/2013Fall/GE/Lectures/L5/L5.pdf" target="_blank" rel="external">Number Theory II (3 ~ 4)</a></p>
 <p>在上一次的尤拉函數中，我們推得了費瑪理論的通式<span>$a^{ \phi (n) } \ \ mod \ \ n \ \ = \ \ 1 \ \ if \ \ gcd(a,n)=1$</span><!-- Has MathJax -->，這個式子對於餘數系統的乘法反元素非常有幫助，以上面例子來說，a在餘數系統中的乘法反元素就是<span>$a^{ \phi (n) - 1}$</span><!-- Has MathJax -->，但如果考慮到計算量的話我們會想讓a的指數越小越好，因此在n=pq, p、q都是質數情況下，我們可以將<span>$a^{ \phi (n) } \ \ mod \ \ n \ \ = \ \ 1$</span><!-- Has MathJax --> 改成<span>$a^{ lcm(p-1,q-1) } \ \ mod \ \ n \ \ = \ \ 1$</span><!-- Has MathJax -->。</p>
 <p>在證明之前先講會用到的理論，當x mod A = 1且x mod B = 1，則x mod AB = 1。</p>
 <p>再來我們看一下費瑪定理：</p>
@@ -166,159 +336,84 @@ ga('send', 'pageview');
 <p>實例：</p>
 <p><img src="/images/CRT_example.jpg" alt=""></p>
 
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://eastl.github.io/2015/10/21/Applied-Cryptography-5/" data-id="ciguta857000vd8onvq9tlg9k" class="article-share-link">Share</a>
-      
-        <a href="http://eastl.github.io/2015/10/21/Applied-Cryptography-5/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a></li></ul>
+        </section>
+        <hr/>
+        <nav class="pagination" style="width:auto" role="pagination">
+            
+            <a data-pjax class="newer-posts" href="/2015/10/25/The-Attack-and-Defense-of-Computers-5/">← Prev Post</a>
+            
+            <a class="share-button" data-original-title title>Share this Post</a>
+            
+            <a data-pjax class="older-posts" href="/2015/10/18/Linux-Operating-System-4/">Next Post →</a>
+            
+        </nav>
+        <br/>
+        <br/>
+        <section id="comment">
+            <div id="comment-box"></div>
+        </section>
 
-    </footer>
-  </div>
+
+    </article>
+</main>
+
+
   
+<footer class="site-footer">
     
-<nav id="article-nav">
-  
-    <a href="/2015/10/25/The-Attack-and-Defense-of-Computers-5/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          The Attack and Defense of Computers-5
-        
-      </div>
-    </a>
-  
-  
-    <a href="/2015/10/18/Linux-Operating-System-4/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">Linux Operating System-4</div>
-    </a>
-  
-</nav>
-
-  
-</article>
-
-
-<section id="comments">
-  <div id="disqus_thread">
-    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-  </div>
-</section>
-</section>
-        
-          <aside id="sidebar">
-  
-    
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tags</h3>
-    <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Applied-Cryptography/">Applied Cryptography</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux-Operating-System/">Linux Operating System</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/The-Attack-and-Defense-of-Computers/">The Attack and Defense of Computers</a><span class="tag-list-count">5</span></li></ul>
+    <div class="inner">
+        <section class="copyright"><a href="/"></a> &copy; Justice Shadower 2014</section>
+        <section class="poweredby">Published with <a target="_blank" href="http://hexo.io/">Hexo   </a> and Theme by <a target="_blank" href="https://github.com/yuche/hexo-theme-kael">Kael</a></section>
     </div>
-  </div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tag Cloud</h3>
-    <div class="widget tagcloud">
-      <a href="/tags/Applied-Cryptography/" style="font-size: 20px;">Applied Cryptography</a> <a href="/tags/Linux-Operating-System/" style="font-size: 15px;">Linux Operating System</a> <a href="/tags/The-Attack-and-Defense-of-Computers/" style="font-size: 10px;">The Attack and Defense of Computers</a>
-    </div>
-  </div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a><span class="archive-list-count">2</span></li></ul>
-    </div>
-  </div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Recents</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/2015/11/08/The-Attack-and-Defense-of-Computers-7/">The Attack and Defense of Computers-7</a>
-          </li>
-        
-          <li>
-            <a href="/2015/11/07/Applied-Cryptography-7/">Applied Cryptography-7</a>
-          </li>
-        
-          <li>
-            <a href="/2015/11/05/The-Attack-and-Defense-of-Computers-6/">The Attack and Defense of Computers-6</a>
-          </li>
-        
-          <li>
-            <a href="/2015/11/01/Linux-Operating-System-6/">Linux Operating System-6</a>
-          </li>
-        
-          <li>
-            <a href="/2015/10/28/Applied-Cryptography-6/">Applied Cryptography-6</a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
-
-  
-</aside>
-        
-      </div>
-      <div id="footer">
-  
-  <div id='foot-stars'></div>
-  <div class="outer">
-    <div id="footer-info" class="inner">
-      &copy; 2015 EastL<br>
-      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
-    </div>
-  </div>
+</footer>
 </div>
+</div><!-- /scroller -->
+
+</div><!-- /pusher -->
+</div><!-- /container -->
+</div>
+
+<!-- Easter eggs -->
+
+<div class="egg animated">
+    <a id="close-button" href="#">X</a>
+    <div class="block">
+        <div class="loading">
+            <span class="ball1"></span>
+            <span class="ball2"></span>
+        </div>
     </div>
-    <nav id="mobile-nav">
+</div>
   
-    <a href="/" class="mobile-nav-link">Home</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
-</nav>
-    
+<script src="//cdn.staticfile.org/jquery/1.11.0/jquery.min.js"></script>
 <script>
-  var disqus_shortname = 'EastL';
-  
-  var disqus_url = 'http://eastl.github.io/2015/10/21/Applied-Cryptography-5/';
-  
-  (function(){
-    var dsq = document.createElement('script');
-    dsq.type = 'text/javascript';
-    dsq.async = true;
-    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-  })();
+    if (!window.jQuery) {
+        var script = document.createElement('script');
+        script.src = "/js/jquery.min.js";
+        document.body.appendChild(script);
+    }
+</script>
+<script type="text/javascript" src="/js/lib.js"></script>
+<script type="text/javascript" src="/js/main.js"></script>
+
+
+
+
+<script type="text/javascript">
+    var disqus_shortname = 'EastL';
+
+    (function(){
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
 </script>
 
 
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
 
-  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
-  <script src="/fancybox/jquery.fancybox.pack.js" type="text/javascript"></script>
-
-
-<script src="/js/script.js" type="text/javascript"></script>
-
-  </div>
 <!-- mathjax config similar to math.stackexchange -->
 
 <script type="text/x-mathjax-config">
