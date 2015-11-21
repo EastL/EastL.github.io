@@ -4,7 +4,7 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-  <title>Archives: 2015/11 | Justice Shadower</title>
+  <title>Linux Operating System-8 | Justice Shadower</title>
   <meta name="description" content="This world around you is not what it seems." />
   <meta name="HandheldFriendly" content="True" />
   <meta name="MobileOptimized" content="320" />
@@ -266,7 +266,7 @@
                 
                 <div id="nav-container">
                     <div class="post-navbar" style="line-height: 63px;display:none">
-                        <li id="navbar-title"><a href="#">undefined</a></li>
+                        <li id="navbar-title"><a href="#">Linux Operating System-8</a></li>
                         <li id="navbar-toc" style="border-left: none">
                             <a style="padding-right: 15px">
                                 <span id="toc-content" >Introduction</span><i class="fa fa-chevron-down" ></i>
@@ -285,210 +285,76 @@
 
 
 <!-- -->
-<!--<body class="home-template">-->
+<!--<body class="post-template">-->
 <!---->
   
+
 <main class="content" role="main">
+    <article class="post" >
+    <span class="post-meta">
+                  <div class="tag-tile">
+                      
+                      
+                      <a data-pjax href='/tags/Linux-Operating-System/' style='color:#D5D5D5'>Linux Operating System</a>
+                      
+                      
+                  </div>
+                <h1 class="post-title" style="margin: 14px 0;color:#50585D">Linux Operating System-8</h1>
 
-    
-    <article class="post">
+                    <div class="post-meta">
+                        Post on<span class="fa fa-clock-o"></span>
+                        <time datetime="2015-11-21T04:35:38.000Z"
+                              itemprop="datePublished">2015-11-21</time>
+                    </div>
+    </span>
 
-        <header class="post-header">
-            <div class="tag-tile">
-                
-                
-                <a data-pjax href='/tags/Linux-Operating-System/'>Linux Operating System</a>
-                
-                
-                <span class="fa fa-bookmark" style="float:right;color:#f39c12"></span>
-            </div>
-            <h1 class="post-title"><a data-pjax href="/2015/11/21/Linux-Operating-System-8/">Linux Operating System-8</a>
-            </h1>
+        <section class="post-content">
+            <p>來源：<a href="http://www.csie.ncu.edu.tw/~hsufh/COURSES/FALL2015/linuxLecture_3_9-5-1.ppt" target="_blank" rel="external">Memory Addressing (22 ~ 54)</a></p>
+<h2> Phase two </h2>
 
-            <div class="post-meta">
-                Post on<span class="fa fa-clock-o"></span>
-                <time datetime="2015-11-21T04:35:38.000Z"
-                      itemprop="datePublished">2015-11-21</time>
-            </div>
-        </header>
-        <section class="post-excerpt">
-            <p>
-                
-                來源：Memory Addressing (22 ~ 54)
- Phase two 
+<p>Phase one只會用到實體記憶體中的24MB，phase two則是會用到所有的記憶體空間來放置kernel code。phase two有兩種不同狀況：CONFIG_HIGHMEM與CONFIG_NOHIGHMEM，CONFIG_NOHIGHMEM是指kernel能存取的實體記憶體小於1GB，而CONFIG_HIGHMEM則是kernel能夠存取到大於1GB的實體記憶體。而CONFIG_HIGHMEM又能分為三種case，分別是</p>
+<p><img src="/images/configure_kernel_case.jpg" alt=""></p>
+<p>接著我們以這三種case分別討論：</p>
+<h4> RAM Size Is Less Than 887MB </h4>
 
-Phase one只會用到實體記憶體中的24MB，phase two則是會用到所有的記憶體空間來放置kernel code。phase two有兩種不同狀況：CONFIG_HIGHMEM與CONFIG_NOHIGHMEM，CONFIG_NOHIGHMEM是指kernel能存取的實體記憶體小於1GB，而CONFIG_HIGHMEM則是kernel能夠存
-                
-            </p>
-            
+<p>在mapping過程中setup_arch()會將swapper_pg_dir的位置寫入cr3(<a href="http://lxr.cpsc.ucalgary.ca/lxr/linux+v3.9/arch/x86/kernel/setup.c#L870" target="_blank" rel="external">load_cr3(swapper_pg_dir)</a>)，然後會對swapper_pg_dir做initial的動作，function流程如下：</p>
+<p><img src="/images/phase_two_function_call.jpg" alt=""></p>
+<p>接著為實際mapping，從linear address的0xc0000000開始到887MB為止，透過page table mapping到整個實體記憶體：</p>
+<p><img src="/images/phase_two_less_887.jpg" alt=""></p>
+<p>由於最前面的4MB所對應到的實體記憶體位置是從0x00000000開始，因此會有一些BIOS以及I/O share memory，因此這邊所給的是4KB的page table，才能避開那些不能用到的空間。而中間的880MB就直接是4MB的mapping了，因為kernel code通常要的記憶體空間都很大，所以當kernel要記憶體時一次給他4MB比較有效率。最後就剩下3MB，只能給4KB的mapping了。下圖為page table 示意圖：</p>
+<p><img src="/images/phase_two_less_pagetable.jpg" alt=""></p>
+<p>這邊上課有人提到，既然實體記憶體上全部都是kernel space，那user space的資料要放哪？當kernel一起來的時後整個時體記憶體都歸kernel掌控，而在user space要去存取記憶體時會再經由page table得到一塊4kB記憶體，此時的實體記憶體當中會有兩個address，一個是來自kernel的4MB page table mapping過來的，另一個則是由user space經過4KB的page table對應過來。</p>
+<h4> RAM Size Is between 887MB and 4096MB </h4>
+
+<p>由於kernel space只有1GB，因此沒辦法mapping到所有的實體記憶體空間，故跟case 1一樣將kernel space的東西mapping到887MB的地方，而剩下多出來的實體記憶體空間則給user space使用。</p>
+<p><img src="/images/phase_two_between.jpg" alt=""></p>
+<p>因為在kernel所對應的方式跟case 1一樣，因此code部分也就沒有變化。下圖為page table示意圖，其實跟case 1一樣只差了physical address多了紫色區塊：</p>
+<p><img src="/images/phase_two_between_pagetable.jpg" alt=""></p>
+<h4> RAM Size Is More Than 4096MB </h4>
+
+
+
+
+
         </section>
-    </article>
-    
-    <article class="post">
-
-        <header class="post-header">
-            <div class="tag-tile">
-                
-                
-                <a data-pjax href='/tags/Linux-Operating-System/'>Linux Operating System</a>
-                
-                
-                <span class="fa fa-bookmark" style="float:right;color:#f39c12"></span>
-            </div>
-            <h1 class="post-title"><a data-pjax href="/2015/11/15/Linux-Operating-System-7/">Linux Operating System-7</a>
-            </h1>
-
-            <div class="post-meta">
-                Post on<span class="fa fa-clock-o"></span>
-                <time datetime="2015-11-15T04:02:37.000Z"
-                      itemprop="datePublished">2015-11-15</time>
-            </div>
-        </header>
-        <section class="post-excerpt">
-            <p>
-                
-                來源：Paging in Linux(23 ~ 32, 40, 52 ~ 55)，Memory Addressing (1 ~ 21)
- Paging in Linux 
-
-由於x86在32bit下有兩層的page table(PAE沒開情況下)，而在64bit下有更多層，因此linux為了要在兩種處理器底下都能跑選擇了較高層的paging level。在2.6.10版本linux paging level有三層，從2.6.11版本之後
-                
-            </p>
+        <hr/>
+        <nav class="pagination" style="width:auto" role="pagination">
             
-        </section>
-    </article>
-    
-    <article class="post">
-
-        <header class="post-header">
-            <div class="tag-tile">
-                
-                
-                <a data-pjax href='/tags/The-Attack-and-Defense-of-Computers/'>The Attack and Defense of Computers</a>
-                
-                
-                <span class="fa fa-bookmark" style="float:right;color:#f39c12"></span>
-            </div>
-            <h1 class="post-title"><a data-pjax href="/2015/11/08/The-Attack-and-Defense-of-Computers-7/">The Attack and Defense of Computers-7</a>
-            </h1>
-
-            <div class="post-meta">
-                Post on<span class="fa fa-clock-o"></span>
-                <time datetime="2015-11-08T07:50:58.000Z"
-                      itemprop="datePublished">2015-11-08</time>
-            </div>
-        </header>
-        <section class="post-excerpt">
-            <p>
-                
-                來源：Botnet (11 ~ 66)
- Botnet Botnet是指一群被入侵的電腦，這些電腦可以同時被一個攻擊者下指令來操控，而這攻擊者又叫做botmaster，bot為被入侵的電腦。那botnet可以用來幹嘛呢？botnet所控制的電腦數量可大可小，大至五萬台bot都有可能，有五萬台的殭屍電腦相當於有五萬個不同的IP，這可不是開玩笑的，接下來來看運用botnet可以做什麼樣的攻擊。
- Distributed Denial-of-
-                
-            </p>
+            <a style="cursor:default" class="newer-posts" href="#">This is the First Post</a>
             
-        </section>
-    </article>
-    
-    <article class="post">
-
-        <header class="post-header">
-            <div class="tag-tile">
-                
-                
-                <a data-pjax href='/tags/Applied-Cryptography/'>Applied Cryptography</a>
-                
-                
-                <span class="fa fa-bookmark" style="float:right;color:#f39c12"></span>
-            </div>
-            <h1 class="post-title"><a data-pjax href="/2015/11/07/Applied-Cryptography-7/">Applied Cryptography-7</a>
-            </h1>
-
-            <div class="post-meta">
-                Post on<span class="fa fa-clock-o"></span>
-                <time datetime="2015-11-07T06:00:25.000Z"
-                      itemprop="datePublished">2015-11-07</time>
-            </div>
-        </header>
-        <section class="post-excerpt">
-            <p>
-                
-                來源：chapter 3(50 ~ 54)，chapter 4(1 ~ 18)
- Primitive Root 上禮拜有講到generator的概念，剛好我自己補充的東西也有提到order的概念，這邊會統整一下所有的概念。
-Theorem: If λ is the order of α, then λ|(p-1).proof: 這邊利用反證法，令 λ 不是p-1的因數，則 p-1 = t*λ + k，1≤ k ≤ λ −1，則：
- $\
-                
-            </p>
+            <a class="share-button" data-original-title title>Share this Post</a>
             
-        </section>
-    </article>
-    
-    <article class="post">
-
-        <header class="post-header">
-            <div class="tag-tile">
-                
-                
-                <a data-pjax href='/tags/The-Attack-and-Defense-of-Computers/'>The Attack and Defense of Computers</a>
-                
-                
-                <span class="fa fa-bookmark" style="float:right;color:#f39c12"></span>
-            </div>
-            <h1 class="post-title"><a data-pjax href="/2015/11/05/The-Attack-and-Defense-of-Computers-6/">The Attack and Defense of Computers-6</a>
-            </h1>
-
-            <div class="post-meta">
-                Post on<span class="fa fa-clock-o"></span>
-                <time datetime="2015-11-05T01:30:33.000Z"
-                      itemprop="datePublished">2015-11-05</time>
-            </div>
-        </header>
-        <section class="post-excerpt">
-            <p>
-                
-                來源：Drive-by Download(83 ~ 106)，Botnet(1 ~ 10)
- Heap Spray Heap spray主要概念就是在受害程式的heap段注入大量的shellcode以及nop，這項技術是由SkyLined所提出，他利用heap spray打下了IE的許多漏洞，例如MS04-040以及MS05-020。下圖為Heap spray概念圖(來源Software Vulnerability Exploitati
-                
-            </p>
+            <a data-pjax class="older-posts" href="/2015/11/15/Linux-Operating-System-7/">Next Post →</a>
             
+        </nav>
+        <br/>
+        <br/>
+        <section id="comment">
+            <div id="comment-box"></div>
         </section>
-    </article>
-    
-    <article class="post">
 
-        <header class="post-header">
-            <div class="tag-tile">
-                
-                
-                <a data-pjax href='/tags/Linux-Operating-System/'>Linux Operating System</a>
-                
-                
-                <span class="fa fa-bookmark" style="float:right;color:#f39c12"></span>
-            </div>
-            <h1 class="post-title"><a data-pjax href="/2015/11/01/Linux-Operating-System-6/">Linux Operating System-6</a>
-            </h1>
 
-            <div class="post-meta">
-                Post on<span class="fa fa-clock-o"></span>
-                <time datetime="2015-11-01T08:57:31.000Z"
-                      itemprop="datePublished">2015-11-01</time>
-            </div>
-        </header>
-        <section class="post-excerpt">
-            <p>
-                
-                來源：Memory Addressing: Paging Unit (18 ~ 47)，wiki:Paging
-上禮拜講到Paging Unit是利用兩層page table來完成address轉換，這邊接著講為何需要用到兩層table。原本兩層的話是利用linear address最前面10個bit來表示page directory的entry，中間的10個bit表示page table的entry，最後12bit則是physical
-                
-            </p>
-            
-        </section>
     </article>
-    
-    <nav class="pagination" role="pagination">
-        
-        <span class="page-number">Page 1 of 1</span>
-        
-    </nav>
 </main>
 
 
@@ -540,7 +406,7 @@ Theorem: If λ is the order of α, then λ|(p-1).proof: 這邊利用反證法，
         var dsq = document.createElement('script');
         dsq.type = 'text/javascript';
         dsq.async = true;
-        dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
     }());
 </script>
