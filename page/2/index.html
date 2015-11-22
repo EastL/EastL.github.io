@@ -43,6 +43,10 @@
                                 <div class="mp-scroll">
                                 
                                 <li class="search-archive-li mp-pjax">
+                                    <a href="/2015/11/22/Applied-Cryptography-8/">Applied Cryptography-8</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
                                     <a href="/2015/11/21/Linux-Operating-System-8/">Linux Operating System-8</a>
                                 </li>
                                 
@@ -142,7 +146,7 @@
                                 
                                 <li class="search-category-li mp-pjax">
                                     <a href="/categories/Applied-Cryptography/">&nbsp;&nbsp;&nbsp;Applied Cryptography</a>
-                                    <small>7</small>
+                                    <small>8</small>
                                 </li>
                                 
                                 <li class="search-category-li mp-pjax">
@@ -174,7 +178,7 @@
                                 
                                 <li class="search-tag-li mp-pjax">
                                     <a href="/tags/Applied-Cryptography/">&nbsp;&nbsp;&nbsp;Applied Cryptography</a>
-                                    <small>7</small>
+                                    <small>8</small>
                                 </li>
                                 
                                 <li class="search-tag-li mp-pjax">
@@ -201,6 +205,8 @@
         </nav>
         <div id="pjax">
             <div class="pjax-hidden" style="display: none">
+                
+                    <a  data-pjax href="/2015/11/22/Applied-Cryptography-8/">Applied Cryptography-8</a>
                 
                     <a  data-pjax href="/2015/11/21/Linux-Operating-System-8/">Linux Operating System-8</a>
                 
@@ -290,6 +296,37 @@
   
 <main class="content" role="main">
 
+    
+    <article class="post">
+
+        <header class="post-header">
+            <div class="tag-tile">
+                
+                
+                <a data-pjax href='/tags/Applied-Cryptography/'>Applied Cryptography</a>
+                
+                
+                <span class="fa fa-bookmark" style="float:right;color:#f39c12"></span>
+            </div>
+            <h1 class="post-title"><a data-pjax href="/2015/10/21/Applied-Cryptography-5/">Applied Cryptography-5</a>
+            </h1>
+
+            <div class="post-meta">
+                Post on<span class="fa fa-clock-o"></span>
+                <time datetime="2015-10-21T13:20:38.000Z"
+                      itemprop="datePublished">2015-10-21</time>
+            </div>
+        </header>
+        <section class="post-excerpt">
+            <p>
+                
+                來源：chapter 3(23~32)，Number Theory II (3 ~ 4)
+在上一次的尤拉函數中，我們推得了費瑪理論的通式$a^{ \phi (n) } \ \ mod \ \ n \ \ = \ \ 1 \ \ if \ \ gcd(a,n)=1$，這個式子對於餘數系統的乘法反元素非常有幫助，以上面例子來說，a在餘數系統中的乘法反元素就是$a^{ \phi (n) - 1}$，但如果考慮到計算量的話我們會想讓a的指數越小
+                
+            </p>
+            
+        </section>
+    </article>
     
     <article class="post">
 
@@ -583,46 +620,13 @@ Lagrange polynomial interpolation定義：給定一集合，此集合有k+1個�
         </section>
     </article>
     
-    <article class="post">
-
-        <header class="post-header">
-            <div class="tag-tile">
-                
-                
-                <a data-pjax href='/tags/Applied-Cryptography/'>Applied Cryptography</a>
-                
-                
-                <span class="fa fa-bookmark" style="float:right;color:#f39c12"></span>
-            </div>
-            <h1 class="post-title"><a data-pjax href="/2015/09/28/Applied-Cryptography-1/">Applied Cryptography-1</a>
-            </h1>
-
-            <div class="post-meta">
-                Post on<span class="fa fa-clock-o"></span>
-                <time datetime="2015-09-28T03:21:06.000Z"
-                      itemprop="datePublished">2015-09-28</time>
-            </div>
-        </header>
-        <section class="post-excerpt">
-            <p>
-                
-                來源 ： chapter 1 (1~23 and 29), Prove equivalence of Diffie-Hellman shared secret
-對稱式加密系統(Symmetric Key Cryptography, SKC)此加密系統特點是加解密所用的key為同一把，所以又稱為對稱式加密。
-
-對稱式加密系統主要加密方式有兩種：取代與重排
-
-問題：(1)疊了很多個取代後，能否只用一個取代器來達到相同效果?(2)重排與取代相
-                
-            </p>
-            
-        </section>
-    </article>
-    
     <nav class="pagination" role="pagination">
         
         <a data-pjax class="newer-posts" href="/">← Newer Posts</a>
         
-        <span class="page-number">Page 2 of 2</span>
+        <span class="page-number">Page 2 of 3</span>
+        
+        <a data-pjax class="older-posts" href="/page/3/">Older Posts →</a>
         
     </nav>
 </main>
@@ -684,5 +688,35 @@ Lagrange polynomial interpolation定義：給定一集合，此集合有k+1個�
 
 
 
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
 </body>
 </html>
