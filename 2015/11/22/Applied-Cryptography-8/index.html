@@ -334,6 +334,11 @@
 <center> <span>$n \ \ = \ \ pq, \ \ ( \frac{p \ \ + \ \ q}{2})^2 \ \ - \ \ pq \ \ = \ \ ( \frac{p \ \ - \ \ q}{2})^2$</span><!-- Has MathJax -->  </center>
 
 <p>則我們能利用$ \sqrt{n}$來猜pq。舉個例子：假設p=13, q=11，則$ \sqrt{n} \ \ \approx \ \ 12 $，我們先猜$ \frac{p \ \ + \ \ q}{2} \ \ = \ \ 12$，代回剛剛式子很快就能得出p=13, q=11，如果代出來不對則繼續猜13,14…..，p跟q很接近時很快就會被代出來。而有些情況為了讓解密時加速會選較小的d，有一種針對d小於$ \frac{1}{3} N^{ \frac{1}{4}}$情況的攻擊，<a href="https://en.wikipedia.org/wiki/Wiener%27s_attack" target="_blank" rel="external">Wieners attack</a>，在幾分鐘內就能解出pq。</p>
+<h4> random padding </h4>
+
+<p>此方法可以避免掉很多實作時出現的問題，概念是這樣的：原本訊息為m，經過random padding後，會在m的前面或後面加上n bit的隨機值變為m’，在將此m’進行加密。而實作時遇到的問題分為下列幾項：</p>
+<p>Guessable message attack：此攻擊運用在當你傳送的message是固定的集合時，觀察者可以將那些故定的集合通通拿去加密，接著只要觀察通訊時傳送的通道，比對其密文就能得知鄉對應的明文。但如果使用了random padding則一樣的訊息加密後是不一樣的密文，此攻擊便無效。</p>
+<p>有時為了加密方便會設比較小的e，此時可能會發生$m^e$比n還小，造成mod沒有效果，這時解密就變成了簡單的問題了。這個問題一樣可以經由padding解決，在message之前padding到超過n的bit數，使得就算e不夠大也會讓$m^e$大於n。</p>
 
         </section>
         <hr/>
