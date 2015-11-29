@@ -4,7 +4,7 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-  <title>Archives: 2015/10 | Justice Shadower</title>
+  <title>Applied Cryptography-9 | Justice Shadower</title>
   <meta name="description" content="This world around you is not what it seems." />
   <meta name="HandheldFriendly" content="True" />
   <meta name="MobileOptimized" content="320" />
@@ -278,7 +278,7 @@
                 
                 <div id="nav-container">
                     <div class="post-navbar" style="line-height: 63px;display:none">
-                        <li id="navbar-title"><a href="#">undefined</a></li>
+                        <li id="navbar-title"><a href="#">Applied Cryptography-9</a></li>
                         <li id="navbar-toc" style="border-left: none">
                             <a style="padding-right: 15px">
                                 <span id="toc-content" >Introduction</span><i class="fa fa-chevron-down" ></i>
@@ -297,343 +297,57 @@
 
 
 <!-- -->
-<!--<body class="home-template">-->
+<!--<body class="post-template">-->
 <!---->
   
+
 <main class="content" role="main">
+    <article class="post" >
+    <span class="post-meta">
+                  <div class="tag-tile">
+                      
+                      
+                      <a data-pjax href='/tags/Applied-Cryptography/' style='color:#D5D5D5'>Applied Cryptography</a>
+                      
+                      
+                  </div>
+                <h1 class="post-title" style="margin: 14px 0;color:#50585D">Applied Cryptography-9</h1>
 
-    
-    <article class="post">
+                    <div class="post-meta">
+                        Post on<span class="fa fa-clock-o"></span>
+                        <time datetime="2015-11-29T06:49:31.000Z"
+                              itemprop="datePublished">2015-11-29</time>
+                    </div>
+    </span>
 
-        <header class="post-header">
-            <div class="tag-tile">
-                
-                
-                <a data-pjax href='/tags/Applied-Cryptography/'>Applied Cryptography</a>
-                
-                
-                <span class="fa fa-bookmark" style="float:right;color:#f39c12"></span>
-            </div>
-            <h1 class="post-title"><a data-pjax href="/2015/10/28/Applied-Cryptography-6/">Applied Cryptography-6</a>
-            </h1>
+        <section class="post-content">
+            <p>來源；<a href="http://staff.csie.ncu.edu.tw/yensm/lecture/Cryptography/Chapter-4%20Public-Key%20Cryptography%28v2%29.pdf" target="_blank" rel="external">chapter 4 (39 ~ 56)</a></p>
+<h2> Rabin’s schemes </h2><br>接下來談談rabin為何要選擇除四餘三的質數：這是因為開根號非常方便，假設今天p是這種除四餘三的質數，假設a為$QR_p$，則a的開根號為<span>$\pm a^{(p+1)/4} \ \ mod \ \ p$</span><!-- Has MathJax -->。<br><br>證明：因為a為$QR_p$，所以<span>$a^{(p-1)/2} \ \ \equiv \ \ 1 \ \ mod \ \ p$</span><!-- Has MathJax -->，我們計算<span>$\pm a^{(p+1)/4} \ \ mod \ \ p$</span><!-- Has MathJax -->的平方：<br><br><span>$(\pm a^{(p+1)/4})^2  \ \ \equiv \ \ a^{(p+1)/2} \ \ \equiv \ \ a^{(p-1)/2 \ \ + \ \ 1} \ \ \equiv \ \ a \ \ \times \ \ a^{(p-1)/2} \ \ \equiv \ \ a \ \ (mod \ \ p)$</span><!-- Has MathJax --><br><br>確定平方後會變回a，而p又是除四餘三的質數，所以(p+1)/4一定是整數。<br><br><h4> Blum Integer </h4><br><br>rabin所選的n就是Blum Integer，由兩個除四餘三的質數相乘。我們來看一下blum prime有什麼神奇功用：<br><br><center> <span>$SQ_n: \ \ y \ \ = \ \ x^2 \ \ mod \ \ n \ \ (x \ \ \in \ \ QR_n)$</span><!-- Has MathJax --> </center><br><br>觀察上列式子會發現，x根y都是$QR_n$，也就是說定義域與對應域是一樣的，那我們感興趣一個問題，會不會有多對一狀況發生？假設$x_1$與$x_2$不相等而他們兩個平方後卻一樣，則只有兩種情況：$x_1$ = $x_2$，此種狀況不符合假設，排除；$x_1$ = $- x_2$，由於我們一開始設定的定義域是$QR_n$，故$x_2$為$QR_n$，根據上禮拜證明過的，$-x_2$一定不是$QR_n$，那$x_1$就不會等於$-x_2$了，故假設錯誤，得證此函式為一對一。<br><br>既然此函式為一對一而且定義域等於對應域，那做了此和數轉換後就相當於對定義域這集合做重排了。既然每次的平方或者開根號都是重排一次此集合，那不就代表我能夠無限次的重排，也就是無限次的開根號了？當然重排後會有一個週期，而這周期取決於n。<br><br>one-time password：我們可以利用上面的函式來做一個one-time password系統，one-time password顧名思義就是密碼只會用一次，用完就丟，那利用上式要如何做one-time password呢？首先我向系統註冊一組帳號密碼，密碼選擇呢就是隨機挑選上述的任何一個$QR_n$ x，接著用上式計算出y，y即為向系統註冊的密碼。接著之後要登入此系統時，你必須輸入的密碼就是根號y，系統會將你的密碼做平方來跟目前的y做比對，比對正確後會把目前的y值改為你這次登入的密碼，也就是說你下次要再登入時必須輸入根號x，以此類推，每次的密碼都是上一次的開根號。<br><br>使用此函式來當密碼的安全性相當於rabin了，因為如果你要破解密碼的話你必須對目欠的密碼做開根號，而如果你要對在mod n底下開根號你必須知道pq，所以要破解此one-time password就要先破解rabin了。<br><br>而大家都知道rabin開根號之後會有四個根，而這四個根當中只有一個能夠繼續被開根號，那有什麼方法能只接計算出可以繼續被開根號的根呢？<br><br><center> <span>$SQ_n^{-1}(y) \ \ = \ \ y^{[(p-1)(q-1)+4]/8} \ \ mod \ \ n$</span><!-- Has MathJax --> </center><br><br>證明：我們一樣將開根號結果拿來平方看看會不會得到y。<br><center><br><span>$$\{ y^{[(p-1)(q-1)+4]/8} \}^2 \ \ \equiv \ \ y^{[(p-1)(q-1)+4]/4} \\
+\equiv \ \ y^{[(p-1)(q-1)]/4} \ \ \times \ \ y \ \ (mod \ \ n)$$</span><!-- Has MathJax --><br></center><br><br>此時$y^{[(p-1)(q-1)]/4}$如果等於1就皆大歡喜了，而這個就要用到<a href="http://eastl.github.io/2015/10/21/Applied-Cryptography-5/">之前</a>所講的lcm(p−1,q−1)概念了，因為y到lcm(p−1,q−1)就已經是1了，所以再到lcm(p−1,q−1)的倍數時一定是1，那lcm(p−1,q−1)會比(p-1)(q-1)/4小嗎？由於pq都是質數，減一之後至少有一個2的因數，所以(p-1)(q-1)/4是在p跟q除了2以外沒有任何公因數情況的最大公因數，換句話說lcm(p−1,q−1)最大就是(p-1)(q-1)/4。因此我們能確定$y^{[(p-1)(q-1)]/4} \ \ = \ \ 1$。<br><br>那[(p-1)(q-1)]/4會是整數嗎？我們將pq特性代入式子中：<br><br><center><br><span>$$\{ y^{[(p-1)(q-1)+4]/8} \}^2 \ \ \equiv \ \ y^{[(p-1)(q-1)+4]/4} \\
+\equiv \ \ y^{[(4a+3-1)(4b+3-1)]/4} \ \ \times \ \ y  \\
+\equiv \ \ y^{(2a+1)(2b+1)} \ \ \times \ \ y \ \ (mod \ \ n)$$</span><!-- Has MathJax --><br></center><br><br>a跟b都是整數，因此確定次方是能夠開根號而且為整數。既然此方法是拿來開根號，那能夠拿來做數位簽章嗎？答案是可以的，而且這會比原來利用$\pm a^{(p+1)/4}$計算再判斷$QR_n$慢兩倍，因為此種方法計算需要算出(p-1)(q-1)，而先用中國餘數定理的則是分別計算p跟q。<br><br>那有辦法拿來觧密嗎？不可能每次加密的訊息都剛好是可以開根號的那一個<br>所以無法用來解密。<br><br><h2> Primality Test </h2>
 
-            <div class="post-meta">
-                Post on<span class="fa fa-clock-o"></span>
-                <time datetime="2015-10-28T08:25:35.000Z"
-                      itemprop="datePublished">2015-10-28</time>
-            </div>
-        </header>
-        <section class="post-excerpt">
-            <p>
-                
-                來源：chapter 3 (33 ~ 49)
-上禮拜最後講中國餘數定理，可以將大世界的複雜計算分給很多個小世界，小世界計算完後透過中國餘數定理merge回來，接下來的二次剩餘將會運用到中國餘數定理。
- Quadratic Residues Quadratic Residues探討在模數世界開根號的問題，既然是開根號就分為兩種：可以開根號跟不能開根號。
 
-Quadratic Residue ($QR_p$)定義p為質數，若某數平方後mod
-                
-            </p>
-            
+
         </section>
-    </article>
-    
-    <article class="post">
-
-        <header class="post-header">
-            <div class="tag-tile">
-                
-                
-                <a data-pjax href='/tags/Linux-Operating-System/'>Linux Operating System</a>
-                
-                
-                <span class="fa fa-bookmark" style="float:right;color:#f39c12"></span>
-            </div>
-            <h1 class="post-title"><a data-pjax href="/2015/10/26/Linux-Operating-System-5/">Linux Operating System-5</a>
-            </h1>
-
-            <div class="post-meta">
-                Post on<span class="fa fa-clock-o"></span>
-                <time datetime="2015-10-26T13:55:23.000Z"
-                      itemprop="datePublished">2015-10-26</time>
-            </div>
-        </header>
-        <section class="post-excerpt">
-            <p>
-                
-                來源：Introduction and Memory Addressing: Segmentation Unit (80 ~ 100)，Memory Addressing: Paging Unit (1 ~ 18)
-由於現在的電腦都是多核心架構，一台電腦在run時不會只有一顆CPU，而接下來要講的GDT這個table每一顆CPU都會有一個GDT，因此在C語言有一種特殊的宣告方式：per-CPU，他會將你宣告的值存在陣列當中，而這個陣列的
-                
-            </p>
+        <hr/>
+        <nav class="pagination" style="width:auto" role="pagination">
             
-        </section>
-    </article>
-    
-    <article class="post">
-
-        <header class="post-header">
-            <div class="tag-tile">
-                
-                
-                <a data-pjax href='/tags/The-Attack-and-Defense-of-Computers/'>The Attack and Defense of Computers</a>
-                
-                
-                <span class="fa fa-bookmark" style="float:right;color:#f39c12"></span>
-            </div>
-            <h1 class="post-title"><a data-pjax href="/2015/10/25/The-Attack-and-Defense-of-Computers-5/">The Attack and Defense of Computers-5</a>
-            </h1>
-
-            <div class="post-meta">
-                Post on<span class="fa fa-clock-o"></span>
-                <time datetime="2015-10-25T03:11:26.000Z"
-                      itemprop="datePublished">2015-10-25</time>
-            </div>
-        </header>
-        <section class="post-excerpt">
-            <p>
-                
-                來源：Internet Worms, Buffer Overflow Attacks, and Heap Overflow Attacks (43 ~ 82)
- Countermeasures of Buffer Overflow Attacks 之前講了幾種buffer overflow的攻擊，接下來要看針對這些攻擊所採取的防禦機制：
-Data Execution Prevention (DEP)：這種機制出現在是讓data段的資料不
-                
-            </p>
+            <a style="cursor:default" class="newer-posts" href="#">This is the First Post</a>
             
-        </section>
-    </article>
-    
-    <article class="post">
-
-        <header class="post-header">
-            <div class="tag-tile">
-                
-                
-                <a data-pjax href='/tags/Applied-Cryptography/'>Applied Cryptography</a>
-                
-                
-                <span class="fa fa-bookmark" style="float:right;color:#f39c12"></span>
-            </div>
-            <h1 class="post-title"><a data-pjax href="/2015/10/21/Applied-Cryptography-5/">Applied Cryptography-5</a>
-            </h1>
-
-            <div class="post-meta">
-                Post on<span class="fa fa-clock-o"></span>
-                <time datetime="2015-10-21T13:20:38.000Z"
-                      itemprop="datePublished">2015-10-21</time>
-            </div>
-        </header>
-        <section class="post-excerpt">
-            <p>
-                
-                來源：chapter 3(23~32)，Number Theory II (3 ~ 4)
-在上一次的尤拉函數中，我們推得了費瑪理論的通式$a^{ \phi (n) } \ \ mod \ \ n \ \ = \ \ 1 \ \ if \ \ gcd(a,n)=1$，這個式子對於餘數系統的乘法反元素非常有幫助，以上面例子來說，a在餘數系統中的乘法反元素就是$a^{ \phi (n) - 1}$，但如果考慮到計算量的話我們會想讓a的指數越小
-                
-            </p>
+            <a class="share-button" data-original-title title>Share this Post</a>
             
-        </section>
-    </article>
-    
-    <article class="post">
-
-        <header class="post-header">
-            <div class="tag-tile">
-                
-                
-                <a data-pjax href='/tags/Linux-Operating-System/'>Linux Operating System</a>
-                
-                
-                <span class="fa fa-bookmark" style="float:right;color:#f39c12"></span>
-            </div>
-            <h1 class="post-title"><a data-pjax href="/2015/10/18/Linux-Operating-System-4/">Linux Operating System-4</a>
-            </h1>
-
-            <div class="post-meta">
-                Post on<span class="fa fa-clock-o"></span>
-                <time datetime="2015-10-18T09:11:21.000Z"
-                      itemprop="datePublished">2015-10-18</time>
-            </div>
-        </header>
-        <section class="post-excerpt">
-            <p>
-                
-                來源：Introduction and Memory Addressing: Segmentation Unit (21 ~ 49, 72 ~ 83)
- Memory Addressing(x32) 
-
-在進入主題之前，先來複習一下第一堂課講過的三種address：  
- Logical Addresses 主要是由segment base address加上offset組成，segment base address會在segment 
-                
-            </p>
+            <a data-pjax class="older-posts" href="/2015/11/22/Applied-Cryptography-8/">Next Post →</a>
             
+        </nav>
+        <br/>
+        <br/>
+        <section id="comment">
+            <div id="comment-box"></div>
         </section>
+
+
     </article>
-    
-    <article class="post">
-
-        <header class="post-header">
-            <div class="tag-tile">
-                
-                
-                <a data-pjax href='/tags/The-Attack-and-Defense-of-Computers/'>The Attack and Defense of Computers</a>
-                
-                
-                <span class="fa fa-bookmark" style="float:right;color:#f39c12"></span>
-            </div>
-            <h1 class="post-title"><a data-pjax href="/2015/10/18/The-Attack-and-Defense-of-Computers-4/">The Attack and Defense of Computers-4</a>
-            </h1>
-
-            <div class="post-meta">
-                Post on<span class="fa fa-clock-o"></span>
-                <time datetime="2015-10-18T05:36:51.000Z"
-                      itemprop="datePublished">2015-10-18</time>
-            </div>
-        </header>
-        <section class="post-excerpt">
-            <p>
-                
-                來源：Internet Worms, Buffer Overflow Attacks, and Heap Overflow Attacks (21 ~ 40)
- Return-into-libc Attacks 
-
-上一堂課講的stack smashing是利用return address跳到攻擊者所寫的shell code，由於攻擊者注入的shell code會是在data段，現在大多電腦data段是無法執行code的，所以這邊發展了
-                
-            </p>
-            
-        </section>
-    </article>
-    
-    <article class="post">
-
-        <header class="post-header">
-            <div class="tag-tile">
-                
-                
-                <a data-pjax href='/tags/Applied-Cryptography/'>Applied Cryptography</a>
-                
-                
-                <span class="fa fa-bookmark" style="float:right;color:#f39c12"></span>
-            </div>
-            <h1 class="post-title"><a data-pjax href="/2015/10/17/Applied-Cryptography-4/">Applied Cryptography-4</a>
-            </h1>
-
-            <div class="post-meta">
-                Post on<span class="fa fa-clock-o"></span>
-                <time datetime="2015-10-17T03:18:48.000Z"
-                      itemprop="datePublished">2015-10-17</time>
-            </div>
-        </header>
-        <section class="post-excerpt">
-            <p>
-                
-                來源：chapter 2(51~54)，chapter 3(1~23)
- CBC Mode attack 
-
- concatenation attack  假設今天CBC不用來加密，它只用來進行MAC檢查碼計算，如果沒有處理好的話可能會遭受concatenation attack。它攻擊的樣貌是這樣的：假設今天有兩個合法字串P跟Q，P跟Q的檢查碼假如攻擊者都能接收的到，那麼攻擊者就能發送”類似”P+Q的字串給受害者，並且受害者接收到P+
-                
-            </p>
-            
-        </section>
-    </article>
-    
-    <article class="post">
-
-        <header class="post-header">
-            <div class="tag-tile">
-                
-                
-                <a data-pjax href='/tags/Linux-Operating-System/'>Linux Operating System</a>
-                
-                
-                <span class="fa fa-bookmark" style="float:right;color:#f39c12"></span>
-            </div>
-            <h1 class="post-title"><a data-pjax href="/2015/10/16/Linux-Operating-System-3/">Linux Operating System-3</a>
-            </h1>
-
-            <div class="post-meta">
-                Post on<span class="fa fa-clock-o"></span>
-                <time datetime="2015-10-16T04:19:29.000Z"
-                      itemprop="datePublished">2015-10-16</time>
-            </div>
-        </header>
-        <section class="post-excerpt">
-            <p>
-                
-                來源：Introduction (99 ~ 116)，Introduction and Memory Addressing: Segmentation Unit (1 ~ 20)
- Execution Mode of IA32 在x86架構的processor分為real mode以及protected mode，而在protected mode底下又分為ring0、ring1、ring2、ring3，linux kernel只用到了r
-                
-            </p>
-            
-        </section>
-    </article>
-    
-    <article class="post">
-
-        <header class="post-header">
-            <div class="tag-tile">
-                
-                
-                <a data-pjax href='/tags/Linux-Operating-System/'>Linux Operating System</a>
-                
-                
-                <span class="fa fa-bookmark" style="float:right;color:#f39c12"></span>
-            </div>
-            <h1 class="post-title"><a data-pjax href="/2015/10/15/Linux-Operating-System-2/">Linux Operating System-2</a>
-            </h1>
-
-            <div class="post-meta">
-                Post on<span class="fa fa-clock-o"></span>
-                <time datetime="2015-10-15T12:04:06.000Z"
-                      itemprop="datePublished">2015-10-15</time>
-            </div>
-        </header>
-        <section class="post-excerpt">
-            <p>
-                
-                來源：Introduction (64~98)
-Linux Source Code Tree Overview跟System Boot up我就跳過了…
- x32 Calling Conventions 這邊要介紹的是，當C呼叫一個function時參數的傳遞。關於stack frame我在網路攻防這邊有提到一些基礎知識，重複的在這邊就不再贅述。假設今天G function要呼叫H function，則我們稱呼叫者G為caller，被呼
-                
-            </p>
-            
-        </section>
-    </article>
-    
-    <article class="post">
-
-        <header class="post-header">
-            <div class="tag-tile">
-                
-                
-                <a data-pjax href='/tags/Linux-Operating-System/'>Linux Operating System</a>
-                
-                
-                <span class="fa fa-bookmark" style="float:right;color:#f39c12"></span>
-            </div>
-            <h1 class="post-title"><a data-pjax href="/2015/10/14/Linux-Operating-System-1/">Linux Operating System-1</a>
-            </h1>
-
-            <div class="post-meta">
-                Post on<span class="fa fa-clock-o"></span>
-                <time datetime="2015-10-14T12:02:44.000Z"
-                      itemprop="datePublished">2015-10-14</time>
-            </div>
-        </header>
-        <section class="post-excerpt">
-            <p>
-                
-                來源：Introduction (1~52)，x86-64，x86
- Intel x86 Architecture 
-
-講x86之前當然要先講一下它的由來，x86是intel的指令集架構，Intel這家公司成立於1968年，他最早創造了全球第一顆微處理器4004，然後演變成了8位元的CPU 8008，到了1978年x86架構正式誕生，第一款x86架構的處理器是8086，它是一個16位元的處理器，直到80386之後變成了32位元的cpu，
-                
-            </p>
-            
-        </section>
-    </article>
-    
-    <nav class="pagination" role="pagination">
-        
-        <span class="page-number">Page 1 of 2</span>
-        
-        <a data-pjax class="older-posts" href="/archives/2015/10/page/2/">Older Posts →</a>
-        
-    </nav>
 </main>
 
 
@@ -685,7 +399,7 @@ Linux Source Code Tree Overview跟System Boot up我就跳過了…
         var dsq = document.createElement('script');
         dsq.type = 'text/javascript';
         dsq.async = true;
-        dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
     }());
 </script>
