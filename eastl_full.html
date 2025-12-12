@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Software Engineer's Path</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+/* 1. CINEMATIC THEME SETUP */
+:root {
+    --bg-color: #050505;       /* Pure Black */
+    --text-main: #E5E5E5;      /* Misty White */
+    --text-dim: #888888;       /* Dim Grey for secondary info */
+    --accent-blue: #2DE2E6;    /* Electric Blue */
+    --accent-gold: #D4AF37;    /* Matte Gold */
+    --accent-red: #FF4136;     /* Alert Red for errors */
+    --accent-green: #39FF14;   /* Hacker Green */
+    --font-serif: 'Playfair Display', serif; 
+    --font-sans: 'Noto Sans TC', sans-serif; 
+    --font-mono: 'Space Mono', monospace;    
+}
+
+* {
+    box-sizing: border-box;
+}
+
+/* PRESENTATION MODE BODY */
+body {
+    background-color: #000;
+    margin: 0;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden; /* Hide scrollbars */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: var(--font-sans);
+}
+
+/* SLIDE CONTAINER BASE */
+.slide-container {
+    background-color: var(--bg-color);
+    width: 1280px;
+    height: 720px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    
+    display: none; /* Hide all by default */
+    padding: 60px 80px;
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
+    border: 1px solid #222;
+    
+    /* Ensure content stays within bounds */
+    max-width: 100vw;
+    max-height: 100vh;
+    box-sizing: border-box;
+}
+
+/* ACTIVE STATE - Default to Flex Column */
+.slide-container.active {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    z-index: 10;
+}
+
+/* ACTIVE STATE - Override for Split Layout (Side by Side) */
+.slide-container.active.split-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 80px;
+}
+
+/* 2. TYPOGRAPHY */
+h1 {
+    font-family: var(--font-serif);
+    font-size: 72px;
+    color: var(--text-main);
+    font-weight: 700;
+    margin: 0 0 20px 0;
+    line-height: 1.1;
+}
+
+h2 {
+    font-family: var(--font-serif);
+    font-size: 48px;
+    color: var(--text-main);
+    margin: 0 0 40px 0;
+    position: relative;
+    display: inline-block;
+}
+
+h2::after {
+    content: '';
+    position: absolute;
+    bottom: -15px;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background-color: var(--accent-blue);
+}
+
+p {
+    font-size: 22px;
+    color: var(--text-dim);
+    line-height: 1.6;
+    max-width: 800px;
+    font-weight: 300;
+    margin-bottom: 15px;
+}
+
+.highlight { color: var(--accent-blue); font-weight: 500; }
+.gold-text { color: var(--accent-gold); }
+.mono-tag {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    color: var(--accent-gold);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    display: block;
+}
+
+/* 3. LAYOUTS */
+.center-focus { text-align: center; align-items: center; }
+.center-focus h2::after { left: 50%; transform: translateX(-50%); }
+
+/* Visual Placeholder */
+.abstract-visual {
+    width: 100%;
+    height: 400px;
+    background: radial-gradient(circle at center, rgba(45, 226, 230, 0.1), transparent 70%);
+    border: 1px solid #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+.abstract-visual::before { content: ''; position: absolute; width: 80%; height: 1px; background: linear-gradient(90deg, transparent, var(--accent-blue), transparent); }
+.abstract-visual::after { content: ''; position: absolute; height: 80%; width: 1px; background: linear-gradient(180deg, transparent, var(--accent-blue), transparent); }
+
+/* CLEAN VISUAL (For Slide 12) - Removes borders and cross lines */
+.abstract-visual.clean {
+    background: none;
+    border: none;
+}
+.abstract-visual.clean::before,
+.abstract-visual.clean::after {
+    display: none;
+}
+
+/* Steps */
+.step-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    border-left: 2px solid #333;
+    padding-left: 30px;
+}
+.step-item { position: relative; }
+.step-item::before {
+    content: ''; position: absolute; left: -39px; top: 10px; width: 16px; height: 16px;
+    background-color: #000; border: 2px solid var(--accent-gold); border-radius: 50%;
+}
+
+/* Quote */
+.quote-slide blockquote {
+    font-family: var(--font-serif);
+    font-size: 36px;
+    color: var(--text-main);
+    font-style: italic;
+    border-left: 4px solid var(--accent-gold);
+    padding-left: 40px;
+    margin: 0;
+}
+
+/* Card Grid */
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    width: 100%;
+}
+.glass-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 30px;
+}
+.glass-card h3 {
+    font-family: var(--font-mono);
+    color: var(--text-main);
+    font-size: 18px;
+    margin-top: 0;
+}
+
+/* Code Snippet */
+.code-block {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    color: #aaa;
+    border-radius: 4px;
+    margin-top: 20px;
+}
+.code-block a { color: var(--accent-blue); text-decoration: none; border-bottom: 1px dashed var(--accent-blue); }
+
+/* Register Map */
+.register-diagram {
+    display: flex; flex-direction: column; gap: 15px; width: 80%; padding: 25px;
+    background: rgba(45, 226, 230, 0.05); border: 1px solid rgba(45, 226, 230, 0.3);
+    font-family: var(--font-mono); position: relative; box-shadow: 0 0 20px rgba(45, 226, 230, 0.1);
+}
+.reg-row { display: flex; align-items: center; justify-content: space-between; padding: 10px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+.reg-row:last-child { border-bottom: none; }
+.reg-addr { color: var(--accent-gold); font-weight: bold; }
+.reg-data { color: var(--accent-blue); }
+.reg-arrow { color: var(--text-dim); margin: 0 10px; font-size: 12px; }
+.reg-hw { color: var(--text-main); letter-spacing: 1px; }
+
+/* Stack Visual */
+.stack-visual { display: flex; flex-direction: column; gap: 10px; width: 80%; font-family: var(--font-mono); }
+.stack-layer {
+    padding: 15px; border: 1px solid rgba(255, 255, 255, 0.1); background: rgba(0, 0, 0, 0.3);
+    display: flex; justify-content: space-between; align-items: center; position: relative;
+}
+.stack-layer::after { content: '↓'; position: absolute; bottom: -15px; left: 50%; transform: translateX(-50%); color: var(--accent-gold); font-size: 14px; }
+.stack-layer:last-child::after { display: none; }
+.layer-name { color: var(--text-dim); font-size: 12px; text-transform: uppercase; letter-spacing: 1px;}
+.layer-code { color: var(--accent-blue); font-weight: bold; }
+.hw-layer { border-color: var(--accent-gold); background: rgba(212, 175, 55, 0.1); }
+
+/* GDB */
+.gdb-terminal {
+    font-family: var(--font-mono); font-size: 13px; background: rgba(0, 20, 0, 0.95);
+    border: 1px solid var(--accent-green); color: var(--accent-green); padding: 20px; width: 85%;
+    box-shadow: 0 0 20px rgba(57, 255, 20, 0.1);
+}
+.gdb-prompt { color: var(--accent-green); font-weight: bold; }
+.gdb-cmd { color: #fff; }
+.gdb-section { border-bottom: 1px dashed #005500; padding: 5px 0; margin-bottom: 5px; }
+.gdb-addr { color: #55aa55; margin-right: 10px; }
+.gdb-val { color: #ccffcc; }
+.gdb-highlight { background: rgba(57, 255, 20, 0.2); color: #fff; font-weight: bold; padding: 2px; }
+
+/* Boot Log - FIXED for visibility */
+.boot-log {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    line-height: 1.5;
+    background: #000;
+    padding: 20px;
+    border-left: 2px solid var(--accent-red);
+    color: #aaa;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    position: relative; /* Ensure z-index works */
+    z-index: 2; /* Sit above any container background */
+}
+.log-ok { color: #33ff00; }
+.log-err { color: var(--accent-red); font-weight: bold; animation: glitch 1s infinite; }
+@keyframes glitch { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+/* Voltage Graph - FIXED positioning */
+.voltage-graph {
+    width: 100%;
+    height: 300px;
+    position: relative;
+    border-bottom: 1px solid #555;
+    border-left: 1px solid #555;
+    /* Ensure flex child behaves */
+    flex-shrink: 0;
+}
+.v-line {
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 100%; height: 100%;
+    background: linear-gradient(to bottom right, transparent 50%, rgba(255, 65, 54, 0.1) 50%);
+}
+.curve {
+    position: absolute;
+    top: 50px; left: 0;
+    width: 100%; height: 200px;
+    fill: none;
+    stroke: var(--accent-blue);
+    stroke-width: 2;
+    stroke-dasharray: 10;
+}
+.vref-line {
+    position: absolute;
+    top: 180px; left: 0;
+    width: 100%; height: 1px;
+    background: var(--accent-gold);
+    border-top: 1px dashed var(--accent-gold);
+}
+.vref-label {
+    position: absolute;
+    top: 160px; right: 10px;
+    color: var(--accent-gold);
+    font-family: var(--font-mono);
+    font-size: 12px;
+}
+
+/* Memory Blocks */
+.mem-block-container { display: flex; flex-direction: column; gap: 20px; width: 100%; }
+.mem-row { display: flex; align-items: center; gap: 10px; }
+.mem-label { font-family: var(--font-mono); font-size: 12px; color: var(--text-dim); width: 80px; }
+.block-grid { display: flex; gap: 4px; flex-wrap: wrap; max-width: 300px; }
+.block { width: 12px; height: 12px; background: #333; border-radius: 2px; }
+.block.active { background: #33ff00; box-shadow: 0 0 5px #33ff00; }
+.block.error { background: var(--accent-red); box-shadow: 0 0 10px var(--accent-red); animation: pulse-red 1s infinite; }
+@keyframes pulse-red { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.5); opacity: 0.8; } 100% { transform: scale(1); opacity: 1; } }
+
+/* Comparison View */
+.comparison-view { display: flex; width: 100%; height: 100%; font-family: var(--font-mono); font-size: 12px; background: #000; border: 1px solid #333; }
+.comp-col { flex: 1; padding: 20px; display: flex; flex-direction: column; gap: 5px; }
+.comp-col.left { background: rgba(0,0,0,0.3); border-right: 1px solid #333; }
+.comp-header { color: var(--accent-blue); margin-bottom: 10px; font-weight: bold; border-bottom: 1px solid var(--accent-blue); padding-bottom: 5px;}
+.comp-row { display: flex; justify-content: space-between; padding: 2px 0; color: #888; }
+.comp-row.diff { color: var(--text-main); background: rgba(255, 65, 54, 0.15); border-left: 2px solid var(--accent-red); padding-left: 5px; }
+.comp-val { color: var(--accent-gold); }
+
+/* Chaos Code */
+.chaos-code {
+    font-family: var(--font-mono); font-size: 14px; background: rgba(0,0,0,0.6);
+    padding: 15px; border-radius: 4px; border-left: 3px solid var(--accent-blue); margin-bottom: 10px; color: #888;
+}
+.chaos-code .hl { color: var(--text-main); font-weight: bold; }
+.chaos-code .err { color: var(--accent-red); text-decoration: underline; font-weight: bold; }
+.chaos-arrow { color: var(--accent-gold); font-size: 20px; text-align: center; margin: 10px 0; }
+.chaos-effect { font-size: 18px; color: var(--text-main); text-align: center; font-weight: 500; }
+
+/* Bit Flip Visual */
+.bit-container {
+    display: flex; flex-direction: column; gap: 25px; background: rgba(20, 20, 20, 0.8);
+    padding: 25px; border: 1px solid #333; font-family: var(--font-mono);
+}
+.bit-row { display: flex; justify-content: center; align-items: center; gap: 8px; }
+.bit-box { width: 30px; height: 40px; border: 1px solid #555; display: flex; align-items: center; justify-content: center; color: #888; background: #111; }
+.bit-box.flipped { border-color: var(--accent-red); color: var(--accent-red); background: rgba(255, 65, 54, 0.1); font-weight: bold; animation: flash 1s infinite alternate; }
+.bit-box.inverted { border-color: var(--accent-blue); color: var(--accent-blue); background: rgba(45, 226, 230, 0.1); }
+.arrow-down { color: #555; font-size: 14px; text-align: center; margin-top: 5px; }
+@keyframes flash { from { opacity: 0.5; } to { opacity: 1; } }
+
+/* Orb Visual */
+.orb-visual {
+    width: 400px;
+    height: 400px;
+    border-radius: 50%;
+    border: 1px solid #333;
+    background: radial-gradient(circle at center, rgba(212, 175, 55, 0.1), transparent 70%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    position: relative;
+    box-shadow: 0 0 30px rgba(212, 175, 55, 0.1);
+}
+
+.controls-hint {
+    position: fixed; bottom: 20px; right: 20px; color: #555; font-size: 12px; font-family: var(--font-mono); pointer-events: none; opacity: 0.5; z-index: 9999;
+}
+    </style>
+</head>
+<body>
+
+    <!-- Slide 1: Intro -->
+    <div class="slide-container center-focus active">
+        <span class="mono-tag">01 / INTRODUCTION</span>
+        <h1>路徑與真相</h1>
+        <p style="font-size: 24px; color: var(--accent-blue);">The Path & The Truth</p>
+        <p style="font-family: var(--font-mono); font-size: 20px; color: var(--accent-gold); margin-top: 20px; letter-spacing: 2px;">
+            BY EastL
+        </p>
+        <p style="margin-top: 40px; max-width: 600px;">
+            從資工系學生到 <span class="highlight">MediaTek 工程師</span>。<br>
+            這是一段關於 Platform(bringup)、DRAM，以及如何看見系統本質的旅程。
+        </p>
+    </div>
+    <!-- Slide 2: Self Intro -->
+    <div class="slide-container split-layout">
+        <div>
+            <span class="mono-tag">02 / PROFILE</span>
+            <h2>起源與探索</h2>
+            <p style="margin-bottom: 20px; font-size: 20px;">Before the Chipset</p>
+            
+            <div class="step-container" style="gap: 15px;">
+                <div class="step-item">
+                    <p style="font-size: 18px; color: var(--text-main); margin-bottom: 2px;"><strong class="highlight">大二暑假 @ QC 實驗室</strong></p>
+                    <p style="font-size: 16px; line-height: 1.4; margin: 0; color: #888;">
+                        <span class="gold-text">Linux 操作啟蒙</span><br>
+                        在實驗室修習 Linux 課程，第一次深入接觸 Command Line，奠定了對系統操作的基礎認知。
+                    </p>
+                </div>
+                <div class="step-item" style="margin-top: 20px;">
+                    <p style="font-size: 18px; color: var(--text-main); margin-bottom: 2px;"><strong class="highlight">實習 @ BlueT & 大三專題</strong></p>
+                    <p style="font-size: 16px; line-height: 1.4; margin: 0; color: #888;">
+                        <span class="gold-text">ONVIF IPCAM & 資料隱藏</span><br>
+                        無論是新創公司的 IPCAM 串接，還是學校的資料隱藏計畫，全都在 Linux 環境下開發，磨練出紮實的 Shell 操作能力。
+                    </p>
+                </div>
+                <div class="step-item" style="margin-top: 20px;">
+                    <p style="font-size: 18px; color: var(--text-main); margin-bottom: 2px;"><strong class="highlight">工研院實習 & 中央資安</strong></p>
+                    <p style="font-size: 16px; line-height: 1.4; margin: 0; color: #888;">
+                        <span class="gold-text">智慧電錶資安檢測</span><br>
+                        大四推甄後經教授推薦進入工研院。學會用駭客視角審視漏洞，奠定資安基石。
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="abstract-visual">
+            <i class="fa-solid fa-user-secret" style="font-size: 80px; color: var(--accent-gold);"></i>
+            <i class="fa-brands fa-linux" style="font-size: 40px; color: var(--text-main); position: absolute; top: 120px; right: 100px; opacity: 0.6;"></i>
+            <i class="fa-solid fa-shield-halved" style="font-size: 40px; color: var(--accent-blue); position: absolute; bottom: 120px; left: 100px; opacity: 0.6;"></i>
+        </div>
+    </div>
+
+    <!-- Slide 3: CTF -->
+    <div class="slide-container split-layout">
+        <div>
+            <span class="mono-tag">03 / THE FOUNDATION</span>
+            <h2>駭客的視角</h2>
+            <p style="color: var(--accent-blue); margin-bottom: 20px;">CTF & ELF Analysis</p>
+            <p>在中央大學時期，我投身於 <strong class="gold-text">CTF</strong> 競賽。最令我著迷的是 <span class="highlight">PWN</span> 類題目。</p>
+            <div style="margin-top: 25px;">
+                <p style="font-size: 18px; border-left: 2px solid var(--accent-blue); padding-left: 20px; margin-bottom: 15px;">
+                    為了挖掘漏洞，我必須像法醫一樣解剖 <strong class="gold-text">ELF 執行檔</strong>。<br>
+                    從 Segment 到 Section，從 GOT 到 PLT。
+                </p>
+                <p style="font-size: 18px; color: var(--text-dim);">
+                    這段經歷讓我看見了 OS 的內部構造：<br>
+                    記憶體是如何佈局的？系統呼叫是如何觸發的？<br>
+                    這份對底層渴望，引領我走向了下一步...
+                </p>
+            </div>
+        </div>
+        <div class="abstract-visual" style="flex-direction: column; background: rgba(0,0,0,0.5);">
+            <div class="gdb-terminal">
+                <div><span class="gdb-prompt">gdb-peda$</span> <span class="gdb-cmd">checksec</span></div>
+                <div style="color: #aaa; margin-bottom: 10px;">CANARY : disabled, NX : enabled</div>
+                <div><span class="gdb-prompt">gdb-peda$</span> <span class="gdb-cmd">vmmap</span></div>
+                <div class="gdb-section"><span class="gdb-addr">0x08048000</span> <span class="gdb-val">r-xp</span> /bin/vuln <span style="color:var(--accent-blue);">(CODE)</span></div>
+                <div class="gdb-section"><span class="gdb-addr">0x08049000</span> <span class="gdb-val">rw-p</span> /bin/vuln <span style="color:var(--accent-gold);">(DATA)</span></div>
+                <div class="gdb-section" style="border-bottom: none;"><span class="gdb-addr">0xfffdd000</span> <span class="gdb-val">rw-p</span> [stack]</div>
+                <div style="margin-top: 15px; border-top: 1px solid #333; padding-top: 10px;">
+                    <span class="gdb-prompt">gdb-peda$</span> <span class="gdb-cmd">x/20x $esp</span><br>
+                    <span class="gdb-addr">0xfffdd110:</span> <span class="gdb-highlight">0xdeadbeef</span> <span style="color:#aaa;">(RET)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 4: OSDI -->
+    <div class="slide-container split-layout">
+        <div>
+            <span class="mono-tag">04 / THE CATALYST</span>
+            <h2>關鍵轉折</h2>
+            <p style="color: var(--accent-blue); margin-bottom: 20px;">Why MediaTek?</p>
+            <p>許多人問我是如何進到聯發科的。<br>我認為關鍵不在成績單，而是一場真正的試煉：</p>
+            <p style="margin-top: 20px;">
+                <strong class="gold-text" style="font-size: 24px;">NCTU OSDI</strong><br>
+                (Operating System Design and Implementation)
+            </p>
+            <p style="font-size: 18px; margin-top: 10px;">
+                在這門課中，我們不只是讀 OS 原理，而是從零開始寫出一個 Kernel。
+                它證明了我具備 System Level 的實作能力。
+            </p>
+            <div class="code-block">
+                <i class="fa-brands fa-github"></i> Source Code:<br>
+                <a href="https://github.com/EastL/nctu_osdi" target="_blank">github.com/EastL/nctu_osdi</a>
+            </div>
+        </div>
+        <div class="abstract-visual" style="border-radius: 4px; background: rgba(0,0,0,0.5);">
+            <div style="font-family: 'Space Mono', monospace; font-size: 14px; color: #33ff00; padding: 20px; width: 100%; height: 100%; overflow: hidden; opacity: 0.8; display: flex; flex-direction: column; justify-content: center;">
+                <div>$ make qemu</div>
+                <div>[ 0.000] Booting System...</div>
+                <div>[ 0.012] Init Memory Mgmt...</div>
+                <div>[ 0.035] Enabling Paging...</div>
+                <div style="color: var(--accent-blue); margin-top: 5px;">[ OK ] OSDI Kernel Loaded.</div>
+                <div style="margin-top: 5px;">$ _</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 5: The Concept -->
+    <div class="slide-container split-layout">
+        <div>
+            <span class="mono-tag">05 / THE CONNECTION</span>
+            <h2>知識的重量</h2>
+            <p>在學校，我們以為知識是為了應付考試的紙片。</p>
+            <p>在業界，我們發現知識是手中唯一的武器。</p>
+            <p>當你面對一個價值千萬的晶片 Bug 時，<br>能救你的只有那些<span class="gold-text">你以為再也不會用到的原理</span>。</p>
+        </div>
+        <div class="abstract-visual">
+            <i class="fa-solid fa-link" style="font-size: 64px; color: var(--text-dim);"></i>
+        </div>
+    </div>
+
+    <!-- Slide 6: The Bridge -->
+    <div class="slide-container split-layout">
+        <div>
+            <span class="mono-tag">06 / THE BRIDGE</span>
+            <h2>韌體的靈魂</h2>
+            <p style="color: var(--accent-blue); margin-bottom: 20px;">The Hardware API</p>
+            <p>什麼是韌體？它是軟體與硬體之間唯一的對話窗口。<br>溝通的語言，就是 <strong class="gold-text">暫存器 (Register)</strong>。</p>
+            <p style="margin-top: 20px; border-left: 2px solid var(--accent-blue); padding-left: 20px;">
+                IC Designer 將複雜的電路邏輯封裝，<br>
+                透過 Register 告訴我們如何操作電路。<br>
+                對我們來說，Register 就是<br>
+                <span class="highlight">硬體與軟體之間的 API 契約</span>。
+            </p>
+        </div>
+        <div class="abstract-visual">
+            <div class="register-diagram">
+                <div style="text-align: center; color: var(--text-main); margin-bottom: 15px; border-bottom: 1px solid var(--accent-blue); padding-bottom: 10px;">
+                    <i class="fa-solid fa-microchip"></i> MEMORY MAPPED I/O
+                </div>
+                <div class="reg-row"><span class="reg-addr">0x1000</span><i class="fa-solid fa-arrow-right reg-arrow"></i><span class="reg-hw">ENABLE_BIT</span></div>
+                <div class="reg-row"><span class="reg-addr">0x1004</span><i class="fa-solid fa-arrow-right reg-arrow"></i><span class="reg-hw">VOLTAGE_LVL</span></div>
+                <div class="reg-row"><span class="reg-addr">0x1008</span><i class="fa-solid fa-arrow-right reg-arrow"></i><span class="reg-hw">CLOCK_RATE</span></div>
+                <div style="margin-top: 15px; text-align: center; font-size: 12px; color: var(--text-dim);">// FW Writes → HW Actions</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 7: In Action -->
+    <div class="slide-container split-layout">
+        <div>
+            <span class="mono-tag">07 / IN ACTION</span>
+            <h2>printf 的真相</h2>
+            <p style="color: var(--accent-blue); margin-bottom: 20px;">From Code to Voltage</p>
+            <p>我們習以為常的 <code>printf("A");</code>，究竟是如何讓螢幕出現文字的？</p>
+            <p style="margin-top: 20px; font-size: 20px;">
+                這不是魔法，是一連串的<span class="highlight">抽象層剝離</span>。<br>
+                從 Application 到 Driver，最終 CPU 只是做了一件事：<br>
+                往一個特定的 <strong class="gold-text">UART 地址</strong> 寫入資料。
+            </p>
+            <p style="margin-top: 20px; border-left: 2px solid var(--accent-gold); padding-left: 20px; font-size: 18px; color: var(--text-dim);">
+                這就是為什麼我們需要懂底層。<br>
+                當 printf 卡住時，你才知道要拿示波器去量 TX pin。
+            </p>
+        </div>
+        <div class="abstract-visual">
+            <div class="stack-visual">
+                <div class="stack-layer"><span class="layer-name">Application</span><span class="layer-code">printf("A");</span></div>
+                <div class="stack-layer"><span class="layer-name">Libc</span><span class="layer-code">write(1, "A", 1);</span></div>
+                <div class="stack-layer"><span class="layer-name">Driver (UART)</span><span class="layer-code">UART_Write('A');</span></div>
+                <div class="stack-layer hw-layer"><span class="layer-name" style="color: var(--accent-gold);">Hardware</span><span class="layer-code" style="color: var(--text-main);">*0x1000 = 'A';</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 8: The Phantom Bit -->
+    <div class="slide-container split-layout">
+        <div>
+            <span class="mono-tag">08 / THE PARADOX</span>
+            <h2>完美的謊言</h2>
+            <p style="color: var(--accent-blue); margin-bottom: 20px;">A Memory Mystery</p>
+            <p>一個困擾我們許久的開機問題：</p>
+            <div class="step-container">
+                <div class="step-item"><p>Preloader: <span style="color: #33ff00;">Memory Test PASS</span>。<br>代表 DRAM 硬體是好的。</p></div>
+                <div class="step-item"><p>Kernel: <span style="color: var(--accent-red);">Decompress FAILED</span>。<br>解壓縮時發現資料錯誤。</p></div>
+                <div class="step-item"><p>Android: <span style="color: #555;">(No Response)</span>。<br>開機流程死在半路。</p></div>
+            </div>
+            <p style="margin-top: 30px; font-style: italic;">
+                既然檢測通過了，為什麼資料還會錯？<br>
+                是誰在短短幾毫秒內偷改了我的 Bit？
+            </p>
+        </div>
+        <div class="abstract-visual" style="padding: 0; background: #000; border: 1px solid #333;">
+            <div class="boot-log">
+                [PL] DRAM Test Start...<br>
+                [PL] Pattern Check... <span class="log-ok">OK</span><br>
+                [PL] Walking 0/1... <span class="log-ok">OK</span><br>
+                [PL] Jump to Kernel (0x40008000)<br>
+                ... (300ms silence) ...<br>
+                [K] Linux version 5.10.0<br>
+                [K] Uncompressing Linux...<br>
+                <span class="log-err">[K] Error: invalid magic number</span><br>
+                <span class="log-err">[K] CRC Error: 0xA3F2 != 0xA3F3</span><br>
+                <span class="log-err">[K] System Halted.</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 9: The Experiment -->
+    <div class="slide-container split-layout">
+        <div>
+            <span class="mono-tag">09 / THE EXPERIMENT</span>
+            <h2>關鍵實驗</h2>
+            <p style="color: var(--accent-blue); margin-bottom: 20px;">Defining the Role</p>
+            <p>韌體工程師的核心價值，在於<strong class="gold-text">解析現象</strong>。硬體負責修復物理問題，但我們負責縮小範圍。</p>
+            <p style="margin-top: 20px; font-size: 20px;">
+                <strong>疑點：</strong> Preloader 是靠 CPU 讀寫 Memory。<br>
+                一般 C Code 存取會被 <strong class="gold-text">CPU Cache</strong> 限制，<br>
+                一次最多只有 64 Bytes (Cache Line) 打到 DRAM 上。
+            </p>
+            <p style="margin-top: 20px; border-left: 2px solid var(--accent-blue); padding-left: 20px;">
+                <strong>實驗：</strong> 修改 Preloader，強制執行 <span class="highlight">Cache-off Burst Stress Test</span>。<br>
+                <strong>結果：</strong> Bitflip 在 Preloader 階段重現了。
+            </p>
+        </div>
+        <div class="abstract-visual" style="flex-direction: column; gap: 30px; align-items: flex-start; padding: 40px; justify-content: center;">
+            <div class="mem-block-container">
+                <div class="mem-row">
+                    <span class="mem-label">NORMAL</span>
+                    <div class="block-grid"><div class="block active"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div></div>
+                </div>
+                <p style="font-size: 12px; color: #555; margin-top: -15px; margin-left: 90px;">Limited by CPU Cache (64B)</p>
+                <div class="mem-row" style="margin-top: 20px;">
+                    <span class="mem-label" style="color: var(--accent-blue);">STRESS</span>
+                    <div class="block-grid"><div class="block active"></div><div class="block active"></div><div class="block active"></div><div class="block active"></div><div class="block active"></div><div class="block active"></div><div class="block active"></div><div class="block active"></div><div class="block active"></div><div class="block active"></div><div class="block error"></div><div class="block active"></div></div>
+                </div>
+                <p style="font-size: 12px; color: var(--accent-red); margin-top: -15px; margin-left: 90px;">Direct Burst to DRAM</p>
+            </div>
+            <div style="border-top: 1px solid #333; width: 100%; padding-top: 15px; text-align: center;">
+                <p style="font-family: var(--font-mono); font-size: 14px; color: var(--text-main);">Observation: <span style="color: var(--accent-red);">FAILURE REPRODUCED</span></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 10: The Evidence -->
+    <div class="slide-container split-layout">
+        <div>
+            <span class="mono-tag">10 / THE EVIDENCE</span>
+            <h2>數據取證</h2>
+            <p style="color: var(--accent-blue); margin-bottom: 20px;">Snapshotting the Truth</p>
+            <p>當 Bug 重現時，我們做了一件最暴力但也最有效的事：<br><strong class="gold-text">Register Dump</strong></p>
+            <p style="margin-top: 20px;">我們把 DRAM Controller 當下所有暫存器的值印出來，交給 IC Designer 去跟他們的 <span class="highlight">RTL Simulation</span> 比對。</p>
+            <p style="margin-top: 20px; font-size: 18px; color: var(--text-dim); border-left: 2px solid var(--accent-gold); padding-left: 20px;">
+                這就是數位電路的刑案現場。<br>
+                "這個 bit 是 0？但在 RTL 設計裡它必須是 1！"<br>
+                兇手找到了。
+            </p>
+        </div>
+        <div class="abstract-visual" style="padding: 0; border: none;">
+            <div class="comparison-view">
+                <div class="comp-col left">
+                    <div class="comp-header">SILICON (FW Dump)</div>
+                    <div class="comp-row"><span class="comp-addr">0x1000:</span> <span class="comp-val">0x80000001</span></div>
+                    <div class="comp-row"><span class="comp-addr">0x1004:</span> <span class="comp-val">0x000000FF</span></div>
+                    <div class="comp-row diff"><span class="comp-addr">0x1008:</span> <span class="comp-val">0x0000<span style="color: var(--accent-red);">0</span>000</span></div>
+                    <div class="comp-row"><span class="comp-addr">0x100C:</span> <span class="comp-val">0x00000000</span></div>
+                    <div style="margin-top: auto; color: var(--accent-red); font-weight: bold;">[!] REFRESH_EN = 0</div>
+                </div>
+                <div class="comp-col">
+                    <div class="comp-header">RTL (Designer)</div>
+                    <div class="comp-row"><span class="comp-addr">0x1000:</span> <span class="comp-val">0x80000001</span></div>
+                    <div class="comp-row"><span class="comp-addr">0x1004:</span> <span class="comp-val">0x000000FF</span></div>
+                    <div class="comp-row diff" style="background: rgba(51, 255, 0, 0.1); border-color: #33ff00;"><span class="comp-addr">0x1008:</span> <span class="comp-val">0x0000<span style="color: #33ff00;">1</span>000</span></div>
+                    <div class="comp-row"><span class="comp-addr">0x100C:</span> <span class="comp-val">0x00000000</span></div>
+                    <div style="margin-top: auto; color: #33ff00; font-weight: bold;">[OK] REFRESH_EN = 1</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 11: The Physics -->
+    <div class="slide-container split-layout">
+        <div>
+            <span class="mono-tag">11 / THE PHYSICS</span>
+            <h2>遺忘的電容</h2>
+            <p style="color: var(--accent-blue); margin-bottom: 20px;">The Cost of Time</p>
+            <p>我們翻開了 DRAM 的 Spec，重新審視物理特性。<br>DRAM 的每個 Bit 都是一個微小的<strong class="gold-text">電容 (Capacitor)</strong>。</p>
+            <p style="margin-top: 20px;">
+                <i class="fa-solid fa-bolt" style="color: var(--accent-gold);"></i> <strong>Root Cause:</strong><br>
+                Register Dump 證實，Controller 的 <code>Self-Refresh</code> 沒被打開。
+            </p>
+            <p style="margin-top: 20px;">
+                在短短的空窗期內，電容漏電 (Leakage)。<br>
+                電壓低於 <strong class="highlight">Vref (參考電壓)</strong>，<br>
+                於是 <span class="highlight">1 變成了 0</span> (Bitflip)。
+            </p>
+        </div>
+        <div class="abstract-visual" style="flex-direction: column;">
+            <div class="voltage-graph">
+                <svg width="100%" height="100%" viewBox="0 0 400 300" style="position: absolute;">
+                    <line x1="50" y1="0" x2="50" y2="280" stroke="#333" stroke-dasharray="5" />
+                    <line x1="50" y1="280" x2="400" y2="280" stroke="#aaa" />
+                    <line x1="50" y1="180" x2="400" y2="180" stroke="var(--accent-gold)" stroke-width="2" stroke-dasharray="10"/>
+                    <text x="320" y="170" fill="var(--accent-gold)" font-family="monospace">Vref (Threshold)</text>
+                    <path d="M 50 50 Q 150 50, 250 180 T 400 250" fill="none" stroke="var(--accent-blue)" stroke-width="3" />
+                    <text x="10" y="50" fill="var(--accent-blue)" font-family="monospace">Logic 1</text>
+                    <text x="10" y="280" fill="#aaa" font-family="monospace">0V</text>
+                    <text x="260" y="200" fill="var(--accent-red)" font-family="monospace">↑ Bitflip (1->0)</text>
+                    <circle cx="250" cy="180" r="5" fill="var(--accent-red)" />
+                </svg>
+            </div>
+            <p style="font-size: 14px; color: var(--text-dim); margin-top: 15px; font-family: var(--font-mono);">// Voltage drops over time without Refresh</p>
+        </div>
+    </div>
+
+    <!-- Slide 12: The Mechanics (Clean Visual) -->
+    <div class="slide-container split-layout">
+        <div>
+            <span class="mono-tag">12 / THE MECHANICS</span>
+            <h2>微觀的災難</h2>
+            <p style="color: var(--accent-blue); margin-bottom: 20px;">From 1 Bit to 1 Byte</p>
+            <p>什麼是 Bitflip？簡單來說，就是電壓判定錯誤。<br>例如：<strong class="gold-text">110</strong> 變成了 <strong class="highlight">100</strong>。</p>
+            <p style="margin-top: 20px;">但更可怕的是 <strong class="gold-text">Data Bus Inversion (DBI)</strong>。</p>
+            <p style="margin-top: 20px; font-size: 18px; color: var(--text-dim); border-left: 2px solid var(--accent-red); padding-left: 20px;">
+                為了省電，如果傳輸的 '0' 超過一半，DRAM 會將數據反轉並立起 DBI Flag。<br>
+                如果運氣不好，Flip 剛好打在那個 DBI Flag 上...<br>
+                <span class="highlight">你看到的不是 1 個 Bit 錯，而是這 8 個 Bits 全部反轉。</span>
+            </p>
+        </div>
+        <div class="abstract-visual clean">
+            <div class="bit-container">
+                <div style="text-align: center; color: var(--text-dim); border-bottom: 1px solid #333; padding-bottom: 5px;">CASE 1: SIMPLE FLIP</div>
+                <div class="bit-row">
+                    <div class="bit-box">1</div><div class="bit-box flipped">0</div><div class="bit-box">0</div>
+                </div>
+                <div class="arrow-down"><i class="fa-solid fa-arrow-down"></i></div>
+                <div class="bit-row">
+                    <div class="bit-box">1</div><div class="bit-box">1</div><div class="bit-box">0</div>
+                </div>
+                <div style="text-align: center; color: var(--accent-blue); border-bottom: 1px solid var(--accent-blue); padding-bottom: 5px; margin-top: 20px;">CASE 2: DBI FLIP</div>
+                <div class="bit-row">
+                    <div class="bit-box inverted">0</div><div class="bit-box inverted">0</div><div class="bit-box inverted">0</div><div class="bit-box" style="border-color: var(--accent-gold); color: var(--accent-gold);">DBI:1</div>
+                </div>
+                <div style="text-align: center; font-size: 12px; color: #555;">(Data is inverted, real value is 111)</div>
+                <div class="arrow-down" style="color: var(--accent-red);"><i class="fa-solid fa-bolt"></i> Flip DBI Bit</div>
+                <div class="bit-row">
+                    <div class="bit-box flipped">0</div><div class="bit-box flipped">0</div><div class="bit-box flipped">0</div><div class="bit-box flipped" style="border-color: var(--accent-red); color: var(--accent-red);">DBI:0</div>
+                </div>
+                <div style="text-align: center; font-size: 12px; color: var(--accent-red);">(System thinks raw data is 000 -> <strong>ALL BITS ERROR</strong>)</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 13 -->
+    <div class="slide-container split-layout">
+        <div>
+            <span class="mono-tag">13 / LEVEL 1</span>
+            <h2>數值的變異</h2>
+            <p style="color: var(--accent-blue); margin-bottom: 20px;">The Mutation of Data</p>
+            <p>當 Bitflip 發生在一般變數時 (Userspace Data)：<br>這對應到 <strong class="gold-text">程式設計</strong> 的基本資料型態。</p>
+            <p style="margin-top: 20px; border-left: 2px solid var(--accent-gold); padding-left: 20px;">
+                如果是遊戲，這可能是玩家血量暴增。<br>
+                如果是金融系統，這可能是一筆巨額轉帳錯誤。<br>
+                <span class="highlight">程式邏輯是對的，但數據背叛了你。</span>
+            </p>
+        </div>
+        <div class="abstract-visual" style="flex-direction: column; justify-content: center; background: rgba(0,0,0,0.5);">
+            <div style="font-family: var(--font-mono); width: 80%;">
+                <div class="chaos-code">
+                    <span style="color: #66d9ef;">int</span> balance = <span class="hl">100</span>;<br>
+                    <span style="color: #75715e;">// Binary: 0000...0<span style="color: #33ff00;">1</span>100100</span>
+                </div>
+                <div class="chaos-arrow"><i class="fa-solid fa-bolt" style="color: var(--accent-red);"></i> Bit 31 Flipped</div>
+                <div class="chaos-code" style="border-color: var(--accent-red);">
+                    <span style="color: #66d9ef;">int</span> balance = <span class="err">-2147483548</span>;<br>
+                    <span style="color: #75715e;">// Binary: <span style="color: var(--accent-red);">1</span>000...01100100</span>
+                </div>
+                <div class="chaos-effect">Result: <span style="color: var(--accent-red);">Integer Overflow</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 14 -->
+    <div class="slide-container split-layout">
+        <div>
+            <span class="mono-tag">14 / LEVEL 2</span>
+            <h2>指令的幻覺</h2>
+            <p style="color: var(--accent-blue); margin-bottom: 20px;">The Distortion of Logic</p>
+            <p>當 Bitflip 發生在程式碼區段時：<br>這對應到 <strong class="gold-text">計算機結構</strong> 的 Instruction Set。</p>
+            <p style="margin-top: 20px; border-left: 2px solid var(--accent-blue); padding-left: 20px;">
+                本來要做加法運算 (ADD)，因為一個 Bit 的改變，變成了跳轉 (BRANCH)，或者是未定義指令。<br>
+                <span class="highlight">CPU 產生了幻覺，執行了不存在的邏輯。</span>
+            </p>
+        </div>
+        <div class="abstract-visual" style="flex-direction: column; justify-content: center; background: rgba(0,0,0,0.5);">
+            <div style="font-family: var(--font-mono); width: 80%;">
+                <div class="chaos-code">
+                    <span style="color: #66d9ef;">0x8000:</span> ADD R1, R2, R3<br>
+                    <span style="color: #75715e;">// Opcode: 0x<span style="color: #33ff00;">E</span>0821003</span>
+                </div>
+                <div class="chaos-arrow"><i class="fa-solid fa-bolt" style="color: var(--accent-red);"></i> Bitflip in Opcode</div>
+                <div class="chaos-code" style="border-color: var(--accent-red);">
+                    <span style="color: #66d9ef;">0x8000:</span> <span class="err">??? (Undefined)</span><br>
+                    <span style="color: #75715e;">// Opcode: 0x<span style="color: var(--accent-red);">F</span>0821003</span>
+                </div>
+                <div class="chaos-effect">Result: <span style="color: var(--accent-red);">CPU Crash</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 15 -->
+    <div class="slide-container split-layout">
+        <div>
+            <span class="mono-tag">15 / LEVEL 3</span>
+            <h2>崩塌的地基</h2>
+            <p style="color: var(--accent-blue); margin-bottom: 20px;">The Collapse of System</p>
+            <p>當 Bitflip 發生在頁表 (Page Table) 時：<br>這對應到 <strong class="gold-text">作業系統</strong> 的虛擬記憶體管理。</p>
+            <p style="margin-top: 20px; border-left: 2px solid var(--accent-red); padding-left: 20px;">
+                虛擬地址 (VA) 指向了錯誤的物理地址 (PA)。OS 以為自己在寫入 User Data，實際上可能覆寫了 Kernel Code。<br>
+                <span class="highlight">這不僅是當機，這也是嚴重的資安漏洞。</span>
+            </p>
+        </div>
+        <div class="abstract-visual" style="flex-direction: column; justify-content: center; background: rgba(0,0,0,0.5);">
+            <div style="font-family: var(--font-mono); width: 80%;">
+                <div class="chaos-code">
+                    VA: 0x1000 -> <span class="hl">PA: 0x5000</span><br>
+                    <span style="color: #75715e;">// PTE: 0x0000<span style="color: #33ff00;">5</span>000</span>
+                </div>
+                <div class="chaos-arrow"><i class="fa-solid fa-bolt" style="color: var(--accent-red);"></i> PFN Corrupted</div>
+                <div class="chaos-code" style="border-color: var(--accent-red);">
+                    VA: 0x1000 -> <span class="err">PA: 0xD000</span><br>
+                    <span style="color: #75715e;">// PTE: 0x0000<span style="color: var(--accent-red);">D</span>000</span>
+                </div>
+                <div class="chaos-effect">Result: <span style="color: var(--accent-red);">Memory Corruption</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 16 -->
+    <div class="slide-container center-focus">
+        <span class="mono-tag">16 / THE TOOLKIT</span>
+        <h2>解題所需的裝備</h2>
+        <p style="margin-bottom: 50px;">為了修復這個 Bug，我不得不翻開腦中的舊課本</p>
+        
+        <div class="card-grid">
+            <div class="glass-card">
+                <h3><i class="fa-solid fa-bolt"></i> 電子電路學</h3>
+                <p style="font-size: 16px; margin-top: 15px;">理解 <strong>DRAM Capacitor & Leakage</strong>。知道電壓 (Voltage) 如何隨時間下降，以及 Vref 如何判定 0 與 1。</p>
+            </div>
+            <div class="glass-card">
+                <h3><i class="fa-solid fa-microchip"></i> 計算機結構</h3>
+                <p style="font-size: 16px; margin-top: 15px;">理解 <strong>Instruction Set (ISA)</strong>。知道 CPU 如何解碼指令，以及 Opcode 損壞會如何導致 CPU 執行錯誤邏輯。</p>
+            </div>
+            <div class="glass-card">
+                <h3><i class="fa-solid fa-server"></i> 作業系統</h3>
+                <p style="font-size: 16px; margin-top: 15px;">理解 <strong>Virtual Memory & Page Table</strong>。知道記憶體映射 (Mapping) 的機制，以及 Bitflip 如何破壞系統安全性。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 17 -->
+    <div class="slide-container quote-slide">
+        <span class="mono-tag">17 / THE REVELATION</span>
+        <blockquote>
+            學校教的是<span class="highlight">原理 (Principles)</span>，<br>
+            業界給的是<span class="highlight">場景 (Context)</span>。
+        </blockquote>
+        <p style="margin-top: 60px;">
+            我們常說大學教的沒用，是因為我們還沒遇到那個「場景」。<br>
+            當場景出現時，沒有原理的人只能試誤 (Trial & Error)，擁有原理的人能夠推導 (Deduce)。
+        </p>
+    </div>
+
+    <!-- Slide 18 -->
+    <div class="slide-container split-layout">
+        <div>
+            <span class="mono-tag">18 / RETROSPECTIVE</span>
+            <h2>如果重來一次</h2>
+            <ul style="list-style: none; padding: 0;">
+                <li style="margin-bottom: 25px; border-left: 2px solid var(--accent-gold); padding-left: 20px;">
+                    <strong class="gold-text">不要只會寫 Code，更要看懂 Spec</strong><br>
+                    程式語言只是工具，協議 (Protocol) 和硬體標準才是連結軟體與真實世界的關鍵。
+                </li>
+                <li style="margin-bottom: 25px; border-left: 2px solid var(--accent-blue); padding-left: 20px;">
+                    <strong class="highlight">不要只求 Pass，要求 Why</strong><br>
+                    電路學為什麼這樣算？OS 為什麼這樣排程？好奇心是抗老化劑。
+                </li>
+                <li style="border-left: 2px solid #fff; padding-left: 20px;">
+                    <strong style="color: #fff;">去實驗室，不要只待在教室</strong><br>
+                    真實的雜訊只存在於示波器上，不存在課本裡。
+                </li>
+            </ul>
+        </div>
+        <div class="orb-visual">
+            <i class="fa-solid fa-rotate-right" style="font-size: 80px; color: var(--accent-gold);"></i>
+        </div>
+    </div>
+
+    <!-- Slide 19 -->
+    <div class="slide-container center-focus">
+        <span class="mono-tag">19 / THE HORIZON</span>
+        <h2>給未來的工程師</h2>
+        <div style="display: flex; gap: 60px; margin-top: 40px; text-align: left;">
+            <div>
+                <h3 class="highlight">格局 (Vision)</h3>
+                <p style="font-size: 18px;">別只盯著那一行 Code。<br>看系統，看架構，看產品。</p>
+            </div>
+            <div>
+                <h3 class="highlight">思維 (Systems)</h3>
+                <p style="font-size: 18px;">萬物皆有關聯。<br>軟體的問題可能來自硬體，<br>硬體的問題可能來自物理。</p>
+            </div>
+            <div>
+                <h3 class="highlight">根源 (Root Cause)</h3>
+                <p style="font-size: 18px;">不要只是貼 OK 繃。<br>找到問題的根源，<br>即使那需要你重學一門學科。</p>
+            </div>
+        </div>
+        <p style="margin-top: 60px; font-family: var(--font-mono); color: var(--text-dim); font-size: 14px;">
+            // END OF PRESENTATION
+        </p>
+    </div>
+
+    <!-- Hint for Controls -->
+    <div class="controls-hint">
+        Use ◄ ► Keys or Spacebar to Navigate
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide-container');
+
+        function showSlide(n) {
+            // Check bounds
+            if (n >= slides.length) {
+                // Loop back to start or stay at end? Let's stay at end
+                currentSlide = slides.length - 1;
+                return; 
+            }
+            if (n < 0) {
+                currentSlide = 0;
+                return;
+            }
+            currentSlide = n;
+
+            // Remove active class from all
+            slides.forEach(slide => {
+                slide.classList.remove('active');
+            });
+
+            // Add active class to current
+            const slide = slides[currentSlide];
+            slide.classList.add('active');
+        }
+
+        // Initialize on load
+        window.addEventListener('load', () => {
+            showSlide(0);
+        });
+
+        // Keyboard controls
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+                showSlide(currentSlide + 1);
+            } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+                showSlide(currentSlide - 1);
+            }
+        });
+    </script>
+</body>
+</html>
