@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2025 原原台聚 × SYSTEM CONNECTED</title>
+    <!-- 引入 Google Fonts: 使用科技感單間距字體 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Noto+Sans+TC:wght@300;400;700&display=swap" rel="stylesheet">
+    <!-- 引入 Font Awesome Icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --matrix-green: #00ff41; /* 經典駭客綠 */
+            --matrix-dark-green: #008f11;
+            --matrix-black: #0d0208;
+            /* 修改：卡片背景改為接近全黑，不透明度提高，增加閱讀性 */
+            --terminal-bg: #050505; 
+            --border-color: #003b00;
+            --glow: 0 0 5px rgba(0, 255, 65, 0.3); /* 減弱光暈，避免刺眼 */
+            --text-main: #e0ffe0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Share Tech Mono', 'Noto Sans TC', monospace; /* 科技字體 */
+            background-color: black;
+            color: var(--text-main);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding-bottom: 50px;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Matrix Rain Canvas */
+        #matrix-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            /* 修改：大幅降低背景透明度，避免搶眼 */
+            opacity: 0.2; 
+        }
+
+        /* CRT 螢幕掃描線特效 */
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0,0,0,0.1) 50%, /* 減弱掃描線強度 */
+                rgba(0,0,0,0.1)
+            );
+            background-size: 100% 4px;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.4;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 標題區塊 */
+        header {
+            text-align: center;
+            padding: 60px 20px;
+            border-bottom: 1px solid var(--matrix-dark-green);
+            margin-bottom: 40px;
+            position: relative;
+            /* 修改：增加標題區塊的背景遮罩，讓文字更清楚 */
+            background: radial-gradient(circle, rgba(0,20,0,0.8) 0%, rgba(0,0,0,0) 70%);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: var(--matrix-green);
+            text-transform: uppercase;
+            text-shadow: var(--glow);
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+        
+        /* 打字機游標效果 */
+        h1::after {
+            content: '_';
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: #fff; /* 修改：改為白色，對比更強 */
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .system-msg {
+            font-size: 0.9rem;
+            color: var(--matrix-green); /* 改亮一點 */
+            border: 1px solid var(--matrix-dark-green);
+            padding: 5px 15px;
+            display: inline-block;
+            margin-bottom: 20px;
+            background: rgba(0, 0, 0, 0.9); /* 純黑底 */
+        }
+
+        /* 通用卡片樣式：終端機視窗風格 */
+        .card {
+            background: var(--terminal-bg);
+            border: 1px solid var(--matrix-dark-green); /* 邊框改暗一點 */
+            padding: 2px; 
+            margin-bottom: 30px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.8); /* 加深陰影 */
+            position: relative;
+        }
+        
+        .card-inner {
+            border: 1px solid rgba(0, 143, 17, 0.3);
+            padding: 25px;
+            background: rgba(10, 10, 10, 0.95); /* 修改：幾乎不透明的深色背景 */
+        }
+
+        /* 裝飾性角落 */
+        .card::before, .card::after {
+            content: '';
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-color: var(--matrix-green);
+            border-style: solid;
+            transition: all 0.3s;
+        }
+        .card::before { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
+        .card::after { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
+
+        .card:hover {
+            box-shadow: 0 0 15px rgba(0, 255, 65, 0.2);
+            border-color: var(--matrix-green);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid var(--matrix-dark-green);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--matrix-green);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* 資訊網格 */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            text-align: center;
+        }
+
+        .info-item {
+            background: rgba(20, 20, 20, 1); /* 全不透明 */
+            padding: 20px;
+            border: 1px solid var(--matrix-dark-green);
+        }
+
+        .info-item i {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            color: var(--matrix-green);
+        }
+
+        .info-item h3 {
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .info-item p {
+            color: #ccc;
+        }
+
+        /* 表格樣式 */
+        .price-table-container {
+            overflow-x: auto;
+            border: 1px solid var(--matrix-dark-green);
+            background: #000; /* 全黑底 */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: 'Share Tech Mono', monospace;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid var(--matrix-dark-green);
+            border-right: 1px solid rgba(0, 143, 17, 0.3);
+        }
+
+        th {
+            background: rgba(0, 40, 0, 1); /* 實色 */
+            color: var(--matrix-green);
+            text-transform: uppercase;
+        }
+
+        tr:hover {
+            background: rgba(0, 255, 65, 0.05);
+            color: white;
+        }
+
+        .discount-note {
+            margin-top: 20px;
+            color: #ddd; /* 字色調白 */
+            background: rgba(0, 30, 0, 0.8);
+            padding: 15px;
+            border-left: 3px solid var(--matrix-green);
+            font-size: 0.9rem;
+        }
+        
+        .discount-note strong {
+            text-decoration: underline;
+            color: var(--matrix-green);
+        }
+
+        /* 時間軸樣式 - 數據流風格 */
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 4px;
+            top: 0;
+            bottom: 0;
+            width: 1px;
+            background: var(--matrix-dark-green);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -30px;
+            top: 5px;
+            width: 8px;
+            height: 8px;
+            background: black;
+            border: 1px solid var(--matrix-green);
+            box-shadow: 0 0 5px var(--matrix-green);
+        }
+
+        .timeline-date {
+            font-family: 'Share Tech Mono', monospace;
+            color: var(--matrix-green);
+            margin-bottom: 5px;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+
+        .timeline-content {
+            color: #eee; /* 更亮一點 */
+        }
+        
+        .timeline-item:hover::before {
+            background: var(--matrix-green);
+        }
+
+        /* 福利列表 */
+        .perks-list li {
+            list-style: none;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px dashed var(--matrix-dark-green);
+            padding-bottom: 10px;
+            color: #fff;
+        }
+
+        .perks-list i {
+            color: var(--matrix-green);
+            margin-right: 15px;
+        }
+
+        .highlight-box {
+            background: rgba(0, 10, 0, 0.9);
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+            border: 1px solid var(--matrix-green);
+            box-shadow: inset 0 0 10px rgba(0, 255, 65, 0.05);
+        }
+        
+        .highlight-box h3 {
+            color: var(--matrix-green);
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+        
+        .highlight-box p {
+            color: #fff;
+        }
+
+        /* 報名按鈕 */
+        .cta-section {
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .cta-btn {
+            display: inline-block;
+            background: #000;
+            color: var(--matrix-green);
+            padding: 20px 60px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-decoration: none;
+            border: 2px solid var(--matrix-green);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+            box-shadow: 0 0 5px var(--matrix-green);
+        }
+
+        .cta-btn:hover {
+            background: var(--matrix-green);
+            color: black;
+            box-shadow: 0 0 20px var(--matrix-green);
+        }
+
+        /* 故障雜訊效果 (Glitch) */
+        .glitch-text {
+            position: relative;
+        }
+        
+        .glitch-text:hover {
+            animation: glitch 0.3s cubic-bezier(.25, .46, .45, .94) both infinite;
+            color: white;
+        }
+
+        @keyframes glitch {
+            0% { transform: translate(0) }
+            20% { transform: translate(-2px, 2px) }
+            40% { transform: translate(-2px, -2px) }
+            60% { transform: translate(2px, 2px) }
+            80% { transform: translate(2px, -2px) }
+            100% { transform: translate(0) }
+        }
+
+        /* RWD */
+        @media (max-width: 600px) {
+            h1 { font-size: 1.8rem; }
+            .info-grid { grid-template-columns: 1fr; }
+            .card-inner { padding: 15px; }
+            .cta-btn { padding: 15px 30px; font-size: 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Matrix Rain Canvas -->
+    <canvas id="matrix-canvas"></canvas>
+    <!-- 掃描線特效 -->
+    <div class="scanlines"></div>
+
+    <div class="container">
+        
+        <header>
+            <div class="system-msg">> SYSTEM_READY: LOADING_EVENT_DATA...</div>
+            <h1>2025 原原台聚 × 大集合</h1>
+            <p class="subtitle">> 年度最期待的原原粉絲大集合正式啟動 // EXECUTE_PROTOCOL_FUN</p>
+            
+            <br>
+            <p style="max-width: 600px; margin: 0 auto; opacity: 1; color: #ccc;">
+                [INFO] 訂閱原原，陪你歡樂一整年。<br>
+                [INFO] 主播 × 粉絲專屬互動、滿滿福利、抽獎、活動一次到位。<br>
+                [Status] 等待您的加入...
+            </p>
+        </header>
+
+        <!-- 時間地點卡片 -->
+        <section class="card">
+            <div class="card-inner">
+                <div class="section-header">
+                    <h2 class="section-title"><i class="fas fa-terminal"></i> 任務資訊 [INFO]</h2>
+                </div>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <i class="fas fa-clock"></i>
+                        <h3>12.21 (SUN)</h3>
+                        <p>16:00 - 20:00</p>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <h3>LOCATION: TPE</h3>
+                        <p>KTV [ENCRYPTED]</p>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-users"></i>
+                        <h3>CAPACITY</h3>
+                        <p>LIMIT: 15 UNITS</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 報名辦法卡片 -->
+        <section class="card">
+            <div class="card-inner">
+                <div class="section-header">
+                    <h2 class="section-title"><i class="fas fa-code"></i> 存取權限 (報名辦法)</h2>
+                </div>
+                <p style="margin-bottom: 15px; color: #ddd;">> 依照訂閱時長解鎖不同層級</p>
+                
+                <div class="price-table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>LEVEL (時長)</th>
+                                <th>REQ (贈訂)</th>
+                                <th>COST (斗內)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>10 MONTHS+</td>
+                                <td>x 50</td>
+                                <td>$1500</td>
+                            </tr>
+                            <tr>
+                                <td>6 MONTHS+</td>
+                                <td>x 70</td>
+                                <td>$2000</td>
+                            </tr>
+                            <tr>
+                                <td>3 MONTHS+</td>
+                                <td>x 85</td>
+                                <td>$2500</td>
+                            </tr>
+                            <tr>
+                                <td>0-2 MONTHS</td>
+                                <td>x 100</td>
+                                <td>$3000</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="discount-note">
+                    <i class="fas fa-exclamation-triangle"></i> <strong>SPECIAL_OVERRIDE (層三優惠):</strong><br>
+                    符合資格者執行指令：<span style="color: #fff">贈訂 -10 份</span> && <span style="color: #fff">斗內 -$500</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 報名時段卡片 -->
+        <section class="card">
+            <div class="card-inner">
+                <div class="section-header">
+                    <h2 class="section-title"><i class="fas fa-history"></i> 時間軸 (TIMELINE)</h2>
+                </div>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-date">11/05 - 11/10</div>
+                        <div class="timeline-content">>> VIP ACCESS (優先邀請)</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">11/10 - 11/20</div>
+                        <div class="timeline-content">>> LEVEL 3 ACCESS (10m+)</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">11/20 - 11/30</div>
+                        <div class="timeline-content">>> LEVEL 2 ACCESS (6m+)</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">12/01 - 12/05</div>
+                        <div class="timeline-content">>> LEVEL 1 ACCESS (3m+)</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">12/05 - 12/10</div>
+                        <div class="timeline-content">>> NEW USER ACCESS (0-2m)</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">12/10 - 12/15</div>
+                        <div class="timeline-content">>> OPEN ACCESS (全面開放)</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 活動福利 -->
+        <section class="card">
+            <div class="card-inner">
+                <div class="section-header">
+                    <h2 class="section-title"><i class="fas fa-gift"></i> 獎勵機制 (REWARDS)</h2>
+                </div>
+                
+                <ul class="perks-list">
+                    <li>
+                        <i class="fas fa-microphone-alt"></i>
+                        <div><strong>[INTERACTION]：</strong> 主播互動 / K歌協議 / 啟動狂歡模式</div>
+                    </li>
+                    <li>
+                        <i class="fas fa-random"></i>
+                        <div><strong>[LUCKY_DRAW]：</strong> 隨機生成限量周邊商品</div>
+                    </li>
+                </ul>
+
+                <div class="highlight-box">
+                    <h3><i class="fas fa-crown"></i> VIP PROTOCOL</h3>
+                    <p>> NO_EXTRA_CHARGE (無額外加費)</p>
+                    <p>> PRIORITY_SELECTION (優先抽選)</p>
+                    <p style="margin-top: 15px; border-top: 1px solid var(--matrix-dark-green); padding-top: 10px; color: white;">
+                        <span class="glitch-text">SECRET_ITEM DETECTED:</span><br>
+                        原原 2026 桌曆 (Calendar_2026.exe)
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 注意事項 -->
+        <section class="card" style="border-color: #ff3333;">
+            <div class="card-inner">
+                <div class="section-header">
+                    <h2 class="section-title" style="color: #ff3333;"><i class="fas fa-exclamation-circle"></i> 警告 (WARNING)</h2>
+                </div>
+                <ul class="notice-list" style="list-style: none; padding-left: 10px; color: #ffcccc;">
+                    <li style="margin-bottom: 5px;">! SYSTEM LIMIT: 暫定 15 人 (Capacity Subject to Change)</li>
+                    <li>! NOT_INCLUDED: 報名費不含當日能量補給 (餐費)</li>
+                </ul>
+            </div>
+        </section>
+
+        <div class="cta-section">
+            <a href="#" class="cta-btn glitch-text">>> ENTER SYSTEM <<</a>
+            <p style="margin-top: 15px; font-size: 0.9rem; color: #888;">請依照權限等級執行登入程序</p>
+        </div>
+
+        <footer style="text-align: center; margin-top: 50px; opacity: 0.5; font-size: 0.8rem; border-top: 1px solid var(--matrix-dark-green); padding-top: 20px;">
+            &copy; 2025 YUAN_YUAN_SYSTEM. ALL RIGHTS RESERVED.<br>
+            CONNECTED: SECURE
+        </footer>
+
+    </div>
+
+    <script>
+        // Matrix Rain Canvas Effect
+        const canvas = document.getElementById('matrix-canvas');
+        const ctx = canvas.getContext('2d');
+
+        // 設定 Canvas 大小
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        
+        window.addEventListener('resize', resize);
+        resize();
+
+        // 駭客代碼字元：片假名 + 拉丁字母 + 數字
+        const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
+        const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const nums = '0123456789';
+        const alphabet = katakana + latin + nums;
+
+        const fontSize = 16;
+        const columns = canvas.width / fontSize; // 計算行數
+
+        const rainDrops = [];
+
+        // 初始化每行的 y 座標，讓它們從隨機高度開始或從頂部開始
+        for( let x = 0; x < columns; x++ ) {
+            rainDrops[x] = Math.random() * canvas.height / fontSize; // 隨機起始位置，讓畫面一開始就是滿的
+        }
+
+        const draw = () => {
+            // 畫出黑色半透明背景，形成殘影效果
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#0F0'; // 綠色字體
+            ctx.font = fontSize + 'px monospace';
+
+            for(let i = 0; i < rainDrops.length; i++)
+            {
+                const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+                
+                // 畫出字元
+                // x 座標 = 行數 * 字體大小
+                // y 座標 = 下落次數 * 字體大小
+                ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
+                
+                // 如果掉到底部，隨機重置回頂部
+                if(rainDrops[i] * fontSize > canvas.height && Math.random() > 0.975){
+                    rainDrops[i] = 0;
+                }
+                
+                rainDrops[i]++;
+            }
+        };
+
+        setInterval(draw, 30); // 每 30 毫秒刷新一次
+    </script>
+</body>
+</html>
