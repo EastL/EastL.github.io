@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2025 原原台聚 × Twitch Gamer Edition</title>
+    <!-- 引入 Google Fonts: 使用帶有科技感/遊戲感的字體 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;700&display=swap" rel="stylesheet">
+    <!-- 引入 Font Awesome Icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --twitch-purple: #9146FF;
+            --twitch-purple-hover: #772ce8;
+            --bg-body: #0e0e10;       /* Twitch 深色背景 */
+            --bg-card: #18181b;       /* 卡片背景 */
+            --bg-input: #1f1f23;      /* 輸入框/次要背景 */
+            --text-main: #efeff1;     /* 主要文字白 */
+            --text-muted: #adadb8;    /* 次要文字灰 */
+            --accent-cyan: #00f0f0;   /* 電競青 */
+            --accent-pink: #bf94ff;   /* 淺紫強調 */
+            --border-color: #303032;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Chakra+Petch', 'Noto Sans TC', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding-bottom: 60px;
+            overflow-x: hidden;
+        }
+
+        /* Canvas 背景特效 */
+        #gamer-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 頂部導航模擬 */
+        .nav-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 40px;
+            border-radius: 4px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .nav-logo {
+            font-weight: 800;
+            font-size: 1.2rem;
+            color: var(--twitch-purple);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .live-badge {
+            background: #e91916;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+
+        /* 標題區塊 - 模擬實況畫面 */
+        header {
+            text-align: left;
+            margin-bottom: 40px;
+            background: var(--bg-card);
+            padding: 0;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .stream-preview {
+            background: linear-gradient(135deg, #2c2541, #201c2b);
+            height: 250px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            border-bottom: 4px solid var(--twitch-purple);
+        }
+        
+        /* 裝飾性播放按鈕 */
+        .play-btn {
+            font-size: 4rem;
+            color: rgba(255,255,255,0.8);
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        .play-btn:hover { color: var(--twitch-purple); transform: scale(1.1); }
+
+        .header-info {
+            padding: 20px 30px;
+        }
+
+        .avatar {
+            width: 80px;
+            height: 80px;
+            background: var(--twitch-purple);
+            border-radius: 50%;
+            border: 4px solid var(--bg-card);
+            position: absolute;
+            bottom: 80px; /* 調整位置 */
+            left: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            color: white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            margin-top: 10px; /* 配合頭像位置調整 */
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--twitch-purple);
+            margin-bottom: 10px;
+        }
+        
+        .tags {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .tag {
+            background: var(--bg-input);
+            color: var(--text-muted);
+            padding: 2px 10px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border: 1px solid transparent;
+            transition: 0.2s;
+        }
+        .tag:hover {
+            border-color: var(--twitch-purple);
+            color: var(--twitch-purple);
+        }
+
+        /* 聊天室風格容器 */
+        .chat-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 30px;
+            height: 120px;
+            overflow-y: auto;
+            font-size: 0.9rem;
+        }
+        
+        .chat-msg {
+            margin-bottom: 8px;
+        }
+        .user-name { font-weight: bold; margin-right: 5px; }
+        .mod-name { color: #00AD03; } /* MOD 綠 */
+        .broadcaster-name { color: #E91916; } /* 主播 紅 */
+        .msg-content { color: var(--text-main); }
+
+        /* 版面配置：左側主要內容，右側資訊欄 */
+        .layout-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+
+        /* 卡片樣式 */
+        .panel {
+            background: var(--bg-card);
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        .panel-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .panel-title i {
+            color: var(--twitch-purple);
+        }
+
+        /* 資訊網格 */
+        .info-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            text-align: center;
+        }
+
+        .stat-item {
+            background: var(--bg-input);
+            padding: 15px;
+            border-radius: 4px;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--twitch-purple);
+        }
+        
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 5px;
+        }
+
+        /* 訂閱層級表格 */
+        .sub-tiers {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        
+        .sub-tiers th {
+            text-align: left;
+            padding: 10px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--border-color);
+        }
+        
+        .sub-tiers td {
+            padding: 15px 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .tier-badge {
+            background: var(--twitch-purple);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .discount-alert {
+            margin-top: 15px;
+            background: rgba(145, 70, 255, 0.1);
+            border: 1px dashed var(--twitch-purple);
+            padding: 10px;
+            border-radius: 4px;
+            color: var(--accent-pink);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* 行程表 (右側欄) */
+        .schedule-list {
+            list-style: none;
+        }
+        
+        .schedule-item {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            align-items: flex-start;
+        }
+        
+        .schedule-time {
+            font-family: 'Chakra Petch', sans-serif;
+            font-weight: bold;
+            color: var(--text-muted);
+            width: 80px;
+            flex-shrink: 0;
+            font-size: 0.9rem;
+        }
+        
+        .schedule-info {
+            flex-grow: 1;
+        }
+        
+        .schedule-title {
+            font-weight: 600;
+            color: var(--text-main);
+            font-size: 0.95rem;
+        }
+        
+        .status-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        .status-active { background: #00f0f0; box-shadow: 0 0 5px #00f0f0; }
+        .status-pending { background: var(--text-muted); }
+
+        /* 福利列表 (Bits 風格) */
+        .bit-rewards {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .reward-item {
+            background: var(--bg-input);
+            padding: 10px 15px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            border-left: 3px solid var(--twitch-purple);
+        }
+        
+        .reward-icon {
+            margin-right: 15px;
+            color: #ffd700; /* 金色 */
+        }
+
+        /* 報名按鈕 */
+        .cta-container {
+            text-align: right;
+            margin-top: 20px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .follow-text {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-right: 10px;
+        }
+
+        .cta-btn {
+            background: var(--twitch-purple);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        .cta-btn:hover {
+            background: var(--twitch-purple-hover);
+        }
+
+        /* RWD */
+        @media (max-width: 768px) {
+            .layout-grid { grid-template-columns: 1fr; }
+            .stat-value { font-size: 1.2rem; }
+            .header-info { padding: 15px; }
+            .avatar { width: 60px; height: 60px; bottom: 100px; left: 20px; font-size: 1.5rem; }
+            .nav-bar { padding: 10px 15px; }
+            .cta-container { justify-content: center; flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 遊戲風格背景 Canvas -->
+    <canvas id="gamer-canvas"></canvas>
+
+    <div class="container">
+        
+        <!-- 導航列 -->
+        <div class="nav-bar">
+            <div class="nav-logo">
+                <i class="fab fa-twitch" style="font-size: 1.5rem;"></i>
+                <span style="font-family: 'Chakra Petch'; margin-left: 8px;">YUANYUAN.TV</span>
+            </div>
+            <div style="display: flex; gap: 15px; align-items: center;">
+                <span style="font-size: 0.9rem; color: var(--text-muted);"><i class="fas fa-bell"></i></span>
+                <span class="live-badge">LIVE 🔴</span>
+                <div style="width: 30px; height: 30px; background: #444; border-radius: 50%;"></div>
+            </div>
+        </div>
+
+        <!-- 頻道標題區塊 -->
+        <header>
+            <div class="stream-preview">
+                <div class="play-btn"><i class="fas fa-play-circle"></i></div>
+                <div style="margin-top: 10px; color: rgba(255,255,255,0.6); font-family: 'Chakra Petch';">STREAM STARTING SOON</div>
+                <!-- 浮動頭像 -->
+                <div class="avatar">YY</div>
+            </div>
+            <div class="header-info">
+                <h1>【 2025 原原台聚 × 大集合 】</h1>
+                <p class="subtitle">Just Chatting • 2025 年度限定活動</p>
+                <div class="tags">
+                    <span class="tag">中文(繁體)</span>
+                    <span class="tag">粉絲見面會</span>
+                    <span class="tag">IRL</span>
+                    <span class="tag">KTV</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- 聊天室公告 -->
+        <div class="chat-container" id="chat-box">
+            <div class="chat-msg">
+                <span class="user-name broadcaster-name"><i class="fas fa-video"></i> 原原Bot:</span>
+                <span class="msg-content">歡迎來到 2025 原原台聚頻道！訂閱原原，陪你歡樂一整年～</span>
+            </div>
+            <div class="chat-msg">
+                <span class="user-name mod-name"><i class="fas fa-shield-alt"></i> Mod_Admin:</span>
+                <span class="msg-content">不管你是新粉還是老粉，都歡迎一起來創造回憶！ <i class="fas fa-heart" style="color: var(--twitch-purple);"></i></span>
+            </div>
+            <div class="chat-msg">
+                <span class="user-name" style="color: #5F9EA0;">Fan123:</span>
+                <span class="msg-content">終於等到了！+1</span>
+            </div>
+        </div>
+
+        <div class="layout-grid">
+            <!-- 左側主要內容 -->
+            <div class="main-content">
+                
+                <!-- 任務資訊 -->
+                <section class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title"><i class="fas fa-info-circle"></i> Stream Info (活動資訊)</div>
+                    </div>
+                    <div class="info-stats">
+                        <div class="stat-item">
+                            <div class="stat-value">12 / 21</div>
+                            <div class="stat-label">活動日期 (Sun)</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">16:00</div>
+                            <div class="stat-label">開始時間 (PM)</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">15</div>
+                            <div class="stat-label">最大人數 (Max)</div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 15px; text-align: center; color: var(--text-muted); font-size: 0.9rem;">
+                        <i class="fas fa-map-marker-alt"></i> Location: 台北 KTV (TBA)
+                    </div>
+                </section>
+
+                <!-- 訂閱方案 -->
+                <section class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title"><i class="fas fa-star"></i> Subscription Tiers (報名辦法)</div>
+                    </div>
+                    
+                    <table class="sub-tiers">
+                        <thead>
+                            <tr>
+                                <th>Tier (訂閱時長)</th>
+                                <th>Gift Subs (贈訂)</th>
+                                <th>Donate (斗內)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="tier-badge">Tier 3</span> 10 個月+</td>
+                                <td>x 50</td>
+                                <td>$1500</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tier-badge">Tier 2</span> 6 個月+</td>
+                                <td>x 70</td>
+                                <td>$2000</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tier-badge">Tier 1</span> 3 個月+</td>
+                                <td>x 85</td>
+                                <td>$2500</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tier-badge">Prime</span> 0-2 個月</td>
+                                <td>x 100</td>
+                                <td>$3000</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="discount-alert">
+                        <i class="fas fa-gem"></i>
+                        <span><strong>Tier 3 Subscriber Perk:</strong> 符合資格者：贈訂 -10 份 & 斗內 -$500</span>
+                    </div>
+                </section>
+
+                <!-- 福利與規則 -->
+                <section class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title"><i class="fas fa-gift"></i> Viewer Rewards (活動福利)</div>
+                    </div>
+                    <div class="bit-rewards">
+                        <div class="reward-item">
+                            <div class="reward-icon"><i class="fas fa-microphone"></i></div>
+                            <div>主播 × 粉絲專屬互動、K歌同樂會</div>
+                        </div>
+                        <div class="reward-item">
+                            <div class="reward-icon"><i class="fas fa-box-open"></i></div>
+                            <div>現場抽獎：限量周邊 Loot Box</div>
+                        </div>
+                        <div class="reward-item" style="border-left-color: #e91916;">
+                            <div class="reward-icon" style="color: #e91916;"><i class="fas fa-crown"></i></div>
+                            <div>
+                                <strong>VIP 限定：</strong> 優先抽選、無額外加費<br>
+                                <span style="font-size: 0.85rem; color: var(--text-muted);">Drop: 原原 2026 桌曆</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+
+            <!-- 右側側邊欄 -->
+            <div class="sidebar">
+                
+                <!-- 報名時間軸 -->
+                <section class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title" style="font-size: 1rem;">Schedule (報名時段)</div>
+                    </div>
+                    <ul class="schedule-list">
+                        <li class="schedule-item">
+                            <span class="schedule-time">Now</span>
+                            <div class="schedule-info">
+                                <div class="schedule-title"><span class="status-dot status-active"></span>VIP 優先邀請</div>
+                                <div style="font-size: 0.8rem; color: var(--text-muted);">11/5 ~ 11/10</div>
+                            </div>
+                        </li>
+                        <li class="schedule-item">
+                            <span class="schedule-time">Soon</span>
+                            <div class="schedule-info">
+                                <div class="schedule-title"><span class="status-dot status-pending"></span>10 個月以上</div>
+                                <div style="font-size: 0.8rem; color: var(--text-muted);">11/10 ~ 11/20</div>
+                            </div>
+                        </li>
+                        <li class="schedule-item">
+                            <span class="schedule-time">Upcoming</span>
+                            <div class="schedule-info">
+                                <div class="schedule-title"><span class="status-dot status-pending"></span>6 個月以上</div>
+                                <div style="font-size: 0.8rem; color: var(--text-muted);">11/20 ~ 11/30</div>
+                            </div>
+                        </li>
+                        <li class="schedule-item">
+                            <span class="schedule-time">Future</span>
+                            <div class="schedule-info">
+                                <div class="schedule-title"><span class="status-dot status-pending"></span>全面開放加報</div>
+                                <div style="font-size: 0.8rem; color: var(--text-muted);">12/10 ~ 12/15</div>
+                            </div>
+                        </li>
+                    </ul>
+                </section>
+
+                <!-- 注意事項 -->
+                <section class="panel" style="border-top: 3px solid #e91916;">
+                    <div style="font-weight: bold; margin-bottom: 10px; color: #e91916;">Chat Rules (注意事項)</div>
+                    <div style="font-size: 0.85rem; color: var(--text-muted);">
+                        <p style="margin-bottom: 8px;">1. 首次舉辦，名額暫定 15 人。</p>
+                        <p style="margin-bottom: 8px;">2. 報名費不包含當日餐費。</p>
+                        <p>3. 禁止洗版 (Spam)。</p>
+                    </div>
+                </section>
+
+                <!-- CTA -->
+                <div class="cta-container">
+                    <span class="follow-text">還沒追隨？</span>
+                    <a href="#" class="cta-btn"><i class="far fa-heart"></i> 報名 Subscribe</a>
+                </div>
+
+            </div>
+        </div>
+        
+        <footer style="text-align: center; margin-top: 40px; color: var(--text-muted); font-size: 0.8rem;">
+            &copy; 2025 Yuan Yuan TV. All rights reserved.
+        </footer>
+
+    </div>
+
+    <script>
+        // Gamer Background Canvas
+        const canvas = document.getElementById('gamer-canvas');
+        const ctx = canvas.getContext('2d');
+
+        let width, height;
+        let shapes = [];
+
+        window.addEventListener('resize', resize);
+        
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+
+        class Shape {
+            constructor() {
+                this.reset();
+            }
+
+            reset() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.size = Math.random() * 20 + 5;
+                this.speedX = (Math.random() - 0.5) * 1;
+                this.speedY = (Math.random() - 0.5) * 1;
+                // Twitch 品牌色系
+                const colors = ['#9146FF', '#772ce8', '#bf94ff', '#1f1f23'];
+                this.color = colors[Math.floor(Math.random() * colors.length)];
+                this.type = Math.random() > 0.5 ? 'square' : 'triangle';
+                this.opacity = Math.random() * 0.5;
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                if (this.x < 0 || this.x > width || this.y < 0 || this.y > height) {
+                    this.reset();
+                }
+            }
+
+            draw() {
+                ctx.globalAlpha = this.opacity;
+                ctx.fillStyle = this.color;
+                
+                if (this.type === 'square') {
+                    ctx.fillRect(this.x, this.y, this.size, this.size);
+                } else {
+                    ctx.beginPath();
+                    ctx.moveTo(this.x, this.y);
+                    ctx.lineTo(this.x + this.size, this.y + this.size);
+                    ctx.lineTo(this.x - this.size, this.y + this.size);
+                    ctx.closePath();
+                    ctx.fill();
+                }
+                ctx.globalAlpha = 1;
+            }
+        }
+
+        function init() {
+            resize();
+            shapes = [];
+            for (let i = 0; i < 50; i++) {
+                shapes.push(new Shape());
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            for (let s of shapes) {
+                s.update();
+                s.draw();
+            }
+            requestAnimationFrame(animate);
+        }
+
+        init();
+        animate();
+    </script>
+</body>
+</html>
