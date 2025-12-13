@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2025 原原台聚 × 煙雲十六聲 背景測試版</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Noto+Sans+TC:wght@300;400;700&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --wuxia-gold: #ffd700;       
+            --wuxia-green: #00ffaa;      
+            --twitch-purple: #bf94ff;
+            --ink-black: #050505;
+            --paper-white: #ffffff;
+            /* 修改：調低不透明度 (0.85 -> 0.25)，讓背景看得更清楚 */
+            --card-bg: rgba(0, 0, 0, 0.40); 
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #2c2c2c;
+            color: var(--paper-white);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* --- 1. 背景層結構 --- */
+        .background-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -99;
+            background: #d4d4d4;
+            overflow: hidden;
+        }
+
+        /* A. 靜態山水圖 */
+        .static-bg {
+            position: absolute;
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%;
+            
+            /* ========================================================================== */
+            /* --- [在此更換背景圖片] ---                                                 */
+            background-image: url('bamboo.png');
+            
+            background-size: cover;
+            background-position: center bottom;
+            background-repeat: no-repeat;
+            
+            opacity: 1; 
+            z-index: 1;
+            
+            animation: pan-zoom 40s ease-in-out infinite alternate;
+        }
+
+        @keyframes pan-zoom {
+            0% { transform: scale(1) translate(0, 0); }
+            100% { transform: scale(1.1) translate(-20px, 0); }
+        }
+
+        /* B. 純 CSS 雲霧 */
+        .fog-container {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 2;
+            overflow: hidden;
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .fog-layer {
+            position: absolute;
+            top: 0; left: 0;
+            width: 200%; height: 100%;
+            background: 
+                radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.15) 0%, transparent 60%),
+                radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 40%);
+            background-size: 100% 100%;
+            animation: drift 40s linear infinite;
+            filter: blur(20px);
+        }
+
+        @keyframes drift {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* C. 全局遮罩 */
+        .global-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.1) 40%, rgba(0,0,0,0.8) 100%);
+            z-index: 3;
+            pointer-events: none;
+        }
+
+        /* --- 2. Canvas 層 (竹葉與水墨) --- */
+        /* 修改：z-index 設為 999，讓它飄在最上層覆蓋內容 */
+        #wuxia-canvas {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 999; 
+            pointer-events: none; /* 重要：讓點擊穿透 */
+        }
+
+        /* --- 3. UI 容器 --- */
+        .container {
+            max-width: 900px;
+            margin: 60px auto;
+            position: relative;
+            
+            background: var(--card-bg);
+            /* 增加模糊度，讓背景更深邃 */
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            
+            border: 2px solid rgba(255, 215, 0, 0.6);
+            border-radius: 20px;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+            padding: 50px;
+            z-index: 100; /* 低於 canvas (999) */
+        }
+
+        h1, h2, h3, p, span, i, div {
+            text-shadow: 0 2px 5px rgba(0,0,0,0.9);
+        }
+
+        /* 裝飾 */
+        .corner-deco {
+            position: absolute;
+            width: 30px; height: 30px;
+            border: 3px solid var(--wuxia-green);
+            z-index: 11;
+            box-shadow: 0 0 10px var(--wuxia-green);
+        }
+        .corner-deco.tl { top: -3px; left: -3px; border-right: 0; border-bottom: 0; }
+        .corner-deco.tr { top: -3px; right: -3px; border-left: 0; border-bottom: 0; }
+        .corner-deco.bl { bottom: -3px; left: -3px; border-right: 0; border-top: 0; }
+        .corner-deco.br { bottom: -3px; right: -3px; border-left: 0; border-top: 0; }
+
+        .twitch-logo-container {
+            position: absolute;
+            top: -70px; right: -50px; z-index: 20;
+            animation: floatLogo 5s ease-in-out infinite;
+        }
+        .twitch-icon-large {
+            font-size: 9rem; color: #9146FF;
+            text-shadow: 0 0 40px rgba(145, 70, 255, 0.9);
+            transform: rotate(15deg); display: block;
+        }
+        @keyframes floatLogo {
+            0%, 100% { transform: translateY(0) rotate(15deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
+        }
+
+        /* 標題 */
+        header { text-align: center; margin-bottom: 50px; }
+        
+        .top-label {
+            display: inline-block;
+            background: linear-gradient(90deg, #9146FF, #6441a5);
+            color: white; padding: 6px 30px; border-radius: 2px;
+            font-weight: 900; letter-spacing: 3px;
+            border: 1px solid rgba(255,255,255,0.2);
+            margin-bottom: 20px; font-family: 'Dela Gothic One';
+        }
+
+        h1 {
+            /* 這裡修改了字體為現代黑體 */
+            font-family: 'Noto Sans TC', sans-serif;
+            font-weight: 700;
+            font-size: 4.5rem; line-height: 1.1;
+            color: transparent;
+            background: linear-gradient(to bottom, #fff 30%, var(--wuxia-gold) 100%);
+            -webkit-background-clip: text;
+            filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.4));
+            margin: 10px 0;
+        }
+        h1 span {
+            color: var(--twitch-purple);
+            font-family: 'Dela Gothic One';
+            background: none; -webkit-text-fill-color: var(--twitch-purple);
+        }
+
+        .subtitle {
+            font-size: 1.3rem; font-weight: 700; color: #000;
+            background: var(--wuxia-green);
+            display: inline-block; padding: 8px 40px;
+            clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
+            margin-top: 15px;
+            box-shadow: 0 0 25px var(--wuxia-green);
+        }
+
+        /* 跑馬燈 */
+        .marquee-container {
+            background: rgba(0, 0, 0, 0.4);
+            border-top: 1px solid var(--wuxia-gold);
+            border-bottom: 1px solid var(--wuxia-gold);
+            color: #ddd; padding: 15px 0; width: 100%;
+            overflow: hidden; white-space: nowrap; margin-bottom: 40px;
+        }
+        .marquee-content { display: inline-block; animation: marquee 25s linear infinite; }
+        @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+
+        /* 卡片與列表 */
+        .section-box {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px; padding: 30px; margin-bottom: 50px;
+            position: relative; transition: 0.3s;
+        }
+        .section-box:hover { border-color: var(--wuxia-gold); background: rgba(255, 255, 255, 0.1); }
+        
+        .section-title {
+            position: absolute; top: -22px; left: 20px;
+            background: #1a1a1a; color: var(--wuxia-gold);
+            font-family: 'Dela Gothic One'; font-size: 1.4rem;
+            padding: 5px 20px; border: 1px solid var(--wuxia-gold);
+            box-shadow: 4px 4px 0 var(--twitch-purple);
+        }
+
+        .info-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px; margin-top: 15px;
+        }
+        .info-card {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 25px; text-align: center; transition: 0.3s;
+        }
+        .info-card i { font-size: 2rem; color: var(--twitch-purple); margin-bottom: 15px; }
+        .info-card h3 { color: white; margin-bottom: 5px; font-weight: bold; }
+        .info-card p { color: #aaa; font-size: 0.9rem; }
+
+        /* 列表 */
+        .game-menu { list-style: none; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2); }
+        .game-menu-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 20px 25px; border-bottom: 1px solid rgba(255,255,255,0.05);
+            color: #ccc; transition: 0.2s;
+        }
+        .game-menu-item:hover { background: rgba(255,255,255,0.05); color: var(--wuxia-gold); padding-left: 30px; }
+        .level-badge {
+            background: rgba(50, 50, 50, 0.8); color: #fff; padding: 4px 10px;
+            border-radius: 2px; font-weight: bold; font-size: 0.8rem;
+            margin-right: 15px; border: 1px solid #777;
+            min-width: 60px; text-align: center; display: inline-block;
+        }
+        .cost-box { font-family: 'Dela Gothic One'; color: white; font-size: 1.2rem; }
+        .game-menu-item:hover .cost-box { color: var(--wuxia-green); text-shadow: 0 0 10px var(--wuxia-green); }
+        .special-offer {
+            background: linear-gradient(90deg, rgba(145, 70, 255, 0.2), transparent);
+            padding: 15px; border-left: 4px solid var(--wuxia-gold);
+            margin-top: 20px; color: #fff;
+        }
+
+        /* 時間軸 */
+        .timeline-path {
+            position: relative; padding: 10px 0;
+            border-left: 2px solid rgba(255,255,255,0.1); margin-left: 20px;
+        }
+        .timeline-step { padding-left: 30px; margin-bottom: 25px; position: relative; }
+        .timeline-step::before {
+            content: ''; position: absolute; left: -6px; top: 5px;
+            width: 10px; height: 10px; background: #000;
+            border: 2px solid var(--twitch-purple); border-radius: 50%;
+        }
+        .date-badge {
+            color: var(--twitch-purple); font-family: 'Dela Gothic One';
+            margin-right: 10px; font-size: 1.1rem;
+        }
+
+        /* 按鈕 */
+        .cta-section { text-align: center; margin-top: 60px; }
+        .big-btn {
+            display: inline-block; font-family: 'Dela Gothic One';
+            font-size: 1.5rem; color: #000; background: var(--wuxia-green);
+            padding: 20px 60px; border-radius: 4px; text-decoration: none;
+            transition: 0.3s; clip-path: polygon(10% 0, 100% 0, 100% 100%, 0% 100%);
+        }
+        .big-btn:hover { transform: translateX(5px); background: white; box-shadow: 0 0 30px white; }
+
+        /* RWD */
+        @media (max-width: 600px) {
+            h1 { font-size: 2.8rem; }
+            .container { padding: 30px 20px; margin-top: 20px; }
+            .info-grid { grid-template-columns: 1fr; }
+            .twitch-logo-container { right: 10px; top: -50px; }
+            .twitch-icon-large { font-size: 5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ========================================================================== -->
+    <!-- --- [在此更換背景音樂] ---                                                 -->
+    <!-- 1. 將您的音樂檔 (例如 music.mp3) 放在與此 HTML 同一個資料夾內。                -->
+    <!-- 2. 將下方 src="bgm.mp3" 改成您的檔名。                                     -->
+    <!-- 3. 移除前後的註解符號 (箭頭) 即可啟用。                                     -->
+    <!-- ========================================================================== -->
+    
+    <!-- <audio autoplay loop>
+        <source src="bgm.mp3" type="audio/mpeg">
+    </audio> -->
+
+
+    <!-- 背景結構 -->
+    <div class="background-wrapper">
+        <!-- 1. 靜態山水圖 -->
+        <div class="static-bg"></div>
+
+        <!-- 2. 純 CSS 雲霧 (氛圍) -->
+        <div class="fog-container">
+            <div class="fog-layer"></div>
+        </div>
+        
+        <!-- 3. 遮罩層 (Overlay) -->
+        <div class="global-overlay"></div>
+    </div>
+
+    <!-- Canvas (負責竹葉與水墨) -->
+    <canvas id="wuxia-canvas"></canvas>
+
+    <div class="container">
+        <div class="corner-deco tl"></div><div class="corner-deco tr"></div>
+        <div class="corner-deco bl"></div><div class="corner-deco br"></div>
+
+        <div class="twitch-logo-container">
+            <i class="fab fa-twitch twitch-icon-large"></i>
+        </div>
+
+        <header>
+            <div class="top-label">2025 FAN MEETING</div>
+            <h1>2025 原原台聚 <span>×</span> 大集合</h1>
+            <div class="subtitle">⚔️ KTV 俠客行 PROJECT ⚔️</div>
+        </header>
+
+        <div class="marquee-container">
+            <div class="marquee-content">
+                ✦ 訂閱原原，陪你歡樂一整年！ ✦ 主播 × 粉絲專屬互動 ✦ 滿滿福利、抽獎、活動一次到位 ✦ 不管你是新粉還是老粉，都歡迎一起來！ ✦
+            </div>
+        </div>
+
+        <section class="section-box">
+            <div class="section-title">HERO INFO</div>
+            <div class="info-grid">
+                <div class="info-card">
+                    <i class="far fa-clock"></i>
+                    <h3>12月 21日 (日)</h3>
+                    <p>16:00 - 20:00</p>
+                </div>
+                <div class="info-card">
+                    <i class="fas fa-map-marked-alt"></i>
+                    <h3>台北 KTV</h3>
+                    <p>地點保密中 (TBA)</p>
+                </div>
+                <div class="info-card">
+                    <i class="fas fa-users"></i>
+                    <h3>LIMIT 15</h3>
+                    <p>各路英雄限 15 人</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-box">
+            <div class="section-title">TICKET</div>
+            <ul class="game-menu">
+                <li class="game-menu-item">
+                    <div><span class="level-badge" style="border-color: var(--wuxia-gold); color: var(--wuxia-gold);">宗師</span> <strong>10 個月以上</strong></div>
+                    <div style="text-align: right;"><small style="color:#666; margin-right: 10px;">贈訂 x50</small> <span class="cost-box">$1500</span></div>
+                </li>
+                <li class="game-menu-item">
+                    <div><span class="level-badge">掌門</span> <strong>6 個月以上</strong></div>
+                    <div style="text-align: right;"><small style="color:#666; margin-right: 10px;">贈訂 x70</small> <span class="cost-box">$2000</span></div>
+                </li>
+                <li class="game-menu-item">
+                    <div><span class="level-badge">俠客</span> <strong>3 個月以上</strong></div>
+                    <div style="text-align: right;"><small style="color:#666; margin-right: 10px;">贈訂 x85</small> <span class="cost-box">$2500</span></div>
+                </li>
+                <li class="game-menu-item">
+                    <div><span class="level-badge" style="color: var(--wuxia-green); border-color: var(--wuxia-green);">新秀</span> <strong>0 ～ 2 個月</strong></div>
+                    <div style="text-align: right;"><small style="color:#666; margin-right: 10px;">贈訂 x100</small> <span class="cost-box">$3000</span></div>
+                </li>
+            </ul>
+            <div class="special-offer">
+                <strong><i class="fas fa-dragon"></i> 層三訂閱者 ‧ 尊爵優惠：</strong>贈訂 -10 份 & 斗內 -$500！
+            </div>
+        </section>
+
+        <section class="section-box">
+            <div class="section-title">TIMELINE</div>
+            <div class="timeline-path">
+                <div class="timeline-step"><span class="date-badge">11/05 - 11/10</span> <span style="color: var(--wuxia-gold);">👑 VIP 優先邀請</span></div>
+                <div class="timeline-step"><span class="date-badge">11/10 - 11/20</span> <span>⭐ 訂閱 10 個月以上</span></div>
+                <div class="timeline-step"><span class="date-badge">11/20 - 11/30</span> <span>⭐ 訂閱 6 個月以上</span></div>
+                <div class="timeline-step"><span class="date-badge">12/01 - 12/05</span> <span>⭐ 訂閱 3 個月以上</span></div>
+                <div class="timeline-step"><span class="date-badge">12/10 - 12/15</span> <span style="color: var(--wuxia-green);">🚀 全面開放加報</span></div>
+            </div>
+        </section>
+
+        <section class="section-box">
+            <div class="section-title">LOOT</div>
+            <div class="info-grid">
+                <div class="info-card">
+                    <i class="fas fa-microphone-alt"></i>
+                    <h4>主播互動 K 歌</h4>
+                    <p>近距離狂歡！</p>
+                </div>
+                <div class="info-card">
+                    <i class="fas fa-dice-d20"></i>
+                    <h4>周邊幸運抽</h4>
+                    <p>現場限定好禮！</p>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 20px; padding: 20px; background: rgba(145, 70, 255, 0.1); border: 1px solid var(--twitch-purple); border-radius: 10px;">
+                <h3 style="color: #fff; margin-bottom: 5px;">🎁 VIP 專屬福利</h3>
+                <p style="color: #aaa; font-size: 0.9rem;">無額外加費 • 優先抽選</p>
+                <div style="margin-top: 10px; color: var(--wuxia-green); font-weight: bold; font-size: 1.1rem;">
+                    2026 原原桌曆 Get!
+                </div>
+            </div>
+        </section>
+
+        <div class="cta-section">
+            <a href="https://www.twitch.tv/your_yuanyuan" target="_blank" class="big-btn">立即報名 <span style="font-size: 0.8rem; opacity: 0.8; margin-left: 5px;">ENTER</span></a>
+            <p style="margin-top: 20px; font-weight: bold; color: #555;">※ 報名費不含當日餐費</p>
+        </div>
+
+        <footer style="text-align: center; margin-top: 50px; font-weight: bold; opacity: 0.4; padding-bottom: 20px;">
+            © 2025 YUAN YUAN FAN MEETING.
+        </footer>
+    </div>
+
+    <script>
+        // 武俠風 Canvas 特效：竹葉 + 水墨
+        const canvas = document.getElementById('wuxia-canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let leaves = [];
+        let inks = [];
+
+        window.addEventListener('resize', resize);
+        resize();
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+
+        // 竹葉類別
+        class Leaf {
+            constructor() {
+                this.reset();
+                this.y = Math.random() * height; // 初始隨機分佈
+            }
+
+            reset() {
+                this.x = Math.random() * width;
+                this.y = -20;
+                this.vx = Math.random() * 2 - 1; // 左右飄動
+                this.vy = Math.random() * 1.5 + 1; // 下落速度
+                this.size = Math.random() * 15 + 10;
+                this.angle = Math.random() * Math.PI * 2;
+                this.spin = Math.random() * 0.1 - 0.05;
+                // 綠色或枯黃色
+                const isGreen = Math.random() > 0.3;
+                this.color = isGreen ? `rgba(76, 175, 80, ${Math.random() * 0.5 + 0.3})` : `rgba(230, 198, 139, ${Math.random() * 0.5 + 0.3})`;
+            }
+
+            update() {
+                this.x += this.vx + Math.sin(this.y * 0.01); // 加入波動
+                this.y += this.vy;
+                this.angle += this.spin;
+
+                if (this.y > height + 20) this.reset();
+            }
+
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.angle);
+                ctx.fillStyle = this.color;
+                
+                // 畫一個梭形 (竹葉)
+                ctx.beginPath();
+                ctx.moveTo(0, -this.size / 2);
+                ctx.quadraticCurveTo(this.size / 4, 0, 0, this.size / 2);
+                ctx.quadraticCurveTo(-this.size / 4, 0, 0, -this.size / 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        // 水墨類別
+        class Ink {
+            constructor() {
+                this.init();
+            }
+            init() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.radius = 0;
+                this.maxRadius = Math.random() * 150 + 100;
+                this.alpha = 0;
+                this.life = 0;
+                this.maxLife = 400;
+                this.growthRate = Math.random() * 0.3 + 0.1;
+            }
+            update() {
+                if (this.radius < this.maxRadius) {
+                    this.radius += this.growthRate;
+                }
+                
+                // 淡入淡出邏輯
+                if (this.life < 50) {
+                    this.alpha += 0.008; // 淡入
+                } else if (this.life > 200) {
+                    this.alpha -= 0.005; // 淡出
+                }
+                
+                this.life++;
+                if (this.life >= this.maxLife || this.alpha < 0) {
+                    this.init(); // 重置
+                }
+            }
+            draw() {
+                if (this.alpha <= 0) return;
+                ctx.save();
+                // 提高透明度係數
+                ctx.globalAlpha = this.alpha * 0.5; 
+                // 灰白色水墨
+                let gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.radius);
+                gradient.addColorStop(0, 'rgba(230, 230, 250, 0.7)'); // 核心
+                gradient.addColorStop(0.6, 'rgba(180, 180, 200, 0.3)');
+                gradient.addColorStop(1, 'rgba(200, 200, 220, 0)'); // 邊緣
+
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                // 移除 filter: blur 以相容部分瀏覽器
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        function init() {
+            leaves = [];
+            inks = [];
+            // 產生竹葉
+            for(let i=0; i<40; i++) leaves.push(new Leaf());
+            // 產生水墨點
+            for(let i=0; i<10; i++) inks.push(new Ink());
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            
+            inks.forEach(ink => { ink.update(); ink.draw(); });
+            leaves.forEach(leaf => { leaf.update(); leaf.draw(); });
+            
+            requestAnimationFrame(animate);
+        }
+
+        init();
+        animate();
+    </script>
+</body>
+</html>
