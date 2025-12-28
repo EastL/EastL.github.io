@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>原原｜下週開播時間表</title>
+    <style>
+        /* --- 基礎設定與配色 --- */
+        :root {
+            --bg-gradient: linear-gradient(135deg, #fff5f7 0%, #ffeef2 100%);
+            --primary-pink: #ffb7c5;
+            --soft-rose: #ff8fa3;
+            --accent-purple: #e2d1f9;
+            --rest-grey: #f0f0f0;
+            --text-main: #5a4a4a;
+            --text-sub: #8e7f7f;
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --shadow: 0 8px 20px rgba(255, 183, 197, 0.2);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft JhengHei", sans-serif;
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            color: var(--text-main);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px 15px;
+        }
+
+        /* --- 容器佈局 --- */
+        .container {
+            width: 100%;
+            max-width: 500px; /* 手機優先寬度 */
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- Header 樣式 --- */
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .title-wrapper {
+            display: inline-block;
+            position: relative;
+        }
+
+        /* 裝飾小星星 (SVG) */
+        .deco-star {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            fill: var(--primary-pink);
+            filter: drop-shadow(0 0 2px white);
+        }
+        .star-1 { top: -10px; left: -25px; transform: rotate(-15deg); }
+        .star-2 { bottom: 0; right: -25px; transform: rotate(20deg); }
+
+        h1 {
+            font-size: 1.6rem;
+            color: var(--soft-rose);
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+            text-shadow: 1px 1px 2px white;
+        }
+
+        .subtitle {
+            font-size: 0.9rem;
+            color: var(--text-sub);
+            margin-bottom: 8px;
+        }
+
+        .last-update {
+            font-size: 0.75rem;
+            background: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            display: inline-block;
+            color: var(--text-sub);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        /* --- 時間表卡片 --- */
+        .schedule-list {
+            display: grid;
+            gap: 15px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 18px;
+            padding: 16px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:active {
+            transform: scale(0.98);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .day-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .day-label {
+            font-weight: bold;
+            font-size: 1.1rem;
+            min-width: 45px;
+        }
+
+        .badge {
+            font-size: 0.75rem;
+            padding: 2px 10px;
+            border-radius: 50px;
+            font-weight: 600;
+        }
+
+        .badge-確定 { background-color: #ffdce3; color: #ff5e7d; }
+        .badge-不確定 { background-color: #e9e3ff; color: #7b61ff; }
+        .badge-休 { background-color: var(--rest-grey); color: #999; }
+
+        .stream-time {
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: var(--text-main);
+        }
+
+        .stream-time.is-rest {
+            color: #ccc;
+            font-family: inherit;
+            font-size: 0.95rem;
+        }
+
+        /* 展開內容 */
+        .card-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            margin-top: 0;
+        }
+
+        .card.active .card-body {
+            max-height: 100px;
+            margin-top: 12px;
+        }
+
+        .note-content {
+            font-size: 0.85rem;
+            color: var(--text-sub);
+            padding-top: 10px;
+            border-top: 1px dashed #eee;
+            display: flex;
+            align-items: flex-start;
+            gap: 5px;
+        }
+
+        .note-icon {
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        /* --- 底部備註區 --- */
+        .info-box {
+            margin-top: 30px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 15px;
+            padding: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .info-box h3 {
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+            color: var(--soft-rose);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .info-item {
+            font-size: 0.85rem;
+            color: var(--text-sub);
+            margin-bottom: 5px;
+            position: relative;
+            padding-left: 15px;
+        }
+
+        .info-item::before {
+            content: "♥";
+            position: absolute;
+            left: 0;
+            color: var(--primary-pink);
+            font-size: 0.7rem;
+        }
+
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 0.8rem;
+            color: #ccc;
+            padding-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="title-wrapper">
+                <!-- Decorative Stars -->
+                <svg class="deco-star star-1" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.431 8.332 1.21-6.001 5.85 1.416 8.297L12 19.451l-7.415 3.897 1.416-8.297-6.001-5.85 8.332-1.21L12 .587z"/></svg>
+                <svg class="deco-star star-2" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.431 8.332 1.21-6.001 5.85 1.416 8.297L12 19.451l-7.415 3.897 1.416-8.297-6.001-5.85 8.332-1.21L12 .587z"/></svg>
+                <h1>原原｜下週開播時間表</h1>
+            </div>
+            <p class="subtitle">以 Twitch 標題 / Discord 公告為準</p>
+            <div class="last-update" id="timestamp">最後更新：載入中...</div>
+        </header>
+
+        <!-- Main Schedule -->
+        <div class="schedule-list" id="scheduleList">
+            <!-- JS will inject cards here -->
+        </div>
+
+        <!-- Info Box -->
+        <div class="info-box">
+            <h3>備註說明</h3>
+            <div class="info-item">本週為考試週＋行程較滿，不確定場次會視體力調整</div>
+            <div class="info-item">若臨時加開或取消，會先更新 IG / Discord</div>
+        </div>
+
+        <footer>
+            &copy; <span id="currentYear"></span> 原原 YuanYuan. All rights reserved.
+        </footer>
+    </div>
+
+    <script>
+        /**
+         * --- 資料集中管理區 ---
+         * 修改這裡的資料即可更新網頁內容
+         */
+        const scheduleData = [
+            { day: '週一', status: '確定', time: '22:00', note: '正常開台' },
+            { day: '週二', status: '休', time: '', note: '考試（下午～晚上）' },
+            { day: '週三', status: '確定', time: '22:00', note: '戶外台／朋友家跨年（可能比較不穩）' },
+            { day: '週四', status: '不確定', time: '待定', note: '考試（晚上），視體力調整' },
+            { day: '週五', status: '不確定', time: '待定', note: '考試（晚上），看狀況可能突襲' },
+            { day: '週六', status: '確定', time: '19:00', note: '下午考試，晚上開台' },
+            { day: '週日', status: '不確定', time: '待定', note: '飛日本 ✈️（可能無法開台）' }
+        ];
+
+        /**
+         * 初始化頁面
+         */
+        document.addEventListener('DOMContentLoaded', () => {
+            renderSchedule();
+            updateTime();
+            document.getElementById('currentYear').innerText = new Date().getFullYear();
+        });
+
+        /**
+         * 渲染時間表
+         */
+        function renderSchedule() {
+            const listContainer = document.getElementById('scheduleList');
+            listContainer.innerHTML = '';
+
+            scheduleData.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                
+                // 判斷時間顯示
+                const isRest = item.status === '休';
+                const timeDisplay = isRest ? '休息' : (item.time || '待定');
+
+                card.innerHTML = `
+                    <div class="card-header">
+                        <div class="day-info">
+                            <span class="day-label">${item.day}</span>
+                            <span class="badge badge-${item.status}">${item.status}</span>
+                        </div>
+                        <div class="stream-time ${isRest ? 'is-rest' : ''}">${timeDisplay}</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="note-content">
+                            <span class="note-icon">📝</span>
+                            <span>${item.note || '無特殊備註'}</span>
+                        </div>
+                    </div>
+                `;
+
+                // 點擊事件：展開/收合
+                card.addEventListener('click', () => {
+                    // 如果點擊已開啟的，則關閉它；否則開啟它並關閉其他的（可選）
+                    const isActive = card.classList.contains('active');
+                    
+                    // 若想一次只開一張，取消下面註解：
+                    // document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+                    
+                    if (isActive) {
+                        card.classList.remove('active');
+                    } else {
+                        card.classList.add('active');
+                    }
+                });
+
+                listContainer.appendChild(card);
+            });
+        }
+
+        /**
+         * 更新頁面上的時間顯示
+         */
+        function updateTime() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth() + 1;
+            const date = now.getDate();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            
+            document.getElementById('timestamp').innerText = `最後更新：${year}/${month}/${date} ${hours}:${minutes}`;
+        }
+    </script>
+</body>
+</html>
