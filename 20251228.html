@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>原原｜下週開播時間表</title>
+    <title>🌸 原原 🌸｜本週開播時間表</title>
     <style>
         /* --- 基礎設定與配色 --- */
         :root {
@@ -36,13 +36,69 @@
             align-items: center;
             min-height: 100vh;
             padding: 20px 15px;
+            overflow-x: hidden;
+        }
+
+        /* --- 飄落花瓣動畫 (優化版) --- */
+        .petal {
+            position: fixed;
+            top: -10%;
+            z-index: 1; /* 放在最底層 */
+            pointer-events: none;
+            background: #ffc0cb;
+            border-radius: 150% 0 150% 0;
+            opacity: 0.6;
+            transform: rotate(45deg);
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% { 
+                top: -10%; 
+                transform: translateX(0) rotate(45deg); 
+                opacity: 0;
+            }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.8; }
+            100% { 
+                top: 110%; 
+                transform: translateX(120px) rotate(405deg); 
+                opacity: 0;
+            }
+        }
+
+        /* --- 浮動與跳動動畫 --- */
+        @keyframes softFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        @keyframes softRotate {
+            0%, 100% { transform: rotate(-8deg); }
+            50% { transform: rotate(8deg); }
+        }
+
+        .floating-icon {
+            display: inline-block;
+            animation: softFloat 2s ease-in-out infinite;
+            margin-right: 5px;
+            font-size: 1.2rem;
+        }
+
+        .rotating-icon {
+            display: inline-block;
+            animation: softRotate 2.5s ease-in-out infinite;
+            margin-right: 5px;
+            font-size: 1.2rem;
         }
 
         /* --- 容器佈局 --- */
         .container {
             width: 100%;
-            max-width: 500px; /* 手機優先寬度 */
+            max-width: 500px; 
             animation: fadeIn 0.8s ease-out;
+            position: relative;
+            z-index: 10;
         }
 
         @keyframes fadeIn {
@@ -60,25 +116,30 @@
         .title-wrapper {
             display: inline-block;
             position: relative;
+            padding: 0 10px;
         }
 
-        /* 裝飾小星星 (SVG) */
         .deco-star {
             position: absolute;
-            width: 20px;
-            height: 20px;
+            width: 24px;
+            height: 24px;
             fill: var(--primary-pink);
             filter: drop-shadow(0 0 2px white);
         }
-        .star-1 { top: -10px; left: -25px; transform: rotate(-15deg); }
-        .star-2 { bottom: 0; right: -25px; transform: rotate(20deg); }
+        .star-1 { top: -15px; left: -25px; transform: rotate(-15deg); }
+        .star-2 { bottom: -5px; right: -25px; transform: rotate(20deg); }
 
         h1 {
-            font-size: 1.6rem;
+            font-size: 1.5rem;
             color: var(--soft-rose);
             margin-bottom: 5px;
             letter-spacing: 1px;
             text-shadow: 1px 1px 2px white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 5px;
         }
 
         .subtitle {
@@ -90,11 +151,12 @@
         .last-update {
             font-size: 0.75rem;
             background: white;
-            padding: 4px 12px;
+            padding: 4px 15px;
             border-radius: 20px;
             display: inline-block;
             color: var(--text-sub);
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border: 1px solid #fff0f3;
         }
 
         /* --- 時間表卡片 --- */
@@ -105,18 +167,20 @@
 
         .card {
             background: var(--card-bg);
-            border-radius: 18px;
-            padding: 16px;
+            border-radius: 20px;
+            padding: 18px;
             box-shadow: var(--shadow);
-            border: 1px solid rgba(255, 255, 255, 0.6);
+            border: 2px solid white;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             position: relative;
             overflow: hidden;
         }
 
-        .card:active {
-            transform: scale(0.98);
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(255, 183, 197, 0.3);
+            background: rgba(255, 255, 255, 0.98);
         }
 
         .card-header {
@@ -128,20 +192,22 @@
         .day-info {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 8px;
         }
 
         .day-label {
-            font-weight: bold;
-            font-size: 1.1rem;
+            font-weight: 800;
+            font-size: 1.15rem;
             min-width: 45px;
+            color: var(--soft-rose);
         }
 
         .badge {
-            font-size: 0.75rem;
-            padding: 2px 10px;
+            font-size: 0.7rem;
+            padding: 3px 10px;
             border-radius: 50px;
             font-weight: 600;
+            white-space: nowrap;
         }
 
         .badge-確定 { background-color: #ffdce3; color: #ff5e7d; }
@@ -150,85 +216,81 @@
 
         .stream-time {
             font-family: 'Courier New', Courier, monospace;
-            font-weight: bold;
-            font-size: 1.1rem;
+            font-weight: 800;
+            font-size: 1.2rem;
             color: var(--text-main);
         }
 
         .stream-time.is-rest {
-            color: #ccc;
+            color: #ddd;
             font-family: inherit;
-            font-size: 0.95rem;
+            font-size: 1rem;
+            letter-spacing: 1px;
         }
 
         /* 展開內容 */
         .card-body {
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.3s ease-out;
-            margin-top: 0;
+            transition: max-height 0.4s ease;
         }
 
         .card.active .card-body {
-            max-height: 100px;
-            margin-top: 12px;
+            max-height: 120px;
+            margin-top: 15px;
         }
 
         .note-content {
-            font-size: 0.85rem;
+            font-size: 0.88rem;
             color: var(--text-sub);
-            padding-top: 10px;
-            border-top: 1px dashed #eee;
+            padding-top: 12px;
+            border-top: 1px dashed #ffcad4;
             display: flex;
             align-items: flex-start;
-            gap: 5px;
-        }
-
-        .note-icon {
-            flex-shrink: 0;
-            margin-top: 2px;
+            gap: 8px;
         }
 
         /* --- 底部備註區 --- */
         .info-box {
-            margin-top: 30px;
-            background: rgba(255, 255, 255, 0.5);
-            border-radius: 15px;
-            padding: 18px;
-            border: 1px solid rgba(255, 255, 255, 0.4);
+            margin-top: 35px;
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            border: 2px solid #fff0f3;
         }
 
         .info-box h3 {
-            font-size: 0.95rem;
-            margin-bottom: 8px;
+            font-size: 1rem;
+            margin-bottom: 12px;
             color: var(--soft-rose);
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
         }
 
         .info-item {
             font-size: 0.85rem;
             color: var(--text-sub);
-            margin-bottom: 5px;
+            margin-bottom: 8px;
             position: relative;
-            padding-left: 15px;
+            padding-left: 18px;
         }
 
         .info-item::before {
-            content: "♥";
+            content: "🌸";
             position: absolute;
             left: 0;
-            color: var(--primary-pink);
-            font-size: 0.7rem;
+            font-size: 0.75rem;
         }
 
         footer {
             margin-top: 40px;
             text-align: center;
             font-size: 0.8rem;
-            color: #ccc;
-            padding-bottom: 20px;
+            color: var(--text-sub);
+            padding-bottom: 30px;
+            opacity: 0.6;
         }
     </style>
 </head>
@@ -238,12 +300,16 @@
         <!-- Header -->
         <header>
             <div class="title-wrapper">
-                <!-- Decorative Stars -->
                 <svg class="deco-star star-1" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.431 8.332 1.21-6.001 5.85 1.416 8.297L12 19.451l-7.415 3.897 1.416-8.297-6.001-5.85 8.332-1.21L12 .587z"/></svg>
                 <svg class="deco-star star-2" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.431 8.332 1.21-6.001 5.85 1.416 8.297L12 19.451l-7.415 3.897 1.416-8.297-6.001-5.85 8.332-1.21L12 .587z"/></svg>
-                <h1>原原｜下週開播時間表</h1>
+                <h1>
+                    <span class="rotating-icon">🌸</span>
+                    原原
+                    <span class="rotating-icon">🌸</span>
+                    <span style="font-size: 1.2rem; white-space: nowrap;">｜本週開播時間表</span>
+                </h1>
             </div>
-            <p class="subtitle">以 Twitch 標題 / Discord 公告為準</p>
+            <p class="subtitle">以 Twitch 標題 / Discord 公告為準 🌸</p>
             <div class="last-update" id="timestamp">最後更新：載入中...</div>
         </header>
 
@@ -254,39 +320,67 @@
 
         <!-- Info Box -->
         <div class="info-box">
-            <h3>備註說明</h3>
+            <h3>📝 備註說明</h3>
             <div class="info-item">本週為考試週＋行程較滿，不確定場次會視體力調整</div>
             <div class="info-item">若臨時加開或取消，會先更新 IG / Discord</div>
+            <div class="info-item">點擊卡片可以看當天詳細備註喔！</div>
         </div>
 
         <footer>
-            &copy; <span id="currentYear"></span> 原原 YuanYuan. All rights reserved.
+            &copy; <span id="currentYear"></span> 原原 YuanYuan. All rights reserved.<br>
+            Designed with Love 🎀
         </footer>
     </div>
 
     <script>
         /**
          * --- 資料集中管理區 ---
-         * 修改這裡的資料即可更新網頁內容
          */
         const scheduleData = [
-            { day: '週一', status: '確定', time: '22:00', note: '正常開台' },
-            { day: '週二', status: '休', time: '', note: '考試（下午～晚上）' },
-            { day: '週三', status: '確定', time: '22:00', note: '戶外台／朋友家跨年（可能比較不穩）' },
-            { day: '週四', status: '不確定', time: '待定', note: '考試（晚上），視體力調整' },
-            { day: '週五', status: '不確定', time: '待定', note: '考試（晚上），看狀況可能突襲' },
-            { day: '週六', status: '確定', time: '19:00', note: '下午考試，晚上開台' },
-            { day: '週日', status: '不確定', time: '待定', note: '飛日本 ✈️（可能無法開台）' }
+            { day: '週一', status: '休', time: '', icon: '💤', note: '週一也休息一下，準備考試中！📚' },
+            { day: '週二', status: '休', time: '', icon: '✍️', note: '考試（下午～晚上），祝我順利 ✍️' },
+            { day: '週三', status: '確定', time: '22:00', icon: '✨', note: '戶外台／朋友家跨年（可能比較不穩）✨' },
+            { day: '週四', status: '不確定', time: '待定', icon: '🧸', note: '考試（晚上），視體力調整，可能突襲' },
+            { day: '週五', status: '不確定', time: '待定', icon: '🎀', note: '考試（晚上），考完會上來跟大家打招呼' },
+            { day: '週六', status: '確定', time: '19:00', icon: '🎮', note: '下午考試結束！晚上開心開台 🎮' },
+            { day: '週日', status: '不確定', time: '待定', icon: '✈️', note: '飛日本 ✈️（如果機場網路穩的話就開一下）' }
         ];
 
-        /**
-         * 初始化頁面
-         */
         document.addEventListener('DOMContentLoaded', () => {
             renderSchedule();
             updateTime();
+            createPetals();
             document.getElementById('currentYear').innerText = new Date().getFullYear();
         });
+
+        /**
+         * 生成花瓣效果 (優化版：消除載入延遲)
+         */
+        function createPetals() {
+            const count = 20; 
+            for (let i = 0; i < count; i++) {
+                const petal = document.createElement('div');
+                petal.className = 'petal';
+                
+                const size = Math.random() * 8 + 10 + 'px';
+                const left = Math.random() * 100 + 'vw';
+                
+                // 重點：使用負數的 delay 讓動畫在載入時就處於中間狀態
+                const duration = Math.random() * 5 + 7; // 7~12s
+                const delay = Math.random() * -12; // -12~0s
+                
+                petal.style.width = size;
+                petal.style.height = size;
+                petal.style.left = left;
+                petal.style.animationDelay = delay + 's';
+                petal.style.animationDuration = duration + 's';
+                
+                const pinks = ['#ffc0cb', '#ffb7c5', '#ffdae0', '#ffe4e1'];
+                petal.style.background = pinks[Math.floor(Math.random() * pinks.length)];
+                
+                document.body.appendChild(petal);
+            }
+        }
 
         /**
          * 渲染時間表
@@ -295,17 +389,20 @@
             const listContainer = document.getElementById('scheduleList');
             listContainer.innerHTML = '';
 
-            scheduleData.forEach(item => {
+            scheduleData.forEach((item, index) => {
                 const card = document.createElement('div');
                 card.className = 'card';
                 
-                // 判斷時間顯示
                 const isRest = item.status === '休';
                 const timeDisplay = isRest ? '休息' : (item.time || '待定');
+                
+                // 標題動態圖案
+                const animClass = index % 2 === 0 ? 'floating-icon' : 'rotating-icon';
 
                 card.innerHTML = `
                     <div class="card-header">
                         <div class="day-info">
+                            <span class="${animClass}">${item.icon || '🌸'}</span>
                             <span class="day-label">${item.day}</span>
                             <span class="badge badge-${item.status}">${item.status}</span>
                         </div>
@@ -313,20 +410,14 @@
                     </div>
                     <div class="card-body">
                         <div class="note-content">
-                            <span class="note-icon">📝</span>
+                            <span>✨</span>
                             <span>${item.note || '無特殊備註'}</span>
                         </div>
                     </div>
                 `;
 
-                // 點擊事件：展開/收合
                 card.addEventListener('click', () => {
-                    // 如果點擊已開啟的，則關閉它；否則開啟它並關閉其他的（可選）
                     const isActive = card.classList.contains('active');
-                    
-                    // 若想一次只開一張，取消下面註解：
-                    // document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
-                    
                     if (isActive) {
                         card.classList.remove('active');
                     } else {
@@ -338,9 +429,6 @@
             });
         }
 
-        /**
-         * 更新頁面上的時間顯示
-         */
         function updateTime() {
             const now = new Date();
             const year = now.getFullYear();
@@ -348,7 +436,6 @@
             const date = now.getDate();
             const hours = String(now.getHours()).padStart(2, '0');
             const minutes = String(now.getMinutes()).padStart(2, '0');
-            
             document.getElementById('timestamp').innerText = `最後更新：${year}/${month}/${date} ${hours}:${minutes}`;
         }
     </script>
