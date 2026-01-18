@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌌 原原 🌌｜冬夜雪原行程表</title>
+    <style>
+        /* --- 核心變數：暖冬與冰晶色調 --- */
+        :root {
+            --ice-blue: #7dd3fc;
+            --deep-ice: #0ea5e9;
+            --snow-white: #ffffff;
+            --frost-glass: rgba(255, 255, 255, 0.4); /* 亮色磨砂感 */
+            --card-border: rgba(255, 255, 255, 0.6);
+            --text-primary: #1e293b; /* 深色文字增加易讀性 */
+            --text-secondary: #475569;
+            --accent-glow: rgba(125, 211, 252, 0.3);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft JhengHei", sans-serif;
+            background-color: #f1f5f9;
+            /* 使用用戶上傳的背景圖片 */
+            background-image: url('雪地.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 50px 20px;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* 增加亮色遮罩，營造霧氣感 */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(180deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.3) 100%);
+            z-index: -1;
+        }
+
+        /* --- 冰雪星空與雪花畫布 --- */
+        #star-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* --- 雪人樣式 --- */
+        .snowman-container {
+            position: fixed;
+            bottom: 30px;
+            right: 8%;
+            width: 80px;
+            height: 100px;
+            z-index: 2;
+            animation: snowmanSway 3s ease-in-out infinite;
+            transform-origin: bottom center;
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.1));
+        }
+
+        @keyframes snowmanSway {
+            0%, 100% { transform: rotate(-2deg) scale(1); }
+            50% { transform: rotate(3deg) scale(1.03); }
+        }
+
+        /* --- 內容容器 --- */
+        .container {
+            width: 100%;
+            max-width: 500px;
+            position: relative;
+            z-index: 10;
+            margin-bottom: 50px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            text-shadow: 2px 2px 4px rgba(255,255,255,0.8);
+        }
+
+        .location-tag {
+            font-size: 0.75rem;
+            color: var(--deep-ice);
+            background: rgba(255, 255, 255, 0.8);
+            border: 1.5px solid var(--ice-blue);
+            padding: 4px 14px;
+            border-radius: 50px;
+            display: inline-block;
+            margin-top: 15px;
+            letter-spacing: 1px;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(125, 211, 252, 0.2);
+        }
+
+        /* --- 行程卡片 --- */
+        .schedule-wrap {
+            display: grid;
+            gap: 16px;
+        }
+
+        .day-card {
+            background: var(--frost-glass);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            box-shadow: 0 8px 32px rgba(148, 163, 184, 0.1);
+        }
+
+        .day-card:hover {
+            border-color: var(--deep-ice);
+            transform: translateY(-5px) scale(1.02);
+            background: rgba(255, 255, 255, 0.7);
+            box-shadow: 0 12px 40px rgba(125, 211, 252, 0.25);
+        }
+
+        .day-label {
+            display: flex;
+            flex-direction: column;
+            z-index: 2;
+        }
+
+        .date {
+            font-size: 0.75rem;
+            color: var(--deep-ice);
+            font-family: 'Courier New', Courier, monospace;
+            margin-bottom: 4px;
+            font-weight: 900;
+        }
+
+        .day-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .status-box {
+            text-align: right;
+            z-index: 2;
+        }
+
+        .time-val {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .status-pill {
+            padding: 4px 12px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            border-radius: 10px;
+        }
+
+        .pill-uncertain {
+            background: #e2e8f0;
+            color: #64748b;
+        }
+
+        .pill-rest {
+            background: #fee2e2;
+            color: #ef4444;
+        }
+
+        /* --- 備註區 --- */
+        .notice-board {
+            margin-top: 40px;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            border: 1px solid var(--card-border);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        .notice-board h2 {
+            font-size: 0.95rem;
+            margin-bottom: 15px;
+            color: var(--deep-ice);
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-align: center;
+        }
+
+        .notice-item {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+            line-height: 1.6;
+            display: flex;
+            gap: 10px;
+        }
+
+        .notice-item::before {
+            content: "❄️";
+            color: var(--ice-blue);
+        }
+
+        /* --- Footer --- */
+        footer {
+            margin-top: auto;
+            text-align: center;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            letter-spacing: 1px;
+            padding: 40px 0;
+            z-index: 10;
+        }
+
+        @media (max-width: 480px) {
+            h1 { font-size: 1.5rem; }
+            .day-card { padding: 18px; border-radius: 16px; }
+            .time-val { font-size: 1.1rem; }
+            .snowman-container { right: 5%; width: 60px; height: 80px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 背景畫布 -->
+    <canvas id="star-canvas"></canvas>
+
+    <!-- 雪地裝飾 -->
+    <div class="snow-landscape">
+        <div class="snowman-container">
+            <svg viewBox="0 0 80 100" width="100%" height="100%">
+                <circle cx="40" cy="75" r="22" fill="#fff" stroke="#eee" stroke-width="0.5" />
+                <circle cx="40" cy="42" r="16" fill="#fff" stroke="#eee" stroke-width="0.5" />
+                <circle cx="34" cy="38" r="2.5" fill="#334155" />
+                <circle cx="46" cy="38" r="2.5" fill="#334155" />
+                <polygon points="40,40 40,46 54,43" fill="#fb923c" />
+                <path d="M26,50 Q40,58 54,50" stroke="#7dd3fc" stroke-width="6" fill="none" stroke-linecap="round" />
+                <path d="M48,54 L54,65" stroke="#7dd3fc" stroke-width="5" fill="none" stroke-linecap="round" />
+                <line x1="24" y1="45" x2="10" y2="35" stroke="#78350f" stroke-width="2" />
+                <line x1="56" y1="45" x2="70" y2="35" stroke="#78350f" stroke-width="2" />
+            </svg>
+        </div>
+    </div>
+
+    <div class="container">
+        <header>
+            <div class="title-container">
+                <h1>
+                    <span style="color: var(--ice-blue);">❆</span>
+                    原原 行程表
+                    <span style="color: var(--ice-blue);">❆</span>
+                </h1>
+                <div class="location-tag">WINTER IN USA 🇺🇸</div>
+            </div>
+            <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 10px; font-weight: 600; text-shadow: 1px 1px 0px white;">WEEKLY STREAMING SCHEDULE (UTC+8)</p>
+        </header>
+
+        <div class="schedule-wrap" id="schedule">
+            <!-- 由 JS 生成內容 -->
+        </div>
+
+        <div class="notice-board">
+            <h2>WINTER NOTES 🧊</h2>
+            <div class="notice-item">目前所在地點正處於大雪季節，行程將依體力狀況動態調整。</div>
+            <div class="notice-item">「不確定」場次會盡量於開台前確認，請多關注社群公告。</div>
+            <div class="notice-item">在寒冷的冬夜裡，感謝有大家的陪伴，一起在聊天室取暖吧。</div>
+        </div>
+
+        <footer>
+            &copy; 2025 YUANYUAN CHANNEL // SNOW FIELD // UPDATED: <span id="update-date"></span>
+        </footer>
+    </div>
+
+    <script>
+        const scheduleData = [
+            { date: '01/19', day: 'MON', time: 'TBD', status: 'uncertain', note: '目前還不確定狀況 ❓' },
+            { date: '01/20', day: 'TUE', time: 'OFF', status: 'rest', note: '今日休台，冬日補眠中' },
+            { date: '01/21', day: 'WED', time: '07:00 AM', status: 'normal', note: '早起清晨直播！' },
+            { date: '01/22', day: 'THU', time: '01:00 PM', status: 'normal', note: '撞球🎱（希望能打進去）' },
+            { date: '01/23', day: 'FRI', time: '07:00 AM', status: 'normal', note: '週末前的冰雪連線' }
+        ];
+
+        function initSchedule() {
+            const container = document.getElementById('schedule');
+            container.innerHTML = '';
+
+            scheduleData.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'day-card';
+
+                let statusContent = `<span class="time-val">${item.time}</span>`;
+                if (item.status === 'uncertain') {
+                    statusContent = `<span class="status-pill pill-uncertain">UNCERTAIN</span>`;
+                } else if (item.status === 'rest') {
+                    statusContent = `<span class="status-pill pill-rest">SYSTEM OFF</span>`;
+                }
+
+                card.innerHTML = `
+                    <div class="day-label">
+                        <span class="date">${item.date} // ${item.day}</span>
+                        <span class="day-name">${item.note}</span>
+                    </div>
+                    <div class="status-box">
+                        ${statusContent}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function initWinterSky() {
+            const canvas = document.getElementById('star-canvas');
+            const ctx = canvas.getContext('2d');
+            let particles = [];
+
+            function resize() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+
+            class Particle {
+                constructor(type) {
+                    this.type = type;
+                    this.reset();
+                    if (type === 'snow') this.y = Math.random() * canvas.height;
+                }
+
+                reset() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = this.type === 'star' ? Math.random() * canvas.height : -150;
+                    this.size = this.type === 'star' ? Math.random() * 1.5 : (Math.random() * 60 + 40);
+                    this.speed = this.type === 'star' ? 0.05 : Math.random() * 1.2 + 0.6;
+                    this.blink = Math.random() * 0.02 + 0.01;
+                    this.alpha = Math.random() * 0.4 + 0.1;
+                    this.direction = 1;
+                    this.wind = Math.random() * 0.4 - 0.2;
+                    this.rotation = Math.random() * 360;
+                    this.spin = Math.random() * 0.4 - 0.2;
+                    this.snowflakeChar = Math.random() > 0.5 ? '❄' : '❅'; 
+                }
+
+                draw() {
+                    if (this.type === 'star') {
+                        ctx.beginPath();
+                        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                        ctx.fillStyle = `rgba(125, 211, 252, ${this.alpha})`;
+                        ctx.fill();
+                    } else {
+                        ctx.save();
+                        ctx.translate(this.x, this.y);
+                        ctx.rotate(this.rotation * Math.PI / 180);
+                        ctx.font = `${this.size}px sans-serif`;
+                        // 深色背景用淺色雪花，淺色背景用深淺交錯的藍色雪花，並增加描邊
+                        ctx.fillStyle = 'rgba(125, 211, 252, 0.5)'; 
+                        ctx.shadowColor = 'white';
+                        ctx.shadowBlur = 8;
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.fillText(this.snowflakeChar, 0, 0);
+                        ctx.restore();
+                    }
+                }
+
+                update() {
+                    if (this.type === 'star') {
+                        this.alpha += this.blink * this.direction;
+                        if (this.alpha > 0.6 || this.alpha < 0.1) this.direction *= -1;
+                    } else {
+                        this.y += this.speed;
+                        this.x += this.wind;
+                        this.rotation += this.spin;
+                        if (this.y > canvas.height + 100) this.reset();
+                    }
+                }
+            }
+
+            function setup() {
+                resize();
+                particles = [];
+                for (let i = 0; i < 100; i++) particles.push(new Particle('star'));
+                for (let i = 0; i < 15; i++) particles.push(new Particle('snow'));
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particles.forEach(p => {
+                    p.update();
+                    p.draw();
+                });
+                requestAnimationFrame(animate);
+            }
+
+            window.addEventListener('resize', setup);
+            setup();
+            animate();
+        }
+
+        window.onload = () => {
+            initSchedule();
+            initWinterSky();
+            document.getElementById('update-date').innerText = new Date().toLocaleDateString();
+        };
+    </script>
+</body>
+</html>
