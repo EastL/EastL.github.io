@@ -1,196 +1,529 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-<meta charset="UTF-8">
-<title>原原台聚</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>原原台聚</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-<style>
-body {
-    margin: 0;
-    font-family: "Segoe UI", sans-serif;
-    background: #f6efe7;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-}
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "PingFang TC", "Microsoft JhengHei", sans-serif;
+      background:
+        radial-gradient(circle at top left, #fff4ef 0%, #f9eee7 35%, #f4e6dc 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 24px;
+      color: #6b4f3b;
+    }
 
-.card {
-    width: 520px;
-    background: #fffaf5;
-    border-radius: 25px;
-    padding: 35px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    position: relative;
-}
+    .card {
+      width: min(100%, 560px);
+      background: #fffaf5;
+      border-radius: 28px;
+      padding: 28px 22px 34px;
+      box-shadow:
+        0 18px 50px rgba(144, 97, 66, 0.12),
+        0 6px 18px rgba(144, 97, 66, 0.08);
+      position: relative;
+      overflow: visible;
+      animation: cardIn 0.8s ease-out;
+      border: 1px solid rgba(217, 182, 156, 0.28);
+    }
 
-.title {
-    text-align: center;
-    font-size: 28px;
-    color: #8b5e3c;
-    margin-bottom: 20px;
-}
+    @keyframes cardIn {
+      from {
+        opacity: 0;
+        transform: translateY(18px) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
 
-/* 區塊 */
-.block {
-    background: #fff3eb;
-    padding: 12px 16px;
-    border-radius: 15px;
-    margin-bottom: 12px;
-    font-size: 14px;
-    color: #6b4f3b;
-}
+    .title {
+      text-align: center;
+      font-size: 30px;
+      font-weight: 700;
+      color: #8b5e3c;
+      margin-bottom: 18px;
+      letter-spacing: 1px;
+    }
 
-/* 小標 */
-.label {
-    font-weight: bold;
-    margin-bottom: 4px;
-}
+    .subtitle {
+      text-align: center;
+      font-size: 14px;
+      color: #b98974;
+      margin-top: -6px;
+      margin-bottom: 20px;
+    }
 
-/* VIP */
-.vip {
-    position: relative;
-    cursor: pointer;
-}
+    .block {
+      background: #fff3eb;
+      padding: 14px 16px;
+      border-radius: 16px;
+      margin-bottom: 12px;
+      font-size: 15px;
+      line-height: 1.65;
+      box-shadow: inset 0 0 0 1px rgba(235, 201, 179, 0.35);
+    }
 
-.vip-detail {
-    display: none;
-    position: absolute;
-    top: 30px;
-    left: 0;
-    background: #fff;
-    padding: 8px 12px;
-    border-radius: 10px;
-    font-size: 13px;
-}
+    .block strong,
+    .highlight {
+      color: #d48c6a;
+      font-weight: 700;
+    }
 
-.vip:hover .vip-detail {
-    display: block;
-}
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
 
-/* 按鈕 */
-.btn {
-    display: block;
-    margin: 20px auto;
-    background: #ffd6d6;
-    padding: 10px 20px;
-    border-radius: 20px;
-    border: none;
-    cursor: pointer;
-}
+    .badge {
+      background: #ffe6eb;
+      color: #9a5f6c;
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 13px;
+      line-height: 1;
+      white-space: nowrap;
+    }
 
-/* 熊 */
-.bear {
-    position: absolute;
-    bottom: -10px;
-    right: 10px;
-    cursor: pointer;
-}
+    .section-title {
+      font-weight: 700;
+      color: #8b5e3c;
+      margin-bottom: 6px;
+    }
 
-.bear-face {
-    width: 70px;
-    height: 70px;
-    background: #c89f7a;
-    border-radius: 50%;
-    position: relative;
-}
+    .vip-trigger {
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.18s ease, background 0.18s ease;
+    }
 
-.ear { width: 30px; height: 30px; background:#c89f7a; border-radius:50%; position:absolute;}
-.ear.left {top:-10px; left:-5px;}
-.ear.right {top:-10px; right:-5px;}
+    .vip-trigger:active {
+      transform: scale(0.985);
+      background: #fdeee4;
+    }
 
-.eye {width:6px;height:6px;background:#4b3a2f;border-radius:50%;position:absolute;top:30px;}
-.eye.left{left:20px;}
-.eye.right{right:20px;}
+    .btn {
+      display: block;
+      width: 100%;
+      margin: 18px auto 0;
+      background: linear-gradient(180deg, #ffd8de 0%, #ffc8d0 100%);
+      color: #8b5e3c;
+      padding: 13px 18px;
+      border-radius: 22px;
+      border: none;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 700;
+      box-shadow: 0 8px 18px rgba(255, 174, 190, 0.24);
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
 
-.nose {width:10px;height:8px;background:#4b3a2f;border-radius:50%;position:absolute;top:40px;left:50%;transform:translateX(-50%);}
+    .btn:active {
+      transform: scale(0.985);
+      box-shadow: 0 4px 10px rgba(255, 174, 190, 0.16);
+    }
 
-.blush {width:10px;height:6px;background:#f5b7b1;border-radius:50%;position:absolute;top:40px;}
-.blush.left{left:10px;}
-.blush.right{right:10px;}
+    .footer {
+      text-align: center;
+      margin-top: 16px;
+      color: #c28b6b;
+      font-size: 14px;
+    }
 
-.bubble {
-    display:none;
-    position:absolute;
-    bottom:80px;
-    right:0;
-    background:#fff;
-    padding:10px;
-    border-radius:12px;
-    font-size:13px;
-}
-</style>
+    /* 熊熊 */
+    .bear {
+      position: absolute;
+      bottom: -12px;
+      right: 10px;
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.2s ease;
+    }
+
+    .bear:active {
+      transform: scale(0.96);
+    }
+
+    .bear-face {
+      width: 78px;
+      height: 78px;
+      background: #c89f7a;
+      border-radius: 50%;
+      position: relative;
+      box-shadow: 0 8px 16px rgba(119, 82, 55, 0.18);
+    }
+
+    .ear {
+      width: 32px;
+      height: 32px;
+      background: #c89f7a;
+      border-radius: 50%;
+      position: absolute;
+      top: -8px;
+    }
+
+    .ear.left { left: -2px; }
+    .ear.right { right: -2px; }
+
+    .ear::after {
+      content: "";
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #e8c8b2;
+      top: 8px;
+      left: 8px;
+    }
+
+    .eye {
+      width: 6px;
+      height: 6px;
+      background: #4b3a2f;
+      border-radius: 50%;
+      position: absolute;
+      top: 31px;
+    }
+
+    .eye.left { left: 23px; }
+    .eye.right { right: 23px; }
+
+    .nose {
+      width: 12px;
+      height: 9px;
+      background: #4b3a2f;
+      border-radius: 50%;
+      position: absolute;
+      top: 43px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .blush {
+      width: 12px;
+      height: 7px;
+      background: #f5b7b1;
+      border-radius: 50%;
+      position: absolute;
+      top: 43px;
+      opacity: 0.85;
+    }
+
+    .blush.left { left: 11px; }
+    .blush.right { right: 11px; }
+
+    /* 熊熊對話框 */
+    .bubble {
+      display: none;
+      position: absolute;
+      bottom: 88px;
+      right: 4px;
+      width: 190px;
+      background: #fff;
+      padding: 12px 14px;
+      border-radius: 16px;
+      font-size: 13px;
+      line-height: 1.5;
+      box-shadow: 0 10px 24px rgba(110, 78, 56, 0.14);
+      color: #6b4f3b;
+      transform-origin: bottom right;
+    }
+
+    .bubble.show {
+      display: block;
+      animation: popIn 0.22s ease-out;
+    }
+
+    .bubble::after {
+      content: "";
+      position: absolute;
+      bottom: -9px;
+      right: 20px;
+      border-width: 10px 8px 0 8px;
+      border-style: solid;
+      border-color: #fff transparent transparent transparent;
+    }
+
+    @keyframes popIn {
+      from {
+        opacity: 0;
+        transform: scale(0.86) translateY(6px);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    /* 彈窗 */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(78, 54, 37, 0.34);
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      z-index: 20;
+    }
+
+    .modal.show {
+      display: flex;
+      animation: fadeMask 0.2s ease;
+    }
+
+    @keyframes fadeMask {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal-content {
+      width: min(100%, 360px);
+      background: #fffaf5;
+      border-radius: 22px;
+      padding: 24px 22px 18px;
+      text-align: center;
+      color: #6b4f3b;
+      box-shadow: 0 18px 40px rgba(84, 57, 38, 0.18);
+      animation: modalIn 0.24s ease-out;
+      position: relative;
+    }
+
+    @keyframes modalIn {
+      from {
+        opacity: 0;
+        transform: scale(0.92) translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    .modal-title {
+      font-size: 22px;
+      color: #8b5e3c;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    .modal-text {
+      font-size: 15px;
+      line-height: 1.8;
+      margin-bottom: 14px;
+    }
+
+    .modal-close {
+      display: inline-block;
+      background: #ffd6d6;
+      color: #8b5e3c;
+      border: none;
+      border-radius: 999px;
+      padding: 10px 18px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .tiny-note {
+      font-size: 12px;
+      color: #bf9278;
+      margin-top: 6px;
+    }
+
+    @media (max-width: 480px) {
+      .card {
+        padding: 24px 16px 30px;
+      }
+
+      .title {
+        font-size: 26px;
+      }
+
+      .block {
+        font-size: 14px;
+      }
+
+      .bear {
+        right: 6px;
+      }
+
+      .bubble {
+        width: 170px;
+        right: -2px;
+      }
+    }
+  </style>
 </head>
-
 <body>
+  <div class="card">
+    <div class="title">🎉 原原台聚 🎉</div>
+    <div class="subtitle">🧸 一起來吃燒肉、玩桌遊、留下可愛回憶</div>
 
-<div class="card">
+    <div class="block">
+      <div class="section-title">📅 活動時間</div>
+      5/9（六）｜15:00
+    </div>
 
-<div class="title">🎉 原原台聚 🎉</div>
+    <div class="block">
+      <div class="section-title">🍖 活動內容</div>
+      吃燒肉、桌遊
+    </div>
 
-<div class="block">
-📅 5/9（六）｜🕒 15:00
-</div>
+    <div class="block">
+      <div class="section-title">📍 活動地點</div>
+      台北市（報名成功後私訊提供詳細地址）
+    </div>
 
-<div class="block">
-🍖 活動內容：燒肉 × 桌遊
-</div>
+    <div class="block">
+      <div class="section-title">⏰ 報名時間</div>
+      即日起 ～ 4/30<br>
+      <span class="tiny-note">（額滿將提前截止）</span>
+    </div>
 
-<div class="block">
-📍 台北市（報名成功後提供）
-</div>
+    <div class="block">
+      <div class="section-title">💰 報名費用</div>
+      💸 抖內 <strong>$520</strong> 或 🎁 贈訂 <strong>×10份</strong>
+    </div>
 
-<div class="block">
-⏰ 報名：即日起 ～ 4/30（額滿截止）
-</div>
+    <div class="block">
+      <div class="section-title">💖 熟人優惠（曾來過台聚者）</div>
+      💸 抖內 <strong>$120</strong> 或 🎁 贈訂 <strong>×3份</strong>
+    </div>
 
-<div class="block">
-💰 抖內 $520 ｜ 🎁 贈訂 ×10
-</div>
+    <div class="block vip-trigger" onclick="openVIPModal()">
+      <div class="section-title">💎 VIP 特權</div>
+      點我查看 VIP 專屬福利
+    </div>
 
-<div class="block">
-💸 熟人優惠(曾來過台聚者)：$120 ｜ 🎁 ×3
-</div>
+    <div class="block">
+      <div class="section-title">👥 人數上限</div>
+      15人
+    </div>
 
-<div class="block vip">
-💎 VIP 特權
-<div class="vip-detail">
-✨免報名費｜🚀優先權｜🎁大禮物
-</div>
-</div>
+    <div class="block">
+      <div class="section-title">⚠️ 注意事項</div>
+      ・報名費不包含當日活動費用<br>
+      ・遲到不等尼！<br>
+      ・未成年不得飲酒
+    </div>
 
-<div class="block">
-👥 人數上限：15人
-</div>
+    <button class="btn" onclick="openJoinModal()">🎀 我要報名</button>
 
-<div class="block">
-⚠️ 不含餐費｜⏰ 遲到不等尼｜🍺 未成年禁酒
-</div>
+    <div class="footer">💜 Twitch 限定福利 × 歡迎大家一起來玩 💕</div>
 
-<button class="btn">🎀 我要報名</button>
+    <div class="bear" onclick="toggleBearBubble()">
+      <div class="bubble" id="bearBubble">
+        <span id="bearBubbleText"></span>
+      </div>
 
-<!-- 熊 -->
-<div class="bear" onclick="toggleBubble()">
-<div class="bubble" id="bubble">一起來玩嘛 🧸💕</div>
-<div class="bear-face">
-<div class="ear left"></div>
-<div class="ear right"></div>
-<div class="eye left"></div>
-<div class="eye right"></div>
-<div class="nose"></div>
-<div class="blush left"></div>
-<div class="blush right"></div>
-</div>
-</div>
+      <div class="bear-face">
+        <div class="ear left"></div>
+        <div class="ear right"></div>
+        <div class="eye left"></div>
+        <div class="eye right"></div>
+        <div class="nose"></div>
+        <div class="blush left"></div>
+        <div class="blush right"></div>
+      </div>
+    </div>
+  </div>
 
-</div>
+  <!-- VIP Modal -->
+  <div class="modal" id="vipModal" onclick="closeModalByMask(event, 'vipModal')">
+    <div class="modal-content">
+      <div class="modal-title">💎 VIP 特權</div>
+      <div class="modal-text">
+        ✨ 免報名費<br>
+        🚀 優先權<br>
+        🎁 大禮物
+      </div>
+      <button class="modal-close" onclick="closeVIPModal()">關閉</button>
+    </div>
+  </div>
 
-<script>
-function toggleBubble(){
-let b=document.getElementById("bubble");
-b.style.display=b.style.display==="block"?"none":"block";
-}
-</script>
+  <!-- Join Modal -->
+  <div class="modal" id="joinModal" onclick="closeModalByMask(event, 'joinModal')">
+    <div class="modal-content">
+      <div class="modal-title">🎀 我要報名</div>
+      <div class="modal-text">
+        報名連結準備中 ✨<br>
+        之後可以直接把表單網址貼進按鈕裡喔！
+      </div>
+      <button class="modal-close" onclick="closeJoinModal()">知道了</button>
+    </div>
+  </div>
 
+  <script>
+    const bearMessage = "一起來玩嘛 🧸💕\nVIP 很香喔～💎";
+    let bearBubbleVisible = false;
+    let typingTimer = null;
+
+    function typeText(el, text, speed = 38) {
+      clearTimeout(typingTimer);
+      el.textContent = "";
+      let i = 0;
+
+      function typing() {
+        if (i < text.length) {
+          el.textContent += text.charAt(i);
+          i++;
+          typingTimer = setTimeout(typing, speed);
+        }
+      }
+
+      typing();
+    }
+
+    function toggleBearBubble() {
+      const bubble = document.getElementById("bearBubble");
+      const textEl = document.getElementById("bearBubbleText");
+
+      bearBubbleVisible = !bearBubbleVisible;
+
+      if (bearBubbleVisible) {
+        bubble.classList.add("show");
+        typeText(textEl, bearMessage);
+      } else {
+        bubble.classList.remove("show");
+        clearTimeout(typingTimer);
+      }
+    }
+
+    function openVIPModal() {
+      document.getElementById("vipModal").classList.add("show");
+    }
+
+    function closeVIPModal() {
+      document.getElementById("vipModal").classList.remove("show");
+    }
+
+    function openJoinModal() {
+      document.getElementById("joinModal").classList.add("show");
+    }
+
+    function closeJoinModal() {
+      document.getElementById("joinModal").classList.remove("show");
+    }
+
+    function closeModalByMask(event, id) {
+      if (event.target.id === id) {
+        document.getElementById(id).classList.remove("show");
+      }
+    }
+  </script>
 </body>
 </html>
