@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<title>原原台聚</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: "Segoe UI", sans-serif;
+    background: #f6efe7;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.card {
+    width: 520px;
+    background: #fffaf5;
+    border-radius: 25px;
+    padding: 35px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    position: relative;
+}
+
+.title {
+    text-align: center;
+    font-size: 28px;
+    color: #8b5e3c;
+    margin-bottom: 20px;
+}
+
+/* 區塊 */
+.block {
+    background: #fff3eb;
+    padding: 12px 16px;
+    border-radius: 15px;
+    margin-bottom: 12px;
+    font-size: 14px;
+    color: #6b4f3b;
+}
+
+/* 小標 */
+.label {
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+/* VIP */
+.vip {
+    position: relative;
+    cursor: pointer;
+}
+
+.vip-detail {
+    display: none;
+    position: absolute;
+    top: 30px;
+    left: 0;
+    background: #fff;
+    padding: 8px 12px;
+    border-radius: 10px;
+    font-size: 13px;
+}
+
+.vip:hover .vip-detail {
+    display: block;
+}
+
+/* 按鈕 */
+.btn {
+    display: block;
+    margin: 20px auto;
+    background: #ffd6d6;
+    padding: 10px 20px;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+}
+
+/* 熊 */
+.bear {
+    position: absolute;
+    bottom: -10px;
+    right: 10px;
+    cursor: pointer;
+}
+
+.bear-face {
+    width: 70px;
+    height: 70px;
+    background: #c89f7a;
+    border-radius: 50%;
+    position: relative;
+}
+
+.ear { width: 30px; height: 30px; background:#c89f7a; border-radius:50%; position:absolute;}
+.ear.left {top:-10px; left:-5px;}
+.ear.right {top:-10px; right:-5px;}
+
+.eye {width:6px;height:6px;background:#4b3a2f;border-radius:50%;position:absolute;top:30px;}
+.eye.left{left:20px;}
+.eye.right{right:20px;}
+
+.nose {width:10px;height:8px;background:#4b3a2f;border-radius:50%;position:absolute;top:40px;left:50%;transform:translateX(-50%);}
+
+.blush {width:10px;height:6px;background:#f5b7b1;border-radius:50%;position:absolute;top:40px;}
+.blush.left{left:10px;}
+.blush.right{right:10px;}
+
+.bubble {
+    display:none;
+    position:absolute;
+    bottom:80px;
+    right:0;
+    background:#fff;
+    padding:10px;
+    border-radius:12px;
+    font-size:13px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+<div class="title">🎉 原原台聚 🎉</div>
+
+<div class="block">
+📅 5/9（六）｜🕒 15:00
+</div>
+
+<div class="block">
+🍖 活動內容：燒肉 × 桌遊
+</div>
+
+<div class="block">
+📍 台北市（報名成功後提供）
+</div>
+
+<div class="block">
+⏰ 報名：即日起 ～ 4/30（額滿截止）
+</div>
+
+<div class="block">
+💰 抖內 $520 ｜ 🎁 贈訂 ×10
+</div>
+
+<div class="block">
+💸 熟人優惠(曾來過台聚者)：$120 ｜ 🎁 ×3
+</div>
+
+<div class="block vip">
+💎 VIP 特權
+<div class="vip-detail">
+✨免報名費｜🚀優先權｜🎁大禮物
+</div>
+</div>
+
+<div class="block">
+👥 人數上限：15人
+</div>
+
+<div class="block">
+⚠️ 不含餐費｜⏰ 遲到不等尼｜🍺 未成年禁酒
+</div>
+
+<button class="btn">🎀 我要報名</button>
+
+<!-- 熊 -->
+<div class="bear" onclick="toggleBubble()">
+<div class="bubble" id="bubble">一起來玩嘛 🧸💕</div>
+<div class="bear-face">
+<div class="ear left"></div>
+<div class="ear right"></div>
+<div class="eye left"></div>
+<div class="eye right"></div>
+<div class="nose"></div>
+<div class="blush left"></div>
+<div class="blush right"></div>
+</div>
+</div>
+
+</div>
+
+<script>
+function toggleBubble(){
+let b=document.getElementById("bubble");
+b.style.display=b.style.display==="block"?"none":"block";
+}
+</script>
+
+</body>
+</html>
