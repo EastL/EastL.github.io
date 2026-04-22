@@ -286,6 +286,22 @@
         width: 165px;
       }
     }
+
+    .join-link{
+      display:inline-block;
+      background:#ffd6d6;
+      color:#8b5e3c;
+      padding:10px 18px;
+      border-radius:20px;
+      text-decoration:none;
+      font-weight:bold;
+      box-shadow:0 4px 10px rgba(0,0,0,0.1);
+      transition:0.2s;
+    }
+
+    .join-link:active{
+      transform:scale(0.95);
+    }
   </style>
 </head>
 <body>
@@ -385,8 +401,16 @@
   <div class="modal" id="joinModal" onclick="closeModal(event,'joinModal')">
     <div class="modal-box">
       <h3>🎀 我要報名</h3>
-      報名連結之後補上✨<br>
-      <button class="modal-close" onclick="closeJoin()">OK</button>
+
+      <p>準備好一起來玩了嗎 🧸💕</p>
+
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLSejmwFqZZNsqEODkfEc8eEYVMI91WJu3gd3yLjXv0LkRsClEg/viewform" target="_blank" class="join-link">
+        立即前往報名
+      </a>
+
+      <br><br>
+
+      <button class="modal-close" onclick="closeJoin()">先看看</button>
     </div>
   </div>
 
