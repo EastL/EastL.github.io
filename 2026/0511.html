@@ -290,44 +290,44 @@ h1{
   </div>
 
   <div class="schedule">
-    <div class="card outdoor today">
-      <div class="day-num"><div class="date">5/11</div><div class="dow">MON</div></div>
+    <div class="card outdoor">
+      <div class="day-num" data-date="5/11"><div class="date">5/11</div><div class="dow">MON</div></div>
       <div class="vsep"></div>
       <div class="body"><span class="pill out">🌤 戶外</span><div class="acts"><span class="time-chip">⏰ 中午 12:00</span><span class="dot-sep">·</span><span class="act">💃 練舞</span></div></div>
       <span class="deco-icon">💃</span>
     </div>
     <div class="card rest">
-      <div class="day-num"><div class="date">5/12</div><div class="dow">TUE</div></div>
+      <div class="day-num" data-date="5/12"><div class="date">5/12</div><div class="dow">TUE</div></div>
       <div class="vsep"></div>
       <div class="body"><span class="pill sch">📚 上課</span><div class="acts"><span class="pill rst">😴 休息日</span></div></div>
       <span class="deco-icon">📚</span>
     </div>
     <div class="card maybe">
-      <div class="day-num"><div class="date">5/13</div><div class="dow">WED</div></div>
+      <div class="day-num" data-date="5/13"><div class="date">5/13</div><div class="dow">WED</div></div>
       <div class="vsep"></div>
       <div class="body"><span class="pill uns">🎲 不確定</span><div class="acts"><span class="act d">未定，請關注公告～</span></div></div>
       <span class="deco-icon">🎲</span>
     </div>
     <div class="card outdoor">
-      <div class="day-num"><div class="date">5/14</div><div class="dow">THU</div></div>
+      <div class="day-num" data-date="5/14"><div class="date">5/14</div><div class="dow">THU</div></div>
       <div class="vsep"></div>
       <div class="body"><span class="pill out">🌤 戶外</span><div class="acts"><span class="time-chip">⏰ 下午 2:00</span><span class="dot-sep">·</span><span class="act">💃 練舞</span></div></div>
       <span class="deco-icon">☀️</span>
     </div>
     <div class="card stream">
-      <div class="day-num"><div class="date">5/15</div><div class="dow">FRI</div></div>
+      <div class="day-num" data-date="5/15"><div class="date">5/15</div><div class="dow">FRI</div></div>
       <div class="vsep"></div>
       <div class="body"><span class="pill hm">🏠 在家</span><div class="acts"><span class="time-chip">🌙 晚上</span><span class="dot-sep">·</span><span class="act">🔴 開台直播</span></div></div>
       <span class="deco-icon">🎮</span>
     </div>
     <div class="card stream">
-      <div class="day-num"><div class="date">5/16</div><div class="dow">SAT</div></div>
+      <div class="day-num" data-date="5/16"><div class="date">5/16</div><div class="dow">SAT</div></div>
       <div class="vsep"></div>
       <div class="body"><span class="pill hm">🏠 在家</span><div class="acts"><span class="time-chip">🌙 晚上</span><span class="dot-sep">·</span><span class="act">🔴 開台直播</span></div></div>
       <span class="deco-icon">🎮</span>
     </div>
     <div class="card outdoor">
-      <div class="day-num"><div class="date">5/17</div><div class="dow">SUN</div></div>
+      <div class="day-num" data-date="5/17"><div class="date">5/17</div><div class="dow">SUN</div></div>
       <div class="vsep"></div>
       <div class="body"><span class="pill out">🌤 戶外</span><div class="acts"><span class="time-chip">⏰ 下午 3:00</span><span class="dot-sep">·</span><span class="act">💃 練舞</span><span class="dot-sep">·</span><span class="act">💪 健身</span><span class="maybe-chip">可能</span></div></div>
       <span class="deco-icon">🏃</span>
@@ -399,6 +399,25 @@ scheduleNextIdle();
   document.querySelectorAll('.day-num .date').forEach(el => {
     if(el.textContent.trim() === label){
       el.closest('.card').classList.add('today');
+    }
+  });
+})();
+
+
+// 自動標記今天
+(function() {
+  const now = new Date();
+  const m = now.getMonth() + 1;
+  const d = now.getDate();
+  const todayStr = m + '/' + d;  // e.g. "5/12"
+
+  document.querySelectorAll('[data-date]').forEach(numEl => {
+    if (numEl.getAttribute('data-date') === todayStr) {
+      // 往上找到 .card
+      const card = numEl.closest('.card');
+      if (card) {
+        card.classList.add('today');
+      }
     }
   });
 })();
