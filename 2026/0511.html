@@ -355,7 +355,21 @@ function setAnim(name, once=false) {
   currentAnim = name;
   if(once) mascot.addEventListener('animationend', restoreIdle, {once:true});
 }
-function restoreIdle() { setAnim('anim-float'); scheduleNextIdle(); }
+function restoreIdle() { setAnim('anim-float'); scheduleNextIdle();
+
+// 自動標記今天
+(function(){
+  const today = new Date();
+  const m = today.getMonth() + 1;
+  const d = today.getDate();
+  const label = m + '/' + d;  // e.g. "5/11"
+  document.querySelectorAll('.day-num .date').forEach(el => {
+    if(el.textContent.trim() === label){
+      el.closest('.card').classList.add('today');
+    }
+  });
+})();
+ }
 function scheduleNextIdle() {
   clearTimeout(idleTimer);
   idleTimer = setTimeout(() => {
@@ -375,6 +389,20 @@ mascot.addEventListener('mouseenter', ()=>{ if(currentAnim!=='anim-jump'){clearT
 mascot.addEventListener('mouseleave', ()=>{ if(currentAnim!=='anim-jump') restoreIdle(); });
 setTimeout(()=>showBubble('點我說說話！😄'), 1800);
 scheduleNextIdle();
+
+// 自動標記今天
+(function(){
+  const today = new Date();
+  const m = today.getMonth() + 1;
+  const d = today.getDate();
+  const label = m + '/' + d;  // e.g. "5/11"
+  document.querySelectorAll('.day-num .date').forEach(el => {
+    if(el.textContent.trim() === label){
+      el.closest('.card').classList.add('today');
+    }
+  });
+})();
+
 </script>
 </body>
 </html>
