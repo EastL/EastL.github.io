@@ -6,180 +6,247 @@
 <title>原原の週行程</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&family=Fredoka+One&display=swap" rel="stylesheet">
 <style>
-:root{--cream:#fff8f0;--peach:#ffe8d6;--denim:#5b80b2;--denim-l:#c4d5ec;--red:#e05545;--orange:#f5a623;--brown:#3a2010;--card:#ffffff;--border:#f0dece;--text:#3a2010;--sub:#a07858}
+:root{
+  --bg:     #0f0e17;
+  --bg2:    #1a1826;
+  --card:   #1e1c2e;
+  --card2:  #252338;
+  --border: #2e2b45;
+  --text:   #f0eaff;
+  --sub:    #8b82aa;
+  --orange: #ffb347;
+  --red:    #ff6b5b;
+  --denim:  #7aaee8;
+  --denim-l:#2a3a5a;
+  --green:  #6ee7b7;
+  --purple: #c084fc;
+  --yellow: #fde68a;
+}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Noto Sans TC',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;overflow-x:hidden}
-body::before{content:'';position:fixed;inset:0;z-index:0;background:radial-gradient(circle 500px at 0% 0%,rgba(255,200,150,.25),transparent),radial-gradient(circle 400px at 100% 80%,rgba(91,128,178,.15),transparent),radial-gradient(circle 300px at 60% 20%,rgba(255,110,100,.08),transparent);pointer-events:none}
-.dots-bg{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:radial-gradient(circle,rgba(180,140,100,.18) 1.5px,transparent 1.5px);background-size:28px 28px}
-.candy{position:fixed;z-index:0;pointer-events:none;font-size:20px;animation:candyFloat var(--d,6s) ease-in-out infinite alternate;animation-delay:var(--delay,0s)}
-@keyframes candyFloat{from{transform:translateY(0) rotate(0deg);opacity:.5}to{transform:translateY(-24px) rotate(20deg);opacity:.9}}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+
+/* ── 背景光暈 ── */
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 60% 50% at 10% 5%,  rgba(120,80,255,.12), transparent),
+    radial-gradient(ellipse 50% 40% at 90% 90%,  rgba(255,107,91,.10), transparent),
+    radial-gradient(ellipse 40% 50% at 55% 40%,  rgba(122,174,232,.07), transparent);
+}
+
+/* ── 波點背景 ── */
+.dots-bg{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:radial-gradient(circle, rgba(255,255,255,.04) 1.5px, transparent 1.5px);
+  background-size:28px 28px;
+}
+
+/* ── 浮動裝飾 ── */
+.candy{position:fixed;z-index:0;pointer-events:none;font-size:18px;
+  animation:candyFloat var(--d,6s) ease-in-out infinite alternate;
+  animation-delay:var(--delay,0s);opacity:.4}
+@keyframes candyFloat{from{transform:translateY(0) rotate(0deg)}to{transform:translateY(-22px) rotate(18deg)}}
+
 .wrap{position:relative;z-index:1;max-width:780px;margin:0 auto;padding:44px 22px 200px}
 
 /* ── 標題 ── */
 .header{margin-bottom:36px;animation:popIn .6s cubic-bezier(.34,1.56,.64,1) both}
 .top-row{display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap}
-.badge{display:inline-flex;align-items:center;gap:7px;background:var(--red);color:white;border-radius:999px;padding:6px 16px;font-size:12px;font-weight:900;letter-spacing:.1em;box-shadow:0 4px 14px rgba(224,85,69,.4);animation:wiggle 3s ease-in-out infinite}
+
+.badge{
+  display:inline-flex;align-items:center;gap:7px;
+  background:linear-gradient(135deg,var(--red),#ff9966);
+  color:white;border-radius:999px;padding:6px 16px;
+  font-size:12px;font-weight:900;letter-spacing:.1em;
+  box-shadow:0 4px 18px rgba(255,107,91,.45);
+  animation:wiggle 3s ease-in-out infinite;
+}
 @keyframes wiggle{0%,100%{transform:rotate(0)}20%{transform:rotate(-3deg)}40%{transform:rotate(3deg)}60%{transform:rotate(-2deg)}80%{transform:rotate(2deg)}}
 .live{width:8px;height:8px;background:#ffdd57;border-radius:50%;animation:pulse 1.2s infinite}
 @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,221,87,.7)}50%{box-shadow:0 0 0 6px rgba(255,221,87,0)}}
-.sticker{background:#fff3c4;border:2.5px dashed var(--orange);border-radius:12px;padding:4px 12px;font-size:12px;font-weight:700;color:#b07010;transform:rotate(-2deg)}
-.date-tag{background:var(--denim-l);color:var(--denim);border-radius:10px;padding:4px 12px;font-size:12px;font-weight:700;transform:rotate(1.5deg);border:2px solid var(--denim)}
+
+.sticker{
+  background:rgba(255,179,71,.15);border:2px dashed var(--orange);
+  border-radius:12px;padding:4px 12px;font-size:12px;font-weight:700;
+  color:var(--orange);transform:rotate(-2deg);
+}
+.date-tag{
+  background:var(--denim-l);color:var(--denim);border-radius:10px;
+  padding:4px 12px;font-size:12px;font-weight:700;
+  transform:rotate(1.5deg);border:2px solid rgba(122,174,232,.4);
+}
+
 .title-block{position:relative;display:inline-block;margin-bottom:4px}
-h1{font-family:'Fredoka One',cursive;font-size:clamp(2rem,6.5vw,3.6rem);line-height:1.1;background:linear-gradient(135deg,#3a2010 0%,#e05545 55%,#5b80b2 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.h1-sub{font-size:clamp(1rem,3vw,1.5rem);font-weight:900;color:var(--orange);font-family:'Fredoka One',cursive}
-.underline-deco{height:5px;border-radius:999px;margin-top:4px;background:linear-gradient(90deg,var(--red),var(--orange),var(--denim));animation:lineGrow .8s .3s cubic-bezier(.34,1.56,.64,1) both;transform-origin:left}
+.h1-sub{
+  font-size:clamp(1rem,3vw,1.5rem);font-weight:900;
+  color:var(--orange);font-family:'Fredoka One',cursive;
+}
+h1{
+  font-family:'Fredoka One',cursive;
+  font-size:clamp(2rem,6.5vw,3.6rem);line-height:1.1;
+  background:linear-gradient(135deg,#fff 0%,var(--orange) 45%,var(--denim) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.underline-deco{
+  height:4px;border-radius:999px;margin-top:5px;
+  background:linear-gradient(90deg,var(--red),var(--orange),var(--denim));
+  animation:lineGrow .8s .3s cubic-bezier(.34,1.56,.64,1) both;transform-origin:left;
+}
 @keyframes lineGrow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 .subtitle{margin-top:8px;color:var(--sub);font-size:13px}
 .subtitle b{color:var(--red);font-weight:900}
 
 /* ── 週標籤 ── */
-.week-bar{display:flex;align-items:center;gap:10px;margin-bottom:18px;animation:popIn .5s .15s cubic-bezier(.34,1.56,.64,1) both}
-.week-bar .wl,.week-bar .wr{flex:1;height:2px;border-radius:2px}
+.week-bar{
+  display:flex;align-items:center;gap:10px;margin-bottom:18px;
+  animation:popIn .5s .15s cubic-bezier(.34,1.56,.64,1) both;
+}
+.week-bar .wl,.week-bar .wr{flex:1;height:1.5px;border-radius:2px}
 .week-bar .wl{background:linear-gradient(90deg,transparent,var(--orange))}
 .week-bar .wr{background:linear-gradient(90deg,var(--orange),transparent)}
 .week-bar .wc{font-size:13px;font-weight:900;color:var(--orange);white-space:nowrap;letter-spacing:.1em}
 
 /* ── 卡片 ── */
 .schedule{display:flex;flex-direction:column;gap:11px}
-.card{border-radius:20px;padding:14px 20px;display:flex;align-items:center;gap:16px;position:relative;overflow:hidden;cursor:default;border:2.5px solid transparent;transition:transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s;animation:popIn .45s cubic-bezier(.34,1.56,.64,1) both;background:white}
-.card:hover{transform:translateY(-3px) scale(1.01);box-shadow:0 10px 30px rgba(0,0,0,.10)}
-.card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:6px;border-radius:4px 0 0 4px;background:var(--ac,var(--denim))}
-.card.outdoor{--ac:#f5a623;background:linear-gradient(135deg,#fffbf0 0%,white 50%);border-color:#fde8a0}
-.card.rest{--ac:#b0bec5;background:linear-gradient(135deg,#f5f5f5 0%,white 50%);border-color:#e0e0e0}
-.card.maybe{--ac:#9b7fe8;background:linear-gradient(135deg,#f5f0ff 0%,white 50%);border-color:#ddd0f8}
-.card.stream{--ac:#e05545;background:linear-gradient(135deg,#fff5f4 0%,white 50%);border-color:#fdd0cc}
-.card.today{outline:3px solid var(--orange);outline-offset:2px}
-.card.today::after{content:'TODAY ✦';position:absolute;top:7px;right:12px;font-size:10px;font-weight:900;color:var(--orange);letter-spacing:.08em;z-index:2}
-.card .deco-icon{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:32px;opacity:.08;pointer-events:none;transition:opacity .2s,transform .2s}
-.card:hover .deco-icon{opacity:.15;transform:translateY(-50%) scale(1.2) rotate(10deg)}
-.card.today .deco-icon{right:70px}
+.card{
+  border-radius:20px;padding:14px 20px;
+  display:flex;align-items:center;gap:16px;
+  position:relative;overflow:hidden;cursor:default;
+  border:1.5px solid var(--border);
+  background:var(--card);
+  transition:transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s,border-color .2s;
+  animation:popIn .45s cubic-bezier(.34,1.56,.64,1) both;
+}
+.card:hover{
+  transform:translateY(-3px) scale(1.01);
+  box-shadow:0 12px 35px rgba(0,0,0,.35);
+  border-color:var(--ac-border, var(--border));
+}
+/* 左側彩條 */
+.card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:5px;border-radius:4px 0 0 4px;background:var(--ac,var(--denim))}
+/* 玻璃光澤 */
+.card::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 55%);pointer-events:none}
+
+.card.outdoor{ --ac:#ffb347; --ac-border:rgba(255,179,71,.5);  background:linear-gradient(135deg,#1f1c10 0%,var(--card) 55%)}
+.card.rest{    --ac:#6b7280; --ac-border:rgba(107,114,128,.4); background:linear-gradient(135deg,#161820 0%,var(--card) 55%)}
+.card.maybe{   --ac:#c084fc; --ac-border:rgba(192,132,252,.4); background:linear-gradient(135deg,#1a1228 0%,var(--card) 55%)}
+.card.stream{  --ac:#ff6b5b; --ac-border:rgba(255,107,91,.5);  background:linear-gradient(135deg,#200e0e 0%,var(--card) 55%)}
+
+/* 今天 */
+.card.today{border-color:var(--orange);box-shadow:0 0 0 1px rgba(255,179,71,.3), inset 0 0 30px rgba(255,179,71,.04)}
+.card.today::after{content:'TODAY ✦';position:absolute;top:7px;right:12px;font-size:10px;font-weight:900;color:var(--orange);letter-spacing:.08em;z-index:2;background:none}
+
+/* 右側裝飾圖示 */
+.deco-icon{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:30px;opacity:.07;pointer-events:none;transition:opacity .2s,transform .2s}
+.card:hover .deco-icon{opacity:.18;transform:translateY(-50%) scale(1.2) rotate(10deg)}
+.card.today .deco-icon{right:68px}
+
+/* 日期數字 */
 .day-num{flex-shrink:0;text-align:center;width:54px}
-.day-num .date{font-family:'Fredoka One',cursive;font-size:1.35rem;line-height:1;color:var(--ac,var(--denim));text-shadow:1px 2px 0 rgba(0,0,0,.06);white-space:nowrap}
+.day-num .date{
+  font-family:'Fredoka One',cursive;font-size:1.35rem;line-height:1;
+  color:var(--ac,var(--denim));
+  text-shadow:0 0 12px rgba(255,255,255,.1);
+  white-space:nowrap;
+}
 .day-num .dow{font-size:10px;font-weight:700;color:var(--sub);letter-spacing:.06em;margin-top:2px}
-.card.today .day-num .date{color:var(--orange)}
+.card.today .day-num .date{color:var(--orange);text-shadow:0 0 16px rgba(255,179,71,.6)}
 .card.stream .day-num .date{animation:streamGlow 2s ease-in-out infinite alternate}
-@keyframes streamGlow{from{text-shadow:1px 2px 0 rgba(0,0,0,.06)}to{text-shadow:0 0 12px rgba(224,85,69,.5),1px 2px 0 rgba(0,0,0,.06)}}
+@keyframes streamGlow{
+  from{text-shadow:0 0 6px rgba(255,107,91,.3)}
+  to  {text-shadow:0 0 18px rgba(255,107,91,.9),0 0 30px rgba(255,107,91,.4)}
+}
+
 .vsep{width:1.5px;height:46px;background:var(--border);flex-shrink:0;border-radius:2px}
 .body{flex:1;display:flex;align-items:center;gap:9px;flex-wrap:wrap}
-.pill{display:inline-flex;align-items:center;gap:5px;padding:5px 13px;border-radius:999px;font-size:12px;font-weight:700;flex-shrink:0}
-.pill.out{background:#fff0cc;color:#b07010;border:2px solid #fcd96a}
-.pill.hm{background:#ffe8e6;color:#c03028;border:2px solid #ffb0a8}
-.pill.sch{background:#e6f0ff;color:#3a5f9a;border:2px solid #aac0e8}
-.pill.rst{background:#f0f0f0;color:#808080;border:2px solid #d8d8d8}
-.pill.uns{background:#f0e8ff;color:#7050c0;border:2px solid #c8b0f0}
-.time-chip{display:inline-flex;align-items:center;gap:5px;background:var(--peach);border:2px solid #e8c8a8;border-radius:12px;padding:4px 12px;font-size:12px;font-weight:700;color:#8a5030}
-.acts{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.act{font-size:14px;font-weight:700;color:var(--text)}.act.d{font-size:13px;font-weight:500;color:var(--sub)}
-.dot-sep{color:#ddd;font-size:18px;line-height:1}
-.maybe-chip{background:#e8f4ff;color:#3a6090;font-size:11px;font-weight:700;padding:3px 10px;border-radius:999px;border:1.5px solid #a8c8e8}
-.card:nth-child(1){animation-delay:.06s}.card:nth-child(2){animation-delay:.11s}.card:nth-child(3){animation-delay:.16s}.card:nth-child(4){animation-delay:.21s}.card:nth-child(5){animation-delay:.26s}.card:nth-child(6){animation-delay:.31s}.card:nth-child(7){animation-delay:.36s}
 
-/* ════════════════════════════
-   人物 & 對話框
-════════════════════════════ */
+/* pills */
+.pill{display:inline-flex;align-items:center;gap:5px;padding:5px 13px;border-radius:999px;font-size:12px;font-weight:700;flex-shrink:0}
+.pill.out{ background:rgba(255,179,71,.15); color:#ffca70; border:1.5px solid rgba(255,179,71,.4)}
+.pill.hm{  background:rgba(255,107,91,.15); color:#ff9080; border:1.5px solid rgba(255,107,91,.4)}
+.pill.sch{ background:rgba(122,174,232,.15);color:#a0c8f0; border:1.5px solid rgba(122,174,232,.4)}
+.pill.rst{ background:rgba(107,114,128,.15);color:#9ca3af; border:1.5px solid rgba(107,114,128,.4)}
+.pill.uns{ background:rgba(192,132,252,.15);color:#d8aaff; border:1.5px solid rgba(192,132,252,.4)}
+
+.time-chip{
+  display:inline-flex;align-items:center;gap:5px;
+  background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.12);
+  border-radius:12px;padding:4px 12px;font-size:12px;font-weight:700;color:#d0c8e8;
+}
+.acts{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.act{font-size:14px;font-weight:700;color:var(--text)}
+.act.d{font-size:13px;font-weight:500;color:var(--sub)}
+.dot-sep{color:var(--border);font-size:18px;line-height:1}
+.maybe-chip{
+  background:rgba(122,174,232,.15);color:var(--denim);
+  font-size:11px;font-weight:700;padding:3px 10px;
+  border-radius:999px;border:1.5px solid rgba(122,174,232,.4);
+}
+
+.card:nth-child(1){animation-delay:.06s}.card:nth-child(2){animation-delay:.11s}
+.card:nth-child(3){animation-delay:.16s}.card:nth-child(4){animation-delay:.21s}
+.card:nth-child(5){animation-delay:.26s}.card:nth-child(6){animation-delay:.31s}
+.card:nth-child(7){animation-delay:.36s}
+
+/* ════════════════════════
+   人物 & 氣泡
+════════════════════════ */
 .mascot-wrap{
-  position:fixed; bottom:0; right:18px;
-  z-index:200; width:155px;
+  position:fixed;bottom:0;right:18px;
+  z-index:200;width:155px;
   animation:charEntrance .9s .3s cubic-bezier(.34,1.56,.64,1) both;
 }
 @keyframes charEntrance{from{transform:translateY(180px);opacity:0}to{transform:translateY(0);opacity:1}}
 
 .mascot-img{
-  width:155px; display:block; cursor:pointer;
+  width:155px;display:block;cursor:pointer;
   transform-origin:bottom center;
-  filter:drop-shadow(0 8px 18px rgba(60,30,10,.2));
+  filter:drop-shadow(0 8px 24px rgba(120,80,255,.3)) drop-shadow(0 4px 10px rgba(0,0,0,.4));
   transition:filter .2s;
 }
 .mascot-img:hover{
-  filter:drop-shadow(0 12px 28px rgba(224,85,69,.38)) brightness(1.04);
+  filter:drop-shadow(0 12px 32px rgba(255,107,91,.45)) brightness(1.06);
 }
 
-/* ── 動作 1：悠閒漂浮 (預設) ── */
+/* 動作 */
 .anim-float{animation:animFloat 4.5s ease-in-out infinite}
-@keyframes animFloat{
-  0%,100%{transform:translateY(0) rotate(0deg)}
-  40%{transform:translateY(-13px) rotate(1.5deg)}
-  70%{transform:translateY(-6px) rotate(-1deg)}
-}
-/* ── 動作 2：左右搖擺 ── */
+@keyframes animFloat{0%,100%{transform:translateY(0) rotate(0deg)}40%{transform:translateY(-13px) rotate(1.5deg)}70%{transform:translateY(-6px) rotate(-1deg)}}
 .anim-sway{animation:animSway 3s ease-in-out infinite}
-@keyframes animSway{
-  0%,100%{transform:rotate(0) translateY(0)}
-  25%{transform:rotate(-6deg) translateY(-5px)}
-  50%{transform:rotate(6deg) translateY(-9px)}
-  75%{transform:rotate(-3deg) translateY(-4px)}
-}
-/* ── 動作 3：跳舞扭動 ── */
+@keyframes animSway{0%,100%{transform:rotate(0) translateY(0)}25%{transform:rotate(-6deg) translateY(-5px)}50%{transform:rotate(6deg) translateY(-9px)}75%{transform:rotate(-3deg) translateY(-4px)}}
 .anim-dance{animation:animDance .65s ease-in-out infinite alternate}
-@keyframes animDance{
-  0%{transform:translateY(0) rotate(-5deg) scaleX(.97)}
-  100%{transform:translateY(-12px) rotate(5deg) scaleX(1.03)}
-}
-/* ── 動作 4：興奮抖動 ── */
+@keyframes animDance{0%{transform:translateY(0) rotate(-5deg) scaleX(.97)}100%{transform:translateY(-12px) rotate(5deg) scaleX(1.03)}}
 .anim-excited{animation:animExcited .3s ease-in-out infinite alternate}
-@keyframes animExcited{
-  0%{transform:translateX(-5px) rotate(-4deg) scale(1.02)}
-  100%{transform:translateX(5px) rotate(4deg) scale(1.05)}
-}
-/* ── 動作 5：害羞縮縮 ── */
+@keyframes animExcited{0%{transform:translateX(-5px) rotate(-4deg) scale(1.02)}100%{transform:translateX(5px) rotate(4deg) scale(1.05)}}
 .anim-shy{animation:animShy 3.5s ease-in-out 1 forwards}
-@keyframes animShy{
-  0%{transform:scale(1) rotate(0) translateY(0)}
-  20%{transform:scale(.88) rotate(8deg) translateY(6px)}
-  55%{transform:scale(.86) rotate(10deg) translateY(8px)}
-  80%{transform:scale(.93) rotate(5deg) translateY(3px)}
-  100%{transform:scale(1) rotate(0) translateY(0)}
-}
-/* ── 動作 6：點擊大跳 (單次) ── */
+@keyframes animShy{0%{transform:scale(1) rotate(0) translateY(0)}20%{transform:scale(.88) rotate(8deg) translateY(6px)}55%{transform:scale(.86) rotate(10deg) translateY(8px)}80%{transform:scale(.93) rotate(5deg) translateY(3px)}100%{transform:scale(1) rotate(0) translateY(0)}}
 .anim-jump{animation:animJump .65s cubic-bezier(.34,1.56,.64,1) 1}
-@keyframes animJump{
-  0%{transform:translateY(0) scale(1) rotate(0)}
-  25%{transform:translateY(-45px) scale(1.06) rotate(-5deg)}
-  55%{transform:translateY(-22px) scale(1.09) rotate(4deg)}
-  80%{transform:translateY(-6px) scale(.97) rotate(-1deg)}
-  100%{transform:translateY(0) scale(1) rotate(0)}
-}
+@keyframes animJump{0%{transform:translateY(0) scale(1) rotate(0)}25%{transform:translateY(-45px) scale(1.06) rotate(-5deg)}55%{transform:translateY(-22px) scale(1.09) rotate(4deg)}80%{transform:translateY(-6px) scale(.97) rotate(-1deg)}100%{transform:translateY(0) scale(1) rotate(0)}}
 
-/* ── 氣泡：頭頂正中央 ── */
-/* img 155px 寬 × ~355px 高；頭頂約距底部 310px */
+/* 氣泡：頭頂 */
 .bubble{
   position:absolute;
   bottom:315px;
   left:50%;
   transform:translateX(-50%) scale(.75);
   transform-origin:center bottom;
-  background:white;
-  border:2.5px solid #fcd96a;
+  background:#1e1c2e;
+  border:2.5px solid var(--orange);
   border-radius:18px;
   padding:10px 16px;
-  font-size:13px; font-weight:700;
-  color:#3a2010;
+  font-size:13px;font-weight:700;
+  color:var(--text);
   white-space:nowrap;
-  box-shadow:3px 5px 22px rgba(0,0,0,.13);
+  box-shadow:0 6px 24px rgba(0,0,0,.5), 0 0 0 1px rgba(255,179,71,.2);
   opacity:0;
-  transition:opacity .25s cubic-bezier(.34,1.56,.64,1),
-             transform .25s cubic-bezier(.34,1.56,.64,1);
-  pointer-events:none; z-index:201;
+  transition:opacity .25s cubic-bezier(.34,1.56,.64,1), transform .25s cubic-bezier(.34,1.56,.64,1);
+  pointer-events:none;z-index:201;
 }
-/* 尾巴朝下指向頭頂 */
-.bubble::after{
-  content:''; position:absolute;
-  bottom:-11px; left:50%; transform:translateX(-50%);
-  border:7px solid transparent;
-  border-top-color:white; border-bottom:none;
-}
-.bubble::before{
-  content:''; position:absolute;
-  bottom:-15px; left:50%; transform:translateX(-50%);
-  border:8px solid transparent;
-  border-top-color:#fcd96a; border-bottom:none;
-}
-.bubble.vis{
-  opacity:1;
-  transform:translateX(-50%) scale(1);
-}
+.bubble::after{content:'';position:absolute;bottom:-11px;left:50%;transform:translateX(-50%);border:7px solid transparent;border-top-color:#1e1c2e;border-bottom:none}
+.bubble::before{content:'';position:absolute;bottom:-15px;left:50%;transform:translateX(-50%);border:8px solid transparent;border-top-color:var(--orange);border-bottom:none}
+.bubble.vis{opacity:1;transform:translateX(-50%) scale(1)}
 
 @keyframes popIn{from{opacity:0;transform:scale(.85) translateY(14px)}to{opacity:1;transform:scale(1) translateY(0)}}
+
 @media(max-width:600px){
   .card{padding:12px 15px;gap:12px}.day-num .date{font-size:1.1rem}
   .mascot-wrap{right:8px;width:115px}.mascot-img{width:115px}
@@ -197,7 +264,6 @@ h1{font-family:'Fredoka One',cursive;font-size:clamp(2rem,6.5vw,3.6rem);line-hei
 <span class="candy" style="left:5%;top:80%;--d:8s;--delay:2s">⭐</span>
 <span class="candy" style="left:82%;top:72%;--d:6s;--delay:1.5s">🎀</span>
 
-<!-- 人物 -->
 <div class="mascot-wrap" id="mascotWrap">
   <div class="bubble" id="bubble">點我說說話！😄</div>
   <img class="mascot-img anim-float" id="mascot"
@@ -208,7 +274,7 @@ h1{font-family:'Fredoka One',cursive;font-size:clamp(2rem,6.5vw,3.6rem);line-hei
   <div class="header">
     <div class="top-row">
       <div class="badge"><div class="live"></div>LIVE STREAMER</div>
-      <div class="sticker">5/10 – 5/16 🗓</div>
+      <div class="sticker">5/11 – 5/17 🗓</div>
       <div class="date-tag">原原</div>
     </div>
     <div class="title-block">
@@ -224,44 +290,44 @@ h1{font-family:'Fredoka One',cursive;font-size:clamp(2rem,6.5vw,3.6rem);line-hei
   </div>
 
   <div class="schedule">
-    <div class="card outdoor">
-      <div class="day-num"><div class="date">5/10</div><div class="dow">MON</div></div>
+    <div class="card outdoor today">
+      <div class="day-num"><div class="date">5/11</div><div class="dow">MON</div></div>
       <div class="vsep"></div>
       <div class="body"><span class="pill out">🌤 戶外</span><div class="acts"><span class="time-chip">⏰ 中午 12:00</span><span class="dot-sep">·</span><span class="act">💃 練舞</span></div></div>
       <span class="deco-icon">💃</span>
     </div>
-    <div class="card rest today">
-      <div class="day-num"><div class="date">5/11</div><div class="dow">TUE</div></div>
+    <div class="card rest">
+      <div class="day-num"><div class="date">5/12</div><div class="dow">TUE</div></div>
       <div class="vsep"></div>
       <div class="body"><span class="pill sch">📚 上課</span><div class="acts"><span class="pill rst">😴 休息日</span></div></div>
       <span class="deco-icon">📚</span>
     </div>
     <div class="card maybe">
-      <div class="day-num"><div class="date">5/12</div><div class="dow">WED</div></div>
+      <div class="day-num"><div class="date">5/13</div><div class="dow">WED</div></div>
       <div class="vsep"></div>
       <div class="body"><span class="pill uns">🎲 不確定</span><div class="acts"><span class="act d">未定，請關注公告～</span></div></div>
       <span class="deco-icon">🎲</span>
     </div>
     <div class="card outdoor">
-      <div class="day-num"><div class="date">5/13</div><div class="dow">THU</div></div>
+      <div class="day-num"><div class="date">5/14</div><div class="dow">THU</div></div>
       <div class="vsep"></div>
       <div class="body"><span class="pill out">🌤 戶外</span><div class="acts"><span class="time-chip">⏰ 下午 2:00</span><span class="dot-sep">·</span><span class="act">💃 練舞</span></div></div>
       <span class="deco-icon">☀️</span>
     </div>
     <div class="card stream">
-      <div class="day-num"><div class="date">5/14</div><div class="dow">FRI</div></div>
+      <div class="day-num"><div class="date">5/15</div><div class="dow">FRI</div></div>
       <div class="vsep"></div>
       <div class="body"><span class="pill hm">🏠 在家</span><div class="acts"><span class="time-chip">🌙 晚上</span><span class="dot-sep">·</span><span class="act">🔴 開台直播</span></div></div>
       <span class="deco-icon">🎮</span>
     </div>
     <div class="card stream">
-      <div class="day-num"><div class="date">5/15</div><div class="dow">SAT</div></div>
+      <div class="day-num"><div class="date">5/16</div><div class="dow">SAT</div></div>
       <div class="vsep"></div>
       <div class="body"><span class="pill hm">🏠 在家</span><div class="acts"><span class="time-chip">🌙 晚上</span><span class="dot-sep">·</span><span class="act">🔴 開台直播</span></div></div>
       <span class="deco-icon">🎮</span>
     </div>
     <div class="card outdoor">
-      <div class="day-num"><div class="date">5/16</div><div class="dow">SUN</div></div>
+      <div class="day-num"><div class="date">5/17</div><div class="dow">SUN</div></div>
       <div class="vsep"></div>
       <div class="body"><span class="pill out">🌤 戶外</span><div class="acts"><span class="time-chip">⏰ 下午 3:00</span><span class="dot-sep">·</span><span class="act">💃 練舞</span><span class="dot-sep">·</span><span class="act">💪 健身</span><span class="maybe-chip">可能</span></div></div>
       <span class="deco-icon">🏃</span>
@@ -270,10 +336,8 @@ h1{font-family:'Fredoka One',cursive;font-size:clamp(2rem,6.5vw,3.6rem);line-hei
 </div>
 
 <script>
-const mascot   = document.getElementById('mascot');
-const bubble   = document.getElementById('bubble');
-
-/* ── 對話內容 ── */
+const mascot = document.getElementById('mascot');
+const bubble = document.getElementById('bubble');
 const msgs = [
   '掰掰！下次見 👋','記得來看直播！🔴',
   '今天練舞好累～💃','我來啦！🎮',
@@ -282,77 +346,34 @@ const msgs = [
   '嗚哇被發現了！😳','...（偷偷看你）👀',
   '嘿！你好啊～ 🙌','今天也要元氣滿滿！'
 ];
-
-/* ── 動作清單 (idle 隨機輪) ── */
 const idleAnims = ['anim-float','anim-sway','anim-dance','anim-shy'];
-let currentAnim = 'anim-float';
-let hideTimer, idleTimer;
+let currentAnim = 'anim-float', hideTimer, idleTimer;
 
-/* 設定動畫 class */
-function setAnim(name, once = false) {
-  mascot.classList.remove(...idleAnims, 'anim-excited','anim-jump');
+function setAnim(name, once=false) {
+  mascot.classList.remove(...idleAnims,'anim-excited','anim-jump');
   mascot.classList.add(name);
   currentAnim = name;
-  if (once) {
-    // 單次動畫結束後回到 idle
-    mascot.addEventListener('animationend', restoreIdle, { once: true });
-  }
+  if(once) mascot.addEventListener('animationend', restoreIdle, {once:true});
 }
-
-/* 回到悠閒漂浮 */
-function restoreIdle() {
-  setAnim('anim-float');
-  scheduleNextIdle();
-}
-
-/* 定時隨機切換 idle 動作 */
+function restoreIdle() { setAnim('anim-float'); scheduleNextIdle(); }
 function scheduleNextIdle() {
   clearTimeout(idleTimer);
-  const delay = 6000 + Math.random() * 8000; // 6~14 秒
   idleTimer = setTimeout(() => {
-    // 隨機挑一個（避開目前）
     const choices = idleAnims.filter(a => a !== currentAnim);
-    const next = choices[Math.floor(Math.random() * choices.length)];
-    // shy 是單次，其他是循環
-    if (next === 'anim-shy') {
-      setAnim('anim-shy', true);
-    } else {
-      setAnim(next);
-      scheduleNextIdle();
-    }
-  }, delay);
+    const next = choices[Math.floor(Math.random()*choices.length)];
+    next === 'anim-shy' ? setAnim('anim-shy',true) : (setAnim(next), scheduleNextIdle());
+  }, 6000 + Math.random()*8000);
 }
-
-/* 顯示氣泡 */
 function showBubble(text) {
   bubble.textContent = text;
   bubble.classList.add('vis');
   clearTimeout(hideTimer);
-  hideTimer = setTimeout(() => bubble.classList.remove('vis'), 3000);
+  hideTimer = setTimeout(()=>bubble.classList.remove('vis'), 3000);
 }
-
-/* 點擊：跳起 + 說話 */
-mascot.addEventListener('click', () => {
-  clearTimeout(idleTimer);
-  setAnim('anim-jump', true);
-  showBubble(msgs[Math.floor(Math.random() * msgs.length)]);
-});
-
-/* hover：興奮 */
-mascot.addEventListener('mouseenter', () => {
-  if (currentAnim !== 'anim-jump') {
-    clearTimeout(idleTimer);
-    setAnim('anim-excited');
-  }
-});
-mascot.addEventListener('mouseleave', () => {
-  if (currentAnim !== 'anim-jump') {
-    restoreIdle();
-  }
-});
-
-/* 初始化 */
-setTimeout(() => showBubble('點我說說話！😄'), 1800);
+mascot.addEventListener('click', ()=>{ clearTimeout(idleTimer); setAnim('anim-jump',true); showBubble(msgs[Math.floor(Math.random()*msgs.length)]); });
+mascot.addEventListener('mouseenter', ()=>{ if(currentAnim!=='anim-jump'){clearTimeout(idleTimer);setAnim('anim-excited')} });
+mascot.addEventListener('mouseleave', ()=>{ if(currentAnim!=='anim-jump') restoreIdle(); });
+setTimeout(()=>showBubble('點我說說話！😄'), 1800);
 scheduleNextIdle();
 </script>
 </body>
