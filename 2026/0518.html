@@ -156,6 +156,8 @@ h1{font-family:'Fredoka One',cursive;font-size:clamp(2rem,6vw,3.4rem);line-heigh
 
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family:'Noto Sans TC',sans-serif; background:#0f0806; overflow:hidden; width:100vw; height:100vh; }
+/* 封面關閉後恢復 */
+body.cover-closed { overflow:auto !important; height:auto !important; width:auto !important; }
 
 /* ══ 封面全螢幕 ══ */
 #cover {
@@ -969,8 +971,8 @@ scheduleIdle();
 function closeCover(){
   document.getElementById('cover').classList.add('hiding');
   setTimeout(()=>{
-    document.getElementById('cover').style.display='none';
-    document.body.style.overflow = ''; // 恢復頁面滾動
+    document.getElementById('cover').style.display = 'none';
+    document.body.classList.add('cover-closed');
   }, 800);
 }
 
