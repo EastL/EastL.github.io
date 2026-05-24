@@ -968,7 +968,10 @@ scheduleIdle();
 
 function closeCover(){
   document.getElementById('cover').classList.add('hiding');
-  setTimeout(()=>{ document.getElementById('cover').style.display='none'; }, 800);
+  setTimeout(()=>{
+    document.getElementById('cover').style.display='none';
+    document.body.style.overflow = ''; // 恢復頁面滾動
+  }, 800);
 }
 
 // 手機輪播
