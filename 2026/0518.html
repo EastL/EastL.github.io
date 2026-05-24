@@ -891,15 +891,13 @@ body.cover-closed { overflow:auto !important; height:auto !important; width:auto
 </div>
 
 <script>
-// 訪客計數（背景靜默執行，不顯示在頁面上）
+// 訪客計數（使用 hits.sh）
 (function(){
-  const NAMESPACE = 'eastl-2026';
-  const KEY = '0518';
   if(!sessionStorage.getItem('counted')){
-    fetch(`https://api.countapi.xyz/hit/${NAMESPACE}/${KEY}`)
-      .then(r => r.json())
-      .then(()=> sessionStorage.setItem('counted','1'))
-      .catch(()=>{});
+    // hits.sh：每次 fetch 自動 +1，用圖片方式呼叫
+    const img = new Image();
+    img.src = 'https://hits.sh/eastl.github.io/2026/0518.html.svg';
+    sessionStorage.setItem('counted','1');
   }
 })();
 
