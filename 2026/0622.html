@@ -75,6 +75,35 @@ h1{font-family:'Fredoka One',cursive;font-size:clamp(2rem,6vw,3.4rem);line-heigh
 .subtitle{margin-top:8px;color:var(--sub);font-size:13px}
 .subtitle b{color:var(--red);font-weight:900}
 
+/* 雙時鐘 */
+.dual-clock{
+  display:inline-flex; align-items:center; gap:10px;
+  margin-top:12px;
+  background:rgba(91,133,184,.08);
+  border:1.5px solid rgba(91,133,184,.25);
+  border-radius:999px;
+  padding:6px 16px;
+  animation:popIn .6s .4s cubic-bezier(.34,1.56,.64,1) both;
+}
+.clock-chip{
+  display:flex; align-items:center; gap:6px;
+}
+.clock-flag{font-size:14px}
+.clock-label{font-size:11px; color:var(--sub); font-weight:700}
+.clock-time{
+  font-family:'Fredoka One',cursive;
+  font-size:.95rem; color:var(--denim);
+  font-variant-numeric:tabular-nums;
+  letter-spacing:.02em;
+}
+.clock-sep{font-size:12px; color:var(--border)}
+
+@media(max-width:768px){
+  .dual-clock{ padding:5px 12px; gap:7px; }
+  .clock-time{ font-size:.8rem; }
+  .clock-label{ font-size:10px; }
+}
+
 .week-bar{display:flex;align-items:center;gap:10px;margin-bottom:16px;animation:popIn .5s .15s cubic-bezier(.34,1.56,.64,1) both}
 .week-bar .wl,.week-bar .wr{flex:1;height:1.5px;border-radius:2px}
 .week-bar .wl{background:linear-gradient(90deg,transparent,var(--orange))}
@@ -108,6 +137,7 @@ h1{font-family:'Fredoka One',cursive;font-size:clamp(2rem,6vw,3.4rem);line-heigh
 .pill.rst{background:#f0f0f0;color:#808080;border:1.5px solid #d8d8d8}
 .pill.uns{background:#ede8f8;color:#7050b0;border:1.5px solid #c0a8e8}
 .time-chip{display:inline-flex;align-items:center;gap:4px;background:rgba(100,70,40,.07);border:1.5px solid rgba(100,70,40,.15);border-radius:10px;padding:3px 10px;font-size:11px;font-weight:700;color:var(--brown)}
+.time-chip .sea-note{font-size:9px;font-weight:500;color:var(--sub);margin-left:4px;opacity:.8}
 .acts{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
 .act{font-size:13px;font-weight:700;color:var(--text)}
 .act.d{font-size:12px;font-weight:500;color:var(--sub)}
@@ -837,7 +867,19 @@ body.cover-closed { overflow:auto !important; height:auto !important; width:auto
       <div class="underline-deco"></div>
     </div>
     <p class="subtitle">有變動會提前公告喔！<b>記得追蹤 🔔</b></p>
-
+    <div class="dual-clock">
+      <div class="clock-chip">
+        <span class="clock-flag">🇹🇼</span>
+        <span class="clock-label">台灣</span>
+        <span class="clock-time" id="clockTW">--:--:--</span>
+      </div>
+      <div class="clock-sep">⇄</div>
+      <div class="clock-chip">
+        <span class="clock-flag">🇺🇸</span>
+        <span class="clock-label">西雅圖</span>
+        <span class="clock-time" id="clockSEA">--:--:--</span>
+      </div>
+    </div>
   </div>
 
   <div class="week-bar">
@@ -872,7 +914,7 @@ body.cover-closed { overflow:auto !important; height:auto !important; width:auto
     <div class="card stream">
       <div class="day-num" data-date="6/26"><div class="date">6/26</div><div class="dow">FRI</div></div>
       <div class="vsep"></div>
-      <div class="body"><div class="acts"><span class="act">🔴 開台直播</span><span class="time-chip">🌙 20:00</span><span class="dot-sep">·</span><span class="maybe-chip">燕雲支援</span></div></div>
+      <div class="body"><div class="acts"><span class="act">🔴 開台直播</span><span class="time-chip">🌙 20:00<span class="sea-note">(西雅圖 05:00)</span></span><span class="dot-sep">·</span><span class="maybe-chip">燕雲支援</span></div></div>
       <span class="deco-icon">⚔️</span>
     </div>
     <div class="card stream">
@@ -899,6 +941,27 @@ body.cover-closed { overflow:auto !important; height:auto !important; width:auto
     img.src = 'https://hits.sh/eastl.github.io/2026/0622.html.svg';
     sessionStorage.setItem('counted','1');
   }
+})();
+
+// 雙時鐘：台灣 / 西雅圖
+(function(){
+  const elTW = document.getElementById('clockTW');
+  const elSEA = document.getElementById('clockSEA');
+  if(!elTW || !elSEA) return;
+
+  function fmt(date, tz){
+    return new Intl.DateTimeFormat('zh-TW', {
+      timeZone: tz, hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:false
+    }).format(date);
+  }
+
+  function update(){
+    const now = new Date();
+    elTW.textContent = fmt(now, 'Asia/Taipei');
+    elSEA.textContent = fmt(now, 'America/Los_Angeles'); // 西雅圖屬太平洋時區
+  }
+  update();
+  setInterval(update, 1000);
 })();
 
 // 自動 today
