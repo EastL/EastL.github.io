@@ -42,6 +42,17 @@ body{font-family:'Noto Sans TC',sans-serif;color:var(--text);min-height:100vh;ov
   .banner-title{position:absolute;bottom:16px;left:18px;right:18px;z-index:2}
   .banner-title h1{font-family:'Fredoka One',cursive;font-size:1.8rem;line-height:1.1;background:linear-gradient(135deg,var(--brown) 0%,var(--orange) 55%,var(--denim) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
   .banner-title .h1-sub{font-size:.95rem;color:var(--orange);font-family:'Fredoka One',cursive;font-weight:900}
+.mobile-clock{
+  display:inline-flex; align-items:center; gap:8px;
+  margin-bottom:8px;
+  background:rgba(255,255,255,.75);
+  border:1.5px solid rgba(91,133,184,.3);
+  border-radius:999px;
+  padding:4px 12px;
+}
+.mobile-clock .clock-time{font-size:.75rem; color:var(--denim); font-family:'Fredoka One',cursive}
+.mobile-clock .clock-flag{font-size:12px}
+.mobile-clock .clock-sep{font-size:10px; color:var(--sub)}
   .wrap{position:relative;z-index:2;padding:0 14px 160px}
   .header{display:none}
   .card{background:var(--card-solid);border:1.5px solid var(--border);box-shadow:0 2px 12px rgba(100,70,40,.07)}
@@ -839,6 +850,17 @@ body.cover-closed { overflow:auto !important; height:auto !important; width:auto
 
 <div class="mobile-banner">
   <div class="banner-title">
+    <div class="dual-clock mobile-clock">
+      <div class="clock-chip">
+        <span class="clock-flag">🇹🇼</span>
+        <span class="clock-time" id="clockTW-m">--:--:--</span>
+      </div>
+      <div class="clock-sep">⇄</div>
+      <div class="clock-chip">
+        <span class="clock-flag">🇺🇸</span>
+        <span class="clock-time" id="clockSEA-m">--:--:--</span>
+      </div>
+    </div>
     <div class="h1-sub">這週去哪找</div>
     <h1>原 原 ？ 📍</h1>
   </div>
@@ -955,10 +977,17 @@ body.cover-closed { overflow:auto !important; height:auto !important; width:auto
     }).format(date);
   }
 
+  const elTWm = document.getElementById('clockTW-m');
+  const elSEAm = document.getElementById('clockSEA-m');
+
   function update(){
     const now = new Date();
-    elTW.textContent = fmt(now, 'Asia/Taipei');
-    elSEA.textContent = fmt(now, 'America/Los_Angeles'); // 西雅圖屬太平洋時區
+    const tw = fmt(now, 'Asia/Taipei');
+    const sea = fmt(now, 'America/Los_Angeles');
+    elTW.textContent = tw;
+    elSEA.textContent = sea;
+    if(elTWm) elTWm.textContent = tw;
+    if(elSEAm) elSEAm.textContent = sea;
   }
   update();
   setInterval(update, 1000);
