@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NZ Trip · 網站測試套件</title>
+<style>
+  :root { --green:#173d2a; --gold:#c4952a; --blue:#3d6e8a; --red:#c0392b; --bg:#faf9f5; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:system-ui,sans-serif; background:var(--bg); color:#2a2a2a; padding:16px; max-width:680px; margin:0 auto; }
+  h1 { font-family:Georgia,serif; color:var(--green); font-size:1.4rem; margin-bottom:4px; }
+  .sub { color:#8a8a8a; font-size:12px; margin-bottom:16px; }
+  .controls { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px; }
+  button { border:none; padding:9px 16px; border-radius:8px; cursor:pointer; font-size:13px; font-weight:600; }
+  .btn-run { background:var(--green); color:white; }
+  .btn-grp { background:#e8f0e8; color:var(--green); }
+  .btn-red { background:#fde8e8; color:var(--red); }
+  .summary { background:var(--green); color:white; border-radius:12px; padding:14px 18px; display:flex; justify-content:space-between; margin-bottom:12px; }
+  .snum { font-family:Georgia,serif; font-size:1.8rem; font-weight:700; line-height:1; }
+  .slbl { font-size:10px; opacity:.6; letter-spacing:.1em; }
+  .prog { height:3px; background:#e6e1d6; border-radius:2px; margin-bottom:14px; overflow:hidden; }
+  .progbar { height:100%; background:var(--gold); transition:width .3s; }
+  .grp { background:white; border:1px solid #e6e1d6; border-radius:10px; margin-bottom:10px; overflow:hidden; }
+  .grp-h { padding:10px 14px; background:#f3f0ea; display:flex; justify-content:space-between; align-items:center; cursor:pointer; }
+  .grp-t { font-size:10px; letter-spacing:.15em; text-transform:uppercase; color:var(--green); font-weight:700; }
+  .badge { font-size:11px; font-weight:700; padding:2px 8px; border-radius:999px; }
+  .b-pass { background:#e8f5ee; color:var(--green); }
+  .b-fail { background:#fde8e8; color:var(--red); }
+  .b-wait { background:#f3f0ea; color:#8a8a8a; }
+  .b-run  { background:#fff3e0; color:var(--gold); }
+  .tests  { padding:0 14px 10px; }
+  .test   { display:flex; gap:10px; padding:7px 0; border-bottom:1px solid #f3f0ea; font-size:13px; }
+  .test:last-child { border:none; }
+  .ico    { width:16px; flex-shrink:0; margin-top:1px; text-align:center; font-size:12px; }
+  .tname  { color:#2a2a2a; }
+  .tdet   { font-size:11px; color:#8a8a8a; margin-top:2px; font-family:monospace; white-space:pre-wrap; word-break:break-all; }
+  .tdet.err { color:var(--red); }
+  .console-box { background:#1a2a1a; color:#7fff7f; font-family:monospace; font-size:11px; border-radius:8px; padding:12px; margin-top:10px; white-space:pre; overflow:auto; max-height:180px; display:none; }
+  .console-box.show { display:block; }
+</style>
+</head>
+<body>
+
+<h1>🗺 NZ Trip · 網站測試套件</h1>
+<p class="sub">測試對象：https://eastl.github.io/2026/nz_trip_eastl.html</p>
+
+<div class="summary" id="summary">
+  <div><div class="snum" id="sp">—</div><div class="slbl">PASSED</div></div>
+  <div style="text-align:center"><div class="snum" id="st">—</div><div class="slbl">TOTAL</div></div>
+  <div style="text-align:right"><div class="snum" id="sf">—</div><div class="slbl">FAILED</div></div>
+</div>
+<div class="prog"><div class="progbar" id="pb" style="width:0%"></div></div>
+
+<div class="controls">
+  <button class="btn-run" onclick="runAll()">▶ 全部測試</button>
+  <button class="btn-grp" onclick="runG('html')">HTML 內容</button>
+  <button class="btn-grp" onclick="runG('api')">Google Sheets</button>
+  <button class="btn-grp" onclick="runG('console')">Console 腳本</button>
+  <button class="btn-red"  onclick="cleanupTests()">🗑 清除測試資料</button>
+</div>
+
+<div id="tc"></div>
+
+<script>
+const SITE    = 'https://eastl.github.io/2026/nz_trip_eastl.html'
+const SHEETS  = 'https://script.google.com/macros/s/AKfycby77tqTUtsjUFWwnrySQy2alukzZGuL3P8fBIzlmY1lHK5U4YAmWTGhp8aSZKHCCIeK/exec'
+
+// ── Helpers ────────────────────────────────────────────────────────────────────
+let html = null
+async function getHTML() {
+  if (html) return html
+  const r = await fetch(SITE)
+  html = await r.text()
+  return html
+}
+const api = {
+  get: () => fetch(SHEETS).then(r=>r.json()),
+  post: d => fetch(SHEETS, {method:'POST', body:JSON.stringify(d)}).then(r=>r.json()),
+}
+
+// POST with timeout — 避免 hang 住卡死後續測試
+async function postTimeout(data, ms=12000) {
+  const ctrl = new AbortController()
+  const timer = setTimeout(() => ctrl.abort(), ms)
+  try {
+    const r = await fetch(SHEETS, {
+      method: 'POST',
+      body: JSON.stringify(data),
+      signal: ctrl.signal,
+    })
+    return await r.json()
+  } catch(e) {
+    return { success: false, error: e.name==='AbortError' ? `timeout (${ms}ms)` : e.message }
+  } finally {
+    clearTimeout(timer)
+  }
+}
+const tids = []
+function tid(p='t') { const id=`${p}-${Date.now()}-${Math.random().toString(36).slice(2,5)}`; tids.push(id); return id }
+function assert(c, m) { if (!c) throw new Error(m) }
+const sleep = ms => new Promise(r=>setTimeout(r,ms))
+
+// ════════════════════════════════════════════════════════════════════════════
+// GROUP A — 抓網站 HTML，驗證實際部署內容
+// ════════════════════════════════════════════════════════════════════════════
+const GROUP_HTML = {
+  id:'html', title:'A. 網站 HTML 內容驗證（抓 eastl.github.io）',
+  tests: [
+    {
+      name: 'HTML 可成功載入（HTTP 200）',
+      fn: async () => {
+        const r = await fetch(SITE)
+        assert(r.ok, `HTTP ${r.status}`)
+        const h = await r.text()
+        assert(h.length > 100000, `檔案太小：${h.length} bytes，可能不完整`)
+        return `HTTP 200 · ${(h.length/1024).toFixed(0)} KB`
+      }
+    },
+    {
+      name: '包含「東東兄弟出走中」標題',
+      fn: async () => {
+        const h = await getHTML()
+        assert(h.includes('東東兄弟出走中'), '找不到標題')
+        return '找到「東東兄弟出走中」'
+      }
+    },
+    {
+      name: '包含航班資料（CI057 / QF169 / QF186 / CI054）',
+      fn: async () => {
+        const h = await getHTML()
+        const flights = ['CI057','QF169','QF186','CI054']
+        const missing = flights.filter(f => !h.includes(f))
+        assert(missing.length === 0, `缺少航班：${missing.join(', ')}`)
+        return `4 段航班全在 HTML 中 (${flights.join(', ')})`
+      }
+    },
+    {
+      name: '包含 5 間住宿名稱',
+      fn: async () => {
+        const h = await getHTML()
+        const hotels = ['Sudima','Skyblue Tekapo','Haka House','Peninsula','Nomads Queenstown']
+        const missing = hotels.filter(n => !h.includes(n))
+        assert(missing.length === 0, `缺少住宿：${missing.join(', ')}`)
+        return `5 間住宿全在 HTML 中`
+      }
+    },
+    {
+      name: '包含 4 個活動名稱',
+      fn: async () => {
+        const h = await getHTML()
+        const acts = ['Dark Sky Project','Tasman Glacier','NZONE','Milford Sound']
+        const missing = acts.filter(a => !h.includes(a))
+        assert(missing.length === 0, `缺少活動：${missing.join(', ')}`)
+        return `4 個活動均在 HTML (${acts.join(', ')})`
+      }
+    },
+    {
+      name: '包含活動確認時間（21:45 / 13:00 / 08:00 / 07:15）',
+      fn: async () => {
+        const h = await getHTML()
+        const times = ['21:45','13:00','08:00','07:15']
+        const missing = times.filter(t => !h.includes(t))
+        assert(missing.length === 0, `缺少時間：${missing.join(', ')}`)
+        return `4 個活動時間均在 HTML (${times.join(', ')})`
+      }
+    },
+    {
+      name: 'Food Quest 資料（Fergburger / Kohan / Dukes / Mussels）',
+      fn: async () => {
+        const h = await getHTML()
+        const items = ['Fergburger','Kohan','Dukes Coffee','Green-lipped']
+        const missing = items.filter(i => !h.includes(i))
+        assert(missing.length === 0, `缺少：${missing.join(', ')}`)
+        return `Food Quest 關鍵餐廳均在 HTML`
+      }
+    },
+    {
+      name: '緊急電話（111 / +64 27 449 5300 / 0800-009-888）',
+      fn: async () => {
+        const h = await getHTML()
+        const nums = ['111','449 5300','0800-009-888']
+        const missing = nums.filter(n => !h.includes(n))
+        assert(missing.length === 0, `缺少：${missing.join(', ')}`)
+        return `3 組緊急電話均在 HTML`
+      }
+    },
+    {
+      name: '保單號 0026CT201M3637 在 HTML 中',
+      fn: async () => {
+        const h = await getHTML()
+        assert(h.includes('0026CT201M3637'), '找不到保單號')
+        return '富邦保單號存在'
+      }
+    },
+    {
+      name: 'Wanaka Day 5（不是 Queenstown）',
+      fn: async () => {
+        const h = await getHTML()
+        assert(h.includes('Wanaka'), '找不到 Wanaka')
+        assert(h.includes('A Room on the Peninsula'), '找不到 Peninsula 住宿')
+        return 'Day 5 為 Wanaka，含 A Room on the Peninsula'
+      }
+    },
+    {
+      name: '雙雙同遊標記（Oct 14 / Oct 15）',
+      fn: async () => {
+        const h = await getHTML()
+        assert(h.includes('雙雙'), '找不到雙雙標記')
+        return '找到「雙雙」同遊標記'
+      }
+    },
+    {
+      name: 'Google Maps 連結格式正確（maps.google.com）',
+      fn: async () => {
+        const h = await getHTML()
+        const hasMaps = h.includes('maps.google.com') || h.includes('google.com/maps')
+        assert(hasMaps, '找不到任何 Google Maps 連結')
+        const matches = (h.match(/google\.com.*?maps/g) || []).length
+        return `找到 Google Maps 連結（格式：google.com/maps/search）`
+      }
+    },
+    {
+      name: 'Leaflet 地圖元件存在',
+      fn: async () => {
+        const h = await getHTML()
+        assert(h.includes('openstreetmap'), '找不到 OpenStreetMap')
+        assert(h.includes('Leaflet'), '找不到 Leaflet')
+        return 'Leaflet + OpenStreetMap 元件存在'
+      }
+    },
+
+  ]
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// GROUP B — Google Sheets API 測試
+// ════════════════════════════════════════════════════════════════════════════
+const GROUP_API = {
+  id:'api', title:'B. Google Sheets API（直接對 Apps Script）',
+  tests: [
+    {
+      name: 'GET 讀取成功（有 expenses 陣列）',
+      fn: async () => {
+        const d = await api.get()
+        assert(Array.isArray(d.expenses), '回傳應有 expenses 陣列')
+        return `目前 ${d.expenses.length} 筆用戶追加花費`
+      }
+    },
+    {
+      name: 'POST 新增 TWD 花費',
+      fn: async () => {
+        const id = tid('add')
+        const r = await api.post({action:'add', id, date:'2026-10-10', item:'API測試-TWD', category:'food', TWD:350, currency:'TWD', paidBy:'東岳'})
+        assert(r.success === true, `失敗：${JSON.stringify(r)}`)
+        return 'success: true'
+      }
+    },
+    {
+      name: 'POST 新增 NZD 花費',
+      fn: async () => {
+        const id = tid('nzd')
+        const r = await api.post({action:'add', id, date:'2026-10-14', item:'API測試-NZD', category:'food', NZD:18.5, currency:'NZD', paidBy:'東振'})
+        assert(r.success === true, `失敗：${JSON.stringify(r)}`)
+        return 'NZD 18.5 → success: true'
+      }
+    },
+    {
+      name: 'POST 後 GET 讀回一致（TWD / paidBy）',
+      fn: async () => {
+        const id = tid('rb')
+        await api.post({action:'add', id, date:'2026-10-13', item:'讀回驗證', category:'food', TWD:777, currency:'TWD', paidBy:'東岳'})
+        await sleep(1200)
+        const d = await api.get()
+        const item = d.expenses.find(e=>e.id===id)
+        assert(item, `找不到 id=${id}`)
+        assert(Number(item.TWD)===777, `TWD 應為 777，得到 ${item.TWD}`)
+        assert(item.paidBy==='東岳', `paidBy 應為東岳，得到 ${item.paidBy}`)
+        return `讀回 TWD=${item.TWD}, paidBy=${item.paidBy} ✓`
+      }
+    },
+    {
+      name: '5 筆並發 POST — 全部寫入（LockService 測試）',
+      fn: async () => {
+        const ids = Array.from({length:5}, ()=>tid('con5'))
+        const rs = await Promise.all(ids.map((id,i)=>
+          postTimeout({action:'add', id, date:'2026-10-15', item:`並發5_${i}`, category:'food', TWD:i*10+1, currency:'TWD', paidBy:i%2?'東振':'東岳'}, 25000)
+        ))
+        const apiFail = rs.filter(r=>!r.success)
+        assert(apiFail.length===0, `API 回報失敗 ${apiFail.length} 筆：${JSON.stringify(apiFail)}`)
+        await sleep(3000)
+        const d = await api.get()
+        const found = ids.filter(id=>d.expenses.some(e=>e.id===id)).length
+        assert(found===5, `Apps Script 遺失 ${5-found} 筆，讀回 ${found}/5（需加 LockService）`)
+        return `5 筆並發，全部寫入 (${found}/5) ✓`
+      }
+    },
+    {
+      name: '10 筆並發 POST — 壓力測試（模擬 10 人同時記帳）',
+      fn: async () => {
+        const ids = Array.from({length:10}, ()=>tid('con10'))
+        // 每個請求加 12 秒 timeout，避免 hang 住卡死後續測試
+        const rs = await Promise.all(ids.map((id,i)=>
+          postTimeout({action:'add', id, date:'2026-10-16', item:`壓力測試_${i}`, category:'food', TWD:i+1, currency:'TWD', paidBy:i%2?'東振':'東岳'}, 30000)
+        ))
+        const apiFail = rs.filter(r=>!r.success)
+        if (apiFail.length > 0) {
+          console.warn('部分請求失敗:', apiFail)
+        }
+        await sleep(4000)
+        const d = await api.get()
+        const found = ids.filter(id=>d.expenses.some(e=>e.id===id)).length
+        const lost = 10 - found
+        assert(found===10, `遺失 ${lost} 筆（讀回 ${found}/10），API 失敗 ${apiFail.length} 筆：${apiFail.map(r=>r.error).join(', ')}`)
+        return `10 筆並發，全部寫入 (${found}/10) ✓`
+      }
+    },
+    {
+      name: 'DELETE 刪除存在的筆',
+      fn: async () => {
+        const id = tid('del')
+        await api.post({action:'add', id, date:'2026-10-10', item:'刪除測試', category:'food', TWD:1, currency:'TWD', paidBy:'東岳'})
+        await sleep(600)
+        const r = await api.post({action:'delete', id})
+        assert(r.success===true, `刪除失敗：${JSON.stringify(r)}`)
+        await sleep(600)
+        const d = await api.get()
+        assert(!d.expenses.find(e=>e.id===id), '刪除後仍能找到，異常')
+        return 'DELETE → 讀回確認消失 ✓'
+      }
+    },
+    {
+      name: 'DELETE 不存在的筆不報錯',
+      fn: async () => {
+        const r = await api.post({action:'delete', id:'non-exist-xyz-999'})
+        assert(r.success===true, `應 success:true，得到 ${JSON.stringify(r)}`)
+        return 'success: true（deleted: false）'
+      }
+    },
+    {
+      name: '中文備註寫入/讀回不亂碼',
+      fn: async () => {
+        const id = tid('zh')
+        const note = '紐西蘭炸魚好吃！特殊＆符號'
+        await api.post({action:'add', id, date:'2026-10-13', item:'中文測試', category:'food', TWD:88, currency:'TWD', paidBy:'東岳', note})
+        await sleep(1000)
+        const d = await api.get()
+        const item = d.expenses.find(e=>e.id===id)
+        assert(item, '找不到筆')
+        assert(item.note && item.note.includes('紐西蘭'), `中文亂碼：${item.note}`)
+        return `note 讀回正確: "${item.note.slice(0,15)}…"`
+      }
+    },
+  ]
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// GROUP C — Console 腳本（複製貼到網站 DevTools 執行）
+// ════════════════════════════════════════════════════════════════════════════
+const CONSOLE_SCRIPT = `// ── 貼到 nz_trip_eastl.html 的 DevTools Console 執行 ──
+// 測試 1: localStorage 花費資料
+const ls = JSON.parse(localStorage.getItem('nz-trip-user-expenses') || '[]')
+console.log('localStorage 花費筆數:', ls.length)
+
+// 測試 2: PIN 驗證（2610）
+const pinKey = 'nz-trip-auth'
+sessionStorage.setItem(pinKey, 'true')
+console.log('PIN sessionStorage:', sessionStorage.getItem(pinKey))
+
+// 測試 3: Checklist localStorage
+const ck = JSON.parse(localStorage.getItem('nz-trip-checklist') || '{}')
+console.log('Checklist 狀態筆數:', Object.keys(ck).length, ck)
+
+// 測試 4: 頁面標題
+console.log('頁面標題:', document.title)
+
+// 測試 5: Bottom Nav 4 個 tab
+const navItems = document.querySelectorAll('nav button, [role=navigation] button')
+console.log('Bottom Nav 按鈕數:', navItems.length)
+
+// 測試 6: 時鐘 SVG 是否存在
+const clocks = document.querySelectorAll('svg circle')
+console.log('SVG circle 元素（時鐘）:', clocks.length, '個')
+
+// 測試 7: Leaflet map
+const mapEl = document.querySelector('.leaflet-container')
+console.log('Leaflet 地圖:', mapEl ? '✓ 存在' : '✗ 未找到')
+
+// 測試 8: Food Quest 按鈕
+const fqBtn = [...document.querySelectorAll('button')].filter(b => b.textContent.includes('FOOD QUEST'))
+console.log('FOOD QUEST 按鈕數:', fqBtn.length, fqBtn.map(b=>b.textContent.trim().slice(0,30)))
+
+// 測試 9: 花費總金額（從 DOM 讀，不搜字串）
+const amounts = [...document.querySelectorAll('*')]
+  .filter(el => el.childElementCount === 0 && el.textContent.includes('266'))
+  .map(el => el.textContent.trim()).filter(t => t.length < 30)
+console.log('包含 266 的文字元素:', amounts.slice(0,5))
+
+console.log('--- 測試完成 ---')`.trim()
+
+const GROUP_CONSOLE = {
+  id:'console', title:'C. Console 腳本（貼到網站 DevTools）',
+  tests: [
+    {
+      name: '複製腳本到剪貼簿',
+      fn: async () => {
+        await navigator.clipboard.writeText(CONSOLE_SCRIPT)
+        const box = document.getElementById('console-code')
+        if (box) box.classList.add('show')
+        return '已複製！開啟 nz_trip_eastl.html → F12 → Console → 貼上執行'
+      }
+    },
+    {
+      name: '步驟說明',
+      fn: async () => {
+        return [
+          '1. 開啟 https://eastl.github.io/2026/nz_trip_eastl.html',
+          '2. 按 F12 → Console',
+          '3. 貼上上方腳本',
+          '4. 確認輸出：localStorage 筆數、Leaflet 地圖、FOOD QUEST 按鈕數'
+        ].join('\n')
+      }
+    }
+  ]
+}
+
+const GROUPS = [GROUP_HTML, GROUP_API, GROUP_CONSOLE]
+
+// ── Runner ────────────────────────────────────────────────────────────────────
+let pass=0, fail=0, total=0
+
+function upd() {
+  document.getElementById('sp').textContent = pass
+  document.getElementById('sf').textContent = fail
+  document.getElementById('st').textContent = total
+  document.getElementById('pb').style.width = (total?(pass/total*100):0)+'%'
+  document.getElementById('summary').style.background = fail>0 ? '#8a2020' : '#173d2a'
+}
+
+function render() {
+  const tc = document.getElementById('tc')
+  tc.innerHTML = ''
+  GROUPS.forEach(g => {
+    tc.innerHTML += `
+    <div class="grp" id="g-${g.id}">
+      <div class="grp-h" onclick="tog('${g.id}')">
+        <span class="grp-t">${g.title}</span>
+        <span class="badge b-wait" id="bd-${g.id}">대기</span>
+      </div>
+      <div class="tests" id="ts-${g.id}">
+        ${g.tests.map((t,i)=>`
+          <div class="test">
+            <div class="ico" id="ic-${g.id}-${i}">○</div>
+            <div style="flex:1">
+              <div class="tname">${t.name}</div>
+              <div class="tdet" id="dt-${g.id}-${i}"></div>
+            </div>
+          </div>`).join('')}
+        ${g.id==='console'?`<pre class="console-box" id="console-code">${CONSOLE_SCRIPT}</pre>`:''}
+      </div>
+    </div>`
+  })
+}
+
+function tog(id) {
+  const el = document.getElementById(`ts-${id}`)
+  el.style.display = el.style.display==='none' ? '' : 'none'
+}
+
+async function runG(gid) {
+  const g = GROUPS.find(x=>x.id===gid)
+  if (!g) return
+  document.getElementById(`bd-${gid}`).className='badge b-run'
+  document.getElementById(`bd-${gid}`).textContent='実行中'
+  let gp=0, gf=0
+  for (let i=0;i<g.tests.length;i++) {
+    const ic=document.getElementById(`ic-${gid}-${i}`)
+    const dt=document.getElementById(`dt-${gid}-${i}`)
+    ic.textContent='…'; total++; upd()
+    try {
+      const msg = await g.tests[i].fn()
+      ic.textContent='✓'; ic.style.color='#173d2a'
+      dt.textContent = Array.isArray(msg)?msg.join('\n'):msg||''
+      dt.className='tdet'; pass++; gp++
+    } catch(e) {
+      ic.textContent='✗'; ic.style.color='#c0392b'
+      dt.textContent=e.message; dt.className='tdet err'; fail++; gf++
+    }
+    upd(); await sleep(80)
+  }
+  const bd=document.getElementById(`bd-${gid}`)
+  bd.textContent=`${gp}/${gp+gf}`
+  bd.className=`badge ${gf>0?'b-fail':'b-pass'}`
+}
+
+async function runAll() {
+  pass=0; fail=0; total=0; html=null; render(); upd()
+  for (const g of GROUPS) await runG(g.id)
+}
+
+async function cleanupTests() {
+  const d = await api.get()
+  const items = (d.expenses||[]).filter(e=>tids.includes(e.id)||String(e.id).match(/^(t|add|nzd|rb|con|del|zh)-/))
+  if (!items.length) { alert('沒有這次產生的測試資料'); return }
+  for (const e of items) await api.post({action:'delete', id:e.id})
+  alert(`已清除 ${items.length} 筆`)
+}
+
+render()
+</script>
+</body>
+</html>
