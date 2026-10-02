@@ -4,93 +4,106 @@
 <meta charset="UTF-8">
 <title>清除測試資料</title>
 <style>
-  body { font-family: system-ui; background: #faf9f5; max-width: 500px; margin: 40px auto; padding: 20px; }
-  h2 { color: #173d2a; margin-bottom: 8px; }
-  .log { background: #1a2a1a; color: #7fff7f; font-family: monospace; font-size: 12px;
-    border-radius: 8px; padding: 14px; margin-top: 12px; min-height: 120px;
-    white-space: pre-wrap; max-height: 400px; overflow-y: auto; }
-  button { background: #c0392b; color: white; border: none; padding: 12px 24px;
-    border-radius: 8px; cursor: pointer; font-size: 15px; font-weight: 600; width: 100%; }
-  button:disabled { opacity: .5; cursor: not-allowed; }
-  .count { color: #c4952a; font-weight: 700; font-size: 1.1rem; margin: 8px 0; }
+  body { font-family:system-ui; background:#faf9f5; max-width:500px; margin:40px auto; padding:20px; }
+  h2 { color:#173d2a; margin-bottom:8px; }
+  .log { background:#1a2a1a; color:#7fff7f; font-family:monospace; font-size:12px;
+    border-radius:8px; padding:14px; margin-top:12px; min-height:80px;
+    white-space:pre-wrap; max-height:350px; overflow-y:auto; }
+  button { border:none; padding:12px 24px; border-radius:8px; cursor:pointer;
+    font-size:14px; font-weight:600; width:100%; margin-bottom:8px; }
+  .btn-del { background:#c0392b; color:white; }
+  .btn-del:disabled { opacity:.4; cursor:not-allowed; }
+  .prog { height:6px; background:#e6e1d6; border-radius:3px; margin:8px 0; overflow:hidden; }
+  .progbar { height:100%; background:#c4952a; transition:width .3s; }
+  .count { color:#c4952a; font-weight:700; margin:6px 0; font-size:14px; }
 </style>
 </head>
 <body>
 <h2>🗑 清除 Google Sheets 測試資料</h2>
-<p style="color:#8a8a8a;font-size:13px;margin-bottom:12px">
-  識別並刪除所有測試用的花費記錄（保留真實資料）
+<p style="color:#8a8a8a;font-size:12px;margin-bottom:10px">
+  識別並刪除測試記錄，保留真實花費資料
 </p>
-<div class="count" id="count">點擊按鈕開始</div>
-<button id="btn" onclick="run()">清除所有測試資料</button>
-<div class="log" id="log"></div>
+
+<div class="count" id="count">讀取中...</div>
+<div class="prog"><div class="progbar" id="pb" style="width:0%"></div></div>
+
+<button class="btn-del" id="btn" onclick="run()" disabled>清除所有測試資料</button>
+
+<div class="log" id="log">載入中...</div>
 
 <script>
 const URL = 'https://script.google.com/macros/s/AKfycby77tqTUtsjUFWwnrySQy2alukzZGuL3P8fBIzlmY1lHK5U4YAmWTGhp8aSZKHCCIeK/exec'
+const TEST_PREFIXES = ['add-','nzd-','rb-','con5-','con10-','del-','zh-','t-','single-','seq-','con-','sync-','test-']
 
-// 測試資料識別規則：以這些前綴開頭的 id
-const TEST_PREFIXES = ['add-','nzd-','rb-','con5-','con10-','del-','zh-','t-',
-  'single-','seq-','con-','sync-','test-','壓力','並發']
-
-function isTestId(id) {
-  const s = String(id || '')
-  return TEST_PREFIXES.some(p => s.startsWith(p)) ||
-    /^(add|nzd|rb|con5?|con10|del|zh|t|single|seq|sync)-\d+/.test(s)
-}
-
-function isTestItem(e) {
-  return isTestId(e.id) ||
-    String(e.item || '').includes('測試') ||
-    String(e.item || '').includes('壓力') ||
-    String(e.item || '').includes('並發')
+function isTest(e) {
+  const id = String(e.id||''), item = String(e.item||'')
+  return TEST_PREFIXES.some(p=>id.startsWith(p)) ||
+    /^(add|nzd|rb|con5?|con10|del|zh|t|single|seq|sync)-\d+/.test(id) ||
+    item.includes('測試')||item.includes('壓力')||item.includes('並發')
 }
 
 const log = document.getElementById('log')
-function print(msg) { log.textContent += msg + '\n'; log.scrollTop = 9999 }
+const pb  = document.getElementById('pb')
+function print(m) { log.textContent += m+'\n'; log.scrollTop=9999 }
+
+async function fetchDel(id) {
+  const ctrl = new AbortController()
+  const t = setTimeout(()=>ctrl.abort(), 10000)
+  try {
+    const r = await fetch(URL, {method:'POST', body:JSON.stringify({action:'delete',id}), signal:ctrl.signal})
+    return await r.json()
+  } catch(e) {
+    return {success:false, error:e.name==='AbortError'?'timeout':e.message}
+  } finally { clearTimeout(t) }
+}
+
+let tests=[], real=[]
+
+async function load() {
+  try {
+    const d = await fetch(URL).then(r=>r.json())
+    const all = d.expenses||[]
+    tests = all.filter(isTest)
+    real  = all.filter(e=>!isTest(e))
+    document.getElementById('count').textContent =
+      `找到 ${tests.length} 筆測試資料，${real.length} 筆真實資料（保留）`
+    log.textContent = tests.length
+      ? tests.map(e=>`  ${e.id}: ${e.item}`).join('\n')
+      : '沒有測試資料'
+    document.getElementById('btn').disabled = tests.length===0
+  } catch(e) {
+    log.textContent = '讀取失敗：'+e.message
+  }
+}
 
 async function run() {
   const btn = document.getElementById('btn')
   btn.disabled = true
-  log.textContent = ''
+  log.textContent = `開始刪除 ${tests.length} 筆...\n`
+  let ok=0, fail=0
 
-  print('讀取所有花費資料...')
-  const data = await fetch(URL).then(r=>r.json())
-  const all = data.expenses || []
-  const tests = all.filter(isTestItem)
-  const real  = all.filter(e => !isTestItem(e))
-
-  document.getElementById('count').textContent =
-    `找到 ${tests.length} 筆測試資料，${real.length} 筆真實資料（保留）`
-
-  if (tests.length === 0) {
-    print('✓ 沒有測試資料，不需要清除')
-    btn.disabled = false
-    return
+  for (let i=0; i<tests.length; i++) {
+    const e = tests[i]
+    pb.style.width = ((i+1)/tests.length*100)+'%'
+    document.getElementById('count').textContent = `進度 ${i+1}/${tests.length}`
+    const r = await fetchDel(e.id)
+    if (r.success) { ok++; print(`✓ ${e.id}`) }
+    else { fail++; print(`✗ ${e.id}: ${r.error}`) }
+    await new Promise(r=>setTimeout(r,150))
   }
 
-  print(`\n準備刪除 ${tests.length} 筆測試資料：`)
-  tests.forEach(e => print(`  ${e.id}: ${e.item} TWD:${e.TWD||'-'} NZD:${e.NZD||'-'}`))
-  print('')
+  pb.style.width = '100%'
+  print(`\n完成：刪除 ${ok}，失敗 ${fail}`)
 
-  let ok = 0, fail = 0
-  for (const e of tests) {
-    try {
-      const r = await fetch(URL, {method:'POST', body: JSON.stringify({action:'delete', id:e.id})}).then(r=>r.json())
-      if (r.success) { ok++; print(`✓ 刪除 ${e.id}`) }
-      else { fail++; print(`✗ 失敗 ${e.id}: ${r.error}`) }
-    } catch(err) {
-      fail++; print(`✗ 錯誤 ${e.id}: ${err.message}`)
-    }
-    await new Promise(r => setTimeout(r, 200))
-  }
-
-  print(`\n完成：刪除 ${ok} 筆，失敗 ${fail} 筆`)
-
-  const after = await fetch(URL).then(r=>r.json())
-  print(`剩餘花費記錄：${(after.expenses||[]).length} 筆`)
-  document.getElementById('count').textContent = `✅ 清除完成，剩餘 ${(after.expenses||[]).length} 筆真實資料`
-
+  const d2 = await fetch(URL).then(r=>r.json())
+  const remain = (d2.expenses||[]).length
+  document.getElementById('count').textContent = `✅ 完成，剩餘 ${remain} 筆（真實資料）`
+  btn.textContent = '重新載入'
+  btn.onclick = ()=>location.reload()
   btn.disabled = false
 }
+
+load()
 </script>
 </body>
 </html>
