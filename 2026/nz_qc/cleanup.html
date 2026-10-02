@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<title>清除測試資料</title>
+<style>
+  body { font-family: system-ui; background: #faf9f5; max-width: 500px; margin: 40px auto; padding: 20px; }
+  h2 { color: #173d2a; margin-bottom: 8px; }
+  .log { background: #1a2a1a; color: #7fff7f; font-family: monospace; font-size: 12px;
+    border-radius: 8px; padding: 14px; margin-top: 12px; min-height: 120px;
+    white-space: pre-wrap; max-height: 400px; overflow-y: auto; }
+  button { background: #c0392b; color: white; border: none; padding: 12px 24px;
+    border-radius: 8px; cursor: pointer; font-size: 15px; font-weight: 600; width: 100%; }
+  button:disabled { opacity: .5; cursor: not-allowed; }
+  .count { color: #c4952a; font-weight: 700; font-size: 1.1rem; margin: 8px 0; }
+</style>
+</head>
+<body>
+<h2>🗑 清除 Google Sheets 測試資料</h2>
+<p style="color:#8a8a8a;font-size:13px;margin-bottom:12px">
+  識別並刪除所有測試用的花費記錄（保留真實資料）
+</p>
+<div class="count" id="count">點擊按鈕開始</div>
+<button id="btn" onclick="run()">清除所有測試資料</button>
+<div class="log" id="log"></div>
+
+<script>
+const URL = 'https://script.google.com/macros/s/AKfycby77tqTUtsjUFWwnrySQy2alukzZGuL3P8fBIzlmY1lHK5U4YAmWTGhp8aSZKHCCIeK/exec'
+
+// 測試資料識別規則：以這些前綴開頭的 id
+const TEST_PREFIXES = ['add-','nzd-','rb-','con5-','con10-','del-','zh-','t-',
+  'single-','seq-','con-','sync-','test-','壓力','並發']
+
+function isTestId(id) {
+  const s = String(id || '')
+  return TEST_PREFIXES.some(p => s.startsWith(p)) ||
+    /^(add|nzd|rb|con5?|con10|del|zh|t|single|seq|sync)-\d+/.test(s)
+}
+
+function isTestItem(e) {
+  return isTestId(e.id) ||
+    String(e.item || '').includes('測試') ||
+    String(e.item || '').includes('壓力') ||
+    String(e.item || '').includes('並發')
+}
+
+const log = document.getElementById('log')
+function print(msg) { log.textContent += msg + '\n'; log.scrollTop = 9999 }
+
+async function run() {
+  const btn = document.getElementById('btn')
+  btn.disabled = true
+  log.textContent = ''
+
+  print('讀取所有花費資料...')
+  const data = await fetch(URL).then(r=>r.json())
+  const all = data.expenses || []
+  const tests = all.filter(isTestItem)
+  const real  = all.filter(e => !isTestItem(e))
+
+  document.getElementById('count').textContent =
+    `找到 ${tests.length} 筆測試資料，${real.length} 筆真實資料（保留）`
+
+  if (tests.length === 0) {
+    print('✓ 沒有測試資料，不需要清除')
+    btn.disabled = false
+    return
+  }
+
+  print(`\n準備刪除 ${tests.length} 筆測試資料：`)
+  tests.forEach(e => print(`  ${e.id}: ${e.item} TWD:${e.TWD||'-'} NZD:${e.NZD||'-'}`))
+  print('')
+
+  let ok = 0, fail = 0
+  for (const e of tests) {
+    try {
+      const r = await fetch(URL, {method:'POST', body: JSON.stringify({action:'delete', id:e.id})}).then(r=>r.json())
+      if (r.success) { ok++; print(`✓ 刪除 ${e.id}`) }
+      else { fail++; print(`✗ 失敗 ${e.id}: ${r.error}`) }
+    } catch(err) {
+      fail++; print(`✗ 錯誤 ${e.id}: ${err.message}`)
+    }
+    await new Promise(r => setTimeout(r, 200))
+  }
+
+  print(`\n完成：刪除 ${ok} 筆，失敗 ${fail} 筆`)
+
+  const after = await fetch(URL).then(r=>r.json())
+  print(`剩餘花費記錄：${(after.expenses||[]).length} 筆`)
+  document.getElementById('count').textContent = `✅ 清除完成，剩餘 ${(after.expenses||[]).length} 筆真實資料`
+
+  btn.disabled = false
+}
+</script>
+</body>
+</html>
