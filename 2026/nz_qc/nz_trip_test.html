@@ -493,8 +493,40 @@ async function runG(gid) {
 }
 
 async function runAll() {
-  pass=0; fail=0; total=0; html=null; render(); upd()
+  pass=0; fail=0; total=0; html=null; tids.length=0; render(); upd()
   for (const g of GROUPS) await runG(g.id)
+  await autoCleanup()
+}
+
+async function autoCleanup() {
+  if (tids.length === 0) return
+  const label = `自動清除 ${tids.length} 筆測試資料...`
+  // Show cleanup status in summary area
+  const bar = document.getElementById('pb')
+  bar.style.background = '#8a8a8a'
+
+  let ok=0, fail=0
+  for (let i=0; i<tids.length; i++) {
+    bar.style.width = ((i+1)/tids.length*100)+'%'
+    try {
+      const ctrl = new AbortController()
+      const t = setTimeout(()=>ctrl.abort(), 10000)
+      const r = await fetch(SHEETS, {
+        method:'POST', body:JSON.stringify({action:'delete', id:tids[i]}), signal:ctrl.signal
+      }).then(r=>r.json()).finally(()=>clearTimeout(t))
+      if (r.success) ok++; else fail++
+    } catch { fail++ }
+    await sleep(120)
+  }
+
+  bar.style.width = '100%'
+  bar.style.background = ok===tids.length ? '#173d2a' : '#c4952a'
+
+  // Show cleanup result below summary
+  const msg = document.createElement('div')
+  msg.style.cssText = 'font-size:11px;color:#8a8a8a;text-align:center;margin-bottom:12px;font-family:monospace'
+  msg.textContent = `🧹 自動清除：${ok} 筆已刪除${fail>0?' · '+fail+' 筆失敗（可用 cleanup.html 手動清）':''}`
+  document.getElementById('pb').after(msg)
 }
 
 async function cleanupTests() {
