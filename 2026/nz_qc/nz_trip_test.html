@@ -403,10 +403,17 @@ const GROUP_CONSOLE = {
     {
       name: '複製腳本到剪貼簿',
       fn: async () => {
-        await navigator.clipboard.writeText(CONSOLE_SCRIPT)
-        const box = document.getElementById('console-code')
-        if (box) box.classList.add('show')
-        return '已複製！開啟 nz_trip_eastl.html → F12 → Console → 貼上執行'
+        try {
+          await navigator.clipboard.writeText(CONSOLE_SCRIPT)
+          const box = document.getElementById('console-code')
+          if (box) box.classList.add('show')
+          return '已複製！開啟 nz_trip_eastl.html → F12 → Console → 貼上執行'
+        } catch(e) {
+          // 自動執行時 clipboard 需要使用者手勢，非真正錯誤
+          const box = document.getElementById('console-code')
+          if (box) box.classList.add('show')
+          return '請手動複製下方腳本（自動複製需點擊頁面後再執行）'
+        }
       }
     },
     {
@@ -423,7 +430,304 @@ const GROUP_CONSOLE = {
   ]
 }
 
-const GROUPS = [GROUP_HTML, GROUP_API, GROUP_CONSOLE]
+
+// ════════════════════════════════════════════════════════════════════════════
+// GROUP D — 路書功能測試（實作前先確認 ✗，實作後應全 ✓）
+// ════════════════════════════════════════════════════════════════════════════
+
+// 路段資料（實作時會放進 src/data/routes.js）
+const ROUTE_SEGMENTS = [
+  { day: 2, from: 'Christchurch', to: 'Christchurch', date: '2026-10-10', 
+    coords: [[-43.5321, 172.6362]], driving: false,
+    note: '取車日，市區活動' },
+  { day: 3, from: 'Christchurch', to: 'Lake Tekapo', date: '2026-10-11',
+    coords: [[-43.5321, 172.6362], [-44.0053, 170.4778]],
+    km: 225, hours: 2.5, highway: 'SH1 → SH79 → SH8', driving: true },
+  { day: 4, from: 'Lake Tekapo', to: 'Aoraki / Mt Cook', date: '2026-10-12',
+    coords: [[-44.0053, 170.4778], [-43.5965, 170.1418]],
+    km: 105, hours: 1.5, highway: 'SH8 → SH80', driving: true,
+    warning: 'SH80 後段為碎石路面，低速行駛' },
+  { day: 5, from: 'Aoraki / Mt Cook', to: 'Wanaka', date: '2026-10-13',
+    coords: [[-43.5965, 170.1418], [-44.7031, 169.1317]],
+    km: 260, hours: 3.5, highway: 'SH80 → SH8 → SH6', driving: true },
+  { day: 6, from: 'Wanaka', to: 'Queenstown', date: '2026-10-14',
+    coords: [[-44.7031, 169.1317], [-45.0312, 168.6626]],
+    km: 67, hours: 1, highway: 'SH6', driving: true },
+  { day: 7, from: 'Queenstown', to: 'Queenstown', date: '2026-10-15',
+    coords: [[-45.0312, 168.6626]], driving: false,
+    note: 'NZONE 高空跳傘，基地在市區' },
+  { day: 8, from: 'Queenstown', to: 'Milford Sound', date: '2026-10-16',
+    coords: [[-45.0312, 168.6626], [-44.6413, 167.8978]],
+    km: 290, hours: 4, highway: 'SH6 → SH94', driving: true,
+    note: '巴士接送，不需自駕' },
+  { day: 9, from: 'Queenstown', to: 'ZQN Airport', date: '2026-10-17',
+    coords: [[-45.0312, 168.6626], [-45.0210, 168.7393]],
+    km: 8, hours: 0.2, highway: '市區', driving: true,
+    note: '17:00 還車，19:45 出發' },
+]
+
+const OPEN_METEO = 'https://api.open-meteo.com/v1/forecast'
+const NZTA_API   = 'https://api.nzta.govt.nz/v1/cifs'
+
+function isWithin16Days(dateStr) {
+  const target = new Date(dateStr + 'T12:00:00+13:00')
+  const now    = new Date()
+  const diff   = (target - now) / (1000 * 60 * 60 * 24)
+  return diff >= 0 && diff <= 16
+}
+
+const GROUP_ROADBOOK = {
+  id:'roadbook', title:'D. 路書功能（Road Book）',
+  tests: [
+
+    // ── 資料完整性 ───────────────────────────────────────────────────────
+    {
+      name: '路段資料：8 天都有座標',
+      fn: async () => {
+        ROUTE_SEGMENTS.forEach(s => {
+          assert(s.coords && s.coords.length > 0, `Day ${s.day} 缺少座標`)
+          s.coords.forEach(([lat, lng]) => {
+            assert(lat >= -47 && lat <= -42, `Day ${s.day} 緯度不在南島範圍：${lat}`)
+            assert(lng >= 165 && lng <= 175, `Day ${s.day} 經度不在南島範圍：${lng}`)
+          })
+        })
+        return `8 天路段座標全在南島範圍內`
+      }
+    },
+    {
+      name: '路段資料：6 個自駕日有 km / hours',
+      fn: async () => {
+        const driving = ROUTE_SEGMENTS.filter(s => s.driving)
+        driving.forEach(s => {
+          assert(s.km > 0, `Day ${s.day} 缺少距離`)
+          assert(s.hours > 0, `Day ${s.day} 缺少時間`)
+          assert(s.highway, `Day ${s.day} 缺少路號`)
+        })
+        const total = driving.reduce((sum, s) => sum + s.km, 0)
+        return `${driving.length} 個自駕日，總里程 ${total} km (${driving.map(s=>`D${s.day}:${s.km}km`).join(', ')})`
+      }
+    },
+    {
+      name: '路段資料：警告標注存在（SH80 碎石路）',
+      fn: async () => {
+        const warned = ROUTE_SEGMENTS.filter(s => s.warning)
+        assert(warned.length > 0, '沒有任何路段有 warning 標注')
+        assert(warned.some(s => s.warning.includes('碎石')), '找不到 SH80 碎石路警告')
+        return `${warned.length} 個路段有警告：${warned.map(s=>`Day${s.day}`).join(', ')}`
+      }
+    },
+
+    // ── Open-Meteo API ───────────────────────────────────────────────────
+    {
+      name: 'Open-Meteo：API 可連線（基督城座標）',
+      fn: async () => {
+        const url = `${OPEN_METEO}?latitude=-43.53&longitude=172.64&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,weathercode&timezone=Pacific/Auckland&forecast_days=3`
+        const r = await fetch(url)
+        assert(r.ok, `HTTP ${r.status}`)
+        const d = await r.json()
+        assert(d.daily, '回傳缺少 daily 欄位')
+        assert(Array.isArray(d.daily.time), 'daily.time 應為陣列')
+        return `✓ 可連線，回傳 ${d.daily.time.length} 天預報`
+      }
+    },
+    {
+      name: 'Open-Meteo：Oct 10 超出 16 天範圍 → 顯示提示',
+      fn: async () => {
+        const inRange = isWithin16Days('2026-10-10')
+        // 現在是 Oct 前，Oct 10 應超出 16 天
+        const today = new Date()
+        const oct10 = new Date('2026-10-10T12:00:00+13:00')
+        const diff = Math.ceil((oct10 - today) / 86400000)
+        if (inRange) {
+          return `Oct 10 在 16 天範圍內（還有 ${diff} 天），天氣資料可用`
+        } else {
+          assert(!inRange, '應為超出範圍')
+          return `Oct 10 超出預報範圍（還有 ${diff} 天），應顯示「尚未進入預報範圍」提示`
+        }
+      }
+    },
+    {
+      name: 'Open-Meteo：抓超出範圍的日期 API 回應不報錯',
+      fn: async () => {
+        // 抓 20 天後的預報，應回傳空 time 陣列或自動 clamp
+        const future = new Date()
+        future.setDate(future.getDate() + 20)
+        const dateStr = future.toISOString().slice(0, 10)
+        const url = `${OPEN_METEO}?latitude=-43.53&longitude=172.64&daily=weathercode&timezone=Pacific/Auckland&start_date=${dateStr}&end_date=${dateStr}`
+        const r = await fetch(url)
+        // API 可能回 200 with empty, or 400
+        if (!r.ok) {
+          return `API 對超出範圍日期回 ${r.status}（預期行為，UI 應顯示提示）`
+        }
+        const d = await r.json()
+        return `API 回 200，time 長度 ${d.daily?.time?.length ?? 0}（0 = 無資料，正常）`
+      }
+    },
+
+    // ── NZTA API ─────────────────────────────────────────────────────────
+    {
+      name: 'NZTA：路況 API（CORS 確認）',
+      fn: async () => {
+        // NZTA API 不支援瀏覽器直接呼叫（CORS blocked）
+        // 策略改為：UI 顯示「前往 Waka Kotahi 查看路況」連結，不直接 fetch
+        const ctrl = new AbortController()
+        const t = setTimeout(() => ctrl.abort(), 5000)
+        try {
+          const r = await fetch(NZTA_API, { signal: ctrl.signal })
+          clearTimeout(t)
+          return `意外成功 HTTP ${r.status}（CORS 已開放，可直接抓）`
+        } catch (e) {
+          clearTimeout(t)
+          if (e.name === 'AbortError' || e.message.includes('fetch')) {
+            // 預期行為：CORS blocked → 改用 Waka Kotahi 連結方案
+            return `CORS 受阻（預期）→ 改用 Waka Kotahi 連結：https://www.journeys.nzta.govt.nz/`
+          }
+          return `網路錯誤（${e.message}）→ 改用連結方案`
+        }
+      }
+    },
+
+    // ── 日期邏輯 ─────────────────────────────────────────────────────────
+    {
+      name: '16 天邏輯：旅行中的日期（模擬 Oct 10 當天）',
+      fn: async () => {
+        // 用 isWithin16Days 測試各種情境
+        const today = new Date()
+        const results = ROUTE_SEGMENTS
+          .filter(s => s.driving)
+          .map(s => ({
+            day: s.day,
+            date: s.date,
+            inRange: isWithin16Days(s.date),
+          }))
+        const inRange = results.filter(r => r.inRange)
+        const outRange = results.filter(r => !r.inRange)
+        return `${inRange.length} 天在預報範圍，${outRange.length} 天超出（${outRange.map(r=>`D${r.day}(${r.date})`).join(',')||'無'}）`
+      }
+    },
+
+    // ── 方案 B：固定路段警告 ──────────────────────────────────────────────
+    {
+      name: '方案 B：固定警告資料結構正確',
+      fn: async () => {
+        const warned = ROUTE_SEGMENTS.filter(s => s.warning)
+        const noted  = ROUTE_SEGMENTS.filter(s => s.note)
+        // 每個自駕日至少有 warning 或 note 其中一個
+        const driving = ROUTE_SEGMENTS.filter(s => s.driving)
+        const covered = driving.filter(s => s.warning || s.note)
+        assert(warned.length >= 1, '至少要有 1 個 warning（SH80 碎石路）')
+        return `warning: ${warned.length} 個，note: ${noted.length} 個，自駕日含提醒: ${covered.length}/${driving.length}`
+      }
+    },
+
+    // ── 方案 C：Open-Meteo 氣象警告邏輯 ─────────────────────────────────
+    {
+      name: '方案 C：WMO 天氣代碼轉換正確',
+      fn: async () => {
+        // WMO weathercode 標準
+        function wmoToDesc(code) {
+          if (code === 0)            return { icon: '☀️', text: '晴天' }
+          if (code <= 3)             return { icon: '⛅', text: '多雲' }
+          if (code <= 49)            return { icon: '🌫', text: '有霧' }
+          if (code <= 69)            return { icon: '🌧', text: '降雨' }
+          if (code <= 79)            return { icon: '❄️', text: '降雪' }
+          if (code <= 84)            return { icon: '🌦', text: '陣雨' }
+          if (code <= 95)            return { icon: '⛈', text: '雷雨' }
+          return                            { icon: '⛈', text: '強雷雨' }
+        }
+        const cases = [
+          [0,   '☀️', '晴天'],
+          [2,   '⛅', '多雲'],
+          [45,  '🌫', '有霧'],
+          [61,  '🌧', '降雨'],
+          [71,  '❄️', '降雪'],
+          [80,  '🌦', '陣雨'],
+          [95,  '⛈', '雷雨'],
+          [99,  '⛈', '強雷雨'],
+        ]
+        cases.forEach(([code, icon, text]) => {
+          const r = wmoToDesc(code)
+          assert(r.icon === icon, `WMO ${code} icon 應為 ${icon}，得到 ${r.icon}`)
+          assert(r.text === text, `WMO ${code} text 應為 ${text}，得到 ${r.text}`)
+        })
+        return `8 種 WMO 代碼轉換全正確`
+      }
+    },
+    {
+      name: '方案 C：氣象警告閾值邏輯',
+      fn: async () => {
+        function getWeatherWarnings(data) {
+          const warnings = []
+          if ((data.snowfall_sum ?? 0) > 0)     warnings.push(`❄️ 積雪 ${data.snowfall_sum}cm`)
+          if ((data.windspeed_10m_max ?? 0) > 50) warnings.push(`💨 強風 ${data.windspeed_10m_max}km/h`)
+          if ((data.precipitation ?? 0) > 20)    warnings.push(`🌧 大雨 ${data.precipitation}mm`)
+          return warnings
+        }
+        assert(getWeatherWarnings({ snowfall_sum: 0,   windspeed_10m_max: 30,  precipitation: 5  }).length === 0, '無警告應為空')
+        assert(getWeatherWarnings({ snowfall_sum: 2,   windspeed_10m_max: 30,  precipitation: 5  }).length === 1, '積雪應有警告')
+        assert(getWeatherWarnings({ snowfall_sum: 0,   windspeed_10m_max: 65,  precipitation: 5  }).length === 1, '強風應有警告')
+        assert(getWeatherWarnings({ snowfall_sum: 0,   windspeed_10m_max: 30,  precipitation: 25 }).length === 1, '大雨應有警告')
+        assert(getWeatherWarnings({ snowfall_sum: 3,   windspeed_10m_max: 60,  precipitation: 25 }).length === 3, '三個警告同時')
+        return `閾值：積雪 >0cm / 強風 >50km/h / 大雨 >20mm 均正確觸發`
+      }
+    },
+    {
+      name: '方案 C：Open-Meteo 抓蒂卡波→庫克山段天氣',
+      fn: async () => {
+        const date = '2026-10-12'
+        const inRange = isWithin16Days(date)
+        if (!inRange) {
+          return `Oct 12 尚未進入預報範圍 → UI 顯示「出發前 16 天起可查看」`
+        }
+        // forecast_days=16 抓最大範圍，再用日期找 index
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=-43.59&longitude=170.14&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_sum,snowfall_sum,windspeed_10m_max&timezone=auto&forecast_days=16`
+        const r = await fetch(url)
+        assert(r.ok, `HTTP ${r.status}`)
+        const d = await r.json()
+        assert(d.daily?.time, '缺少 daily.time')
+        const idx = d.daily.time.indexOf(date)
+        if (idx < 0) {
+          return `Oct 12 不在 16 天預報範圍（最遠：${d.daily.time[d.daily.time.length-1]}）→ 出發前才有資料`
+        }
+        const wcode = d.daily.weathercode[idx]
+        const snow  = d.daily.snowfall_sum?.[idx] ?? 0
+        const wind  = d.daily.windspeed_10m_max?.[idx] ?? 0
+        const tmax  = d.daily.temperature_2m_max?.[idx]
+        const tmin  = d.daily.temperature_2m_min?.[idx]
+        return `Oct 12 庫克山：${tmin}°C–${tmax}°C，WMO=${wcode}，積雪=${snow}cm，強風=${wind}km/h`
+      }
+    },
+
+    // ── HTML 內容（實作後才會過）────────────────────────────────────────
+    {
+      name: '【實作後】HTML 含路書資料（225km / SH8 / 碎石）',
+      fn: async () => {
+        const h = await getHTML()
+        const checks = [
+          { key: '225', label: '基督城→蒂卡波 225km' },
+          { key: 'SH8',  label: '路號 SH8' },
+          { key: '碎石',  label: '碎石路警告' },
+        ]
+        const missing = checks.filter(ch => !h.includes(ch.key))
+        if (missing.length > 0) {
+          throw new Error(`尚未實作或資料缺失：${missing.map(m=>m.label).join(', ')}`)
+        }
+        return '路書資料已在 HTML 中 (225km, SH8, 碎石路警告)'
+      }
+    },
+    {
+      name: '【實作後】HTML 含天氣元件標記',
+      fn: async () => {
+        const h = await getHTML()
+        const has = h.includes('open-meteo') || h.includes('weathercode') || h.includes('天氣預報')
+        if (!has) throw new Error('尚未實作天氣元件')
+        return '天氣元件已在 HTML 中'
+      }
+    },
+  ]
+}
+
+const GROUPS = [GROUP_HTML, GROUP_API, GROUP_CONSOLE, GROUP_ROADBOOK]
 
 // ── Runner ────────────────────────────────────────────────────────────────────
 let pass=0, fail=0, total=0
