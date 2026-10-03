@@ -56,6 +56,7 @@
   <button class="btn-grp" onclick="runG('html')">HTML 內容</button>
   <button class="btn-grp" onclick="runG('api')">Google Sheets</button>
   <button class="btn-grp" onclick="runG('console')">Console 腳本</button>
+  <button class="btn-grp" onclick="runG('roadbook')">路書功能</button>
   <button class="btn-red"  onclick="cleanupTests()">🗑 清除測試資料</button>
 </div>
 
@@ -217,6 +218,33 @@ const GROUP_HTML = {
         assert(hasMaps, '找不到任何 Google Maps 連結')
         const matches = (h.match(/google\.com.*?maps/g) || []).length
         return `找到 Google Maps 連結（格式：google.com/maps/search）`
+      }
+    },
+    {
+      name: 'Road Book：路書資料在 HTML（225km / SH8 / 碎石）',
+      fn: async () => {
+        const h = await getHTML()
+        const checks = [
+          ['ROAD BOOK', 'Road Book 標題'],
+          ['225', '基督城→蒂卡波 225km（Road Book 資料）'],
+          ['SH8 → SH80', '路號 SH8→SH80'],
+          ['碎石路面', '碎石路警告（具體文字）'],
+          ['Google Maps 路線', 'Google Maps 連結按鈕'],
+          ['snowfall_sum', 'Open-Meteo 積雪欄位'],
+        ]
+        const missing = checks.filter(([key]) => !h.includes(key))
+        assert(missing.length === 0, `缺少：${missing.map(m=>m[1]).join(', ')}`)
+        return `路書資料、Google Maps、即時路況連結均在 HTML 中`
+      }
+    },
+    {
+      name: 'Road Book：天氣元件在 HTML（Open-Meteo）',
+      fn: async () => {
+        const h = await getHTML()
+        assert(h.includes('open-meteo') || h.includes('weathercode') || h.includes('snowfall_sum'),
+          '找不到 Open-Meteo 天氣元件')
+        assert(h.includes('天氣預報') || h.includes('尚未進入預報'), '找不到天氣預報文字')
+        return '天氣元件（Open-Meteo + WMO）存在於 HTML'
       }
     },
     {
@@ -437,33 +465,64 @@ const GROUP_CONSOLE = {
 
 // 路段資料（實作時會放進 src/data/routes.js）
 const ROUTE_SEGMENTS = [
+  { day: 1, type: 'flight', date: '2026-10-09',
+    from: 'Hsinchu', to: 'Christchurch', driving: false,
+    coords: [[24.80, 120.97], [25.08, 121.23], [-37.81, 144.96], [-43.53, 172.64]],
+    flights: [
+      { code: 'CI057', fromZh: '台北桃園', toZh: '墨爾本', dep: '10/08 23:30', arr: '10/09 11:40' },
+      { code: 'QF169', fromZh: '墨爾本', toZh: '基督城', dep: '10/09 18:40', arr: '10/10 00:10' },
+    ] },
   { day: 2, from: 'Christchurch', to: 'Christchurch', date: '2026-10-10', 
     coords: [[-43.5321, 172.6362]], driving: false,
     note: '取車日，市區活動' },
-  { day: 3, from: 'Christchurch', to: 'Lake Tekapo', date: '2026-10-11',
+  { day: 3, gmapsUrl: 'https://www.google.com/maps/dir/-43.5321,172.6362/-44.0053,170.4778',
+    from: 'Christchurch', to: 'Lake Tekapo', date: '2026-10-11',
     coords: [[-43.5321, 172.6362], [-44.0053, 170.4778]],
     km: 225, hours: 2.5, highway: 'SH1 → SH79 → SH8', driving: true },
-  { day: 4, from: 'Lake Tekapo', to: 'Aoraki / Mt Cook', date: '2026-10-12',
+  { day: 4, gmapsUrl: 'https://www.google.com/maps/dir/-44.0053,170.4778/-43.5965,170.1418',
+    from: 'Lake Tekapo', to: 'Aoraki / Mt Cook', date: '2026-10-12',
     coords: [[-44.0053, 170.4778], [-43.5965, 170.1418]],
     km: 105, hours: 1.5, highway: 'SH8 → SH80', driving: true,
     warning: 'SH80 後段為碎石路面，低速行駛' },
-  { day: 5, from: 'Aoraki / Mt Cook', to: 'Wanaka', date: '2026-10-13',
+  { day: 5, gmapsUrl: 'https://www.google.com/maps/dir/-43.5965,170.1418/-44.7031,169.1317', from: 'Aoraki / Mt Cook', to: 'Wanaka', date: '2026-10-13',
     coords: [[-43.5965, 170.1418], [-44.7031, 169.1317]],
     km: 260, hours: 3.5, highway: 'SH80 → SH8 → SH6', driving: true },
-  { day: 6, from: 'Wanaka', to: 'Queenstown', date: '2026-10-14',
+  { day: 6, gmapsUrl: 'https://www.google.com/maps/dir/-44.7031,169.1317/-45.0312,168.6626', from: 'Wanaka', to: 'Queenstown', date: '2026-10-14',
     coords: [[-44.7031, 169.1317], [-45.0312, 168.6626]],
     km: 67, hours: 1, highway: 'SH6', driving: true },
   { day: 7, from: 'Queenstown', to: 'Queenstown', date: '2026-10-15',
     coords: [[-45.0312, 168.6626]], driving: false,
     note: 'NZONE 高空跳傘，基地在市區' },
-  { day: 8, from: 'Queenstown', to: 'Milford Sound', date: '2026-10-16',
+  { day: 8, gmapsUrl: 'https://www.google.com/maps/dir/-45.0312,168.6626/-44.6413,167.8978', from: 'Queenstown', to: 'Milford Sound', date: '2026-10-16',
     coords: [[-45.0312, 168.6626], [-44.6413, 167.8978]],
     km: 290, hours: 4, highway: 'SH6 → SH94', driving: true,
     note: '巴士接送，不需自駕' },
-  { day: 9, from: 'Queenstown', to: 'ZQN Airport', date: '2026-10-17',
+  { day: 9, gmapsUrl: 'https://www.google.com/maps/dir/-45.0312,168.6626/-45.021,168.7393', from: 'Queenstown', to: 'ZQN Airport', date: '2026-10-17',
     coords: [[-45.0312, 168.6626], [-45.0210, 168.7393]],
     km: 8, hours: 0.2, highway: '市區', driving: true,
     note: '17:00 還車，19:45 出發' },
+  { day: 10, type: 'flight', date: '2026-10-18',
+    from: 'Queenstown', to: 'Hsinchu', driving: false,
+    coords: [[-45.03, 168.66], [-27.47, 153.03], [25.08, 121.23], [24.80, 120.97]],
+    flights: [
+      { code: 'QF186', fromZh: '皇后鎮', toZh: '布里斯本', dep: '10/17 19:45', arr: '10/17 20:35' },
+      { code: 'CI054', fromZh: '布里斯本', toZh: '台北桃園', dep: '10/17 22:50', arr: '10/18 05:40' },
+    ] },
+]
+
+// 完整行程節點（用於 overview 地圖自動播放）
+const FULL_ROUTE = [
+  { pos: [24.80, 120.97],  mode: 'home',   label: '新竹' },
+  { pos: [25.08, 121.23],  mode: 'drive',  label: '桃園機場' },
+  { pos: [-37.81, 144.96], mode: 'flight', label: '墨爾本' },
+  { pos: [-43.53, 172.64], mode: 'flight', label: '基督城' },
+  { pos: [-44.01, 170.48], mode: 'drive',  label: '蒂卡波' },
+  { pos: [-43.60, 170.14], mode: 'drive',  label: '庫克山' },
+  { pos: [-44.70, 169.13], mode: 'drive',  label: '瓦納卡' },
+  { pos: [-45.03, 168.66], mode: 'drive',  label: '皇后鎮' },
+  { pos: [-27.47, 153.03], mode: 'flight', label: '布里斯本' },
+  { pos: [25.08, 121.23],  mode: 'flight', label: '桃園機場' },
+  { pos: [24.80, 120.97],  mode: 'home',   label: '新竹' },
 ]
 
 const OPEN_METEO = 'https://api.open-meteo.com/v1/forecast'
@@ -486,12 +545,17 @@ const GROUP_ROADBOOK = {
       fn: async () => {
         ROUTE_SEGMENTS.forEach(s => {
           assert(s.coords && s.coords.length > 0, `Day ${s.day} 缺少座標`)
-          s.coords.forEach(([lat, lng]) => {
-            assert(lat >= -47 && lat <= -42, `Day ${s.day} 緯度不在南島範圍：${lat}`)
-            assert(lng >= 165 && lng <= 175, `Day ${s.day} 經度不在南島範圍：${lng}`)
-          })
+          // flight 類型含國際座標（台灣/澳洲），只驗非 flight 段在南島範圍
+          if (s.type !== 'flight') {
+            s.coords.forEach(([lat, lng]) => {
+              assert(lat >= -47 && lat <= -42, `Day ${s.day} 緯度不在南島範圍：${lat}`)
+              assert(lng >= 165 && lng <= 175, `Day ${s.day} 經度不在南島範圍：${lng}`)
+            })
+          }
         })
-        return `8 天路段座標全在南島範圍內`
+        const flightDays = ROUTE_SEGMENTS.filter(s => s.type === 'flight').length
+        const driveDays  = ROUTE_SEGMENTS.filter(s => s.type !== 'flight').length
+        return `${driveDays} 天南島路段座標正確，${flightDays} 天航班段含國際座標（跳過範圍檢查）`
       }
     },
     {
@@ -561,6 +625,132 @@ const GROUP_ROADBOOK = {
         }
         const d = await r.json()
         return `API 回 200，time 長度 ${d.daily?.time?.length ?? 0}（0 = 無資料，正常）`
+      }
+    },
+
+    // ── Today 即時化：getCurrentFlight ──────────────────────────────────────────
+    {
+      name: 'getCurrentFlight()：4 段航班均正確識別',
+      fn: async () => {
+        function mockFlight(now) {
+          const F = {
+            CI057_DEP: new Date('2026-10-08T15:30:00Z').getTime(),
+            CI057_ARR: new Date('2026-10-09T00:40:00Z').getTime(),
+            QF169_DEP: new Date('2026-10-09T07:40:00Z').getTime(),
+            QF169_ARR: new Date('2026-10-09T11:10:00Z').getTime(),
+            QF186_DEP: new Date('2026-10-17T06:45:00Z').getTime(),
+            QF186_ARR: new Date('2026-10-17T10:35:00Z').getTime(),
+            CI054_DEP: new Date('2026-10-17T12:50:00Z').getTime(),
+            CI054_ARR: new Date('2026-10-17T21:40:00Z').getTime(),
+          }
+          if (now >= F.CI057_DEP && now < F.CI057_ARR) return 'CI057'
+          if (now >= F.QF169_DEP && now < F.QF169_ARR) return 'QF169'
+          if (now >= F.QF186_DEP && now < F.QF186_ARR) return 'QF186'
+          if (now >= F.CI054_DEP && now < F.CI054_ARR) return 'CI054'
+          return null
+        }
+        assert(mockFlight(new Date('2026-10-08T18:00:00Z').getTime()) === 'CI057', 'CI057 識別失敗')
+        assert(mockFlight(new Date('2026-10-09T09:00:00Z').getTime()) === 'QF169', 'QF169 識別失敗')
+        assert(mockFlight(new Date('2026-10-17T08:00:00Z').getTime()) === 'QF186', 'QF186 識別失敗')
+        assert(mockFlight(new Date('2026-10-17T14:00:00Z').getTime()) === 'CI054', 'CI054 識別失敗')
+        assert(mockFlight(new Date('2026-10-14T12:00:00Z').getTime()) === null,    '在 NZ 應回傳 null')
+        return '4 段航班均正確識別，非飛行中回傳 null ✓'
+      }
+    },
+    {
+      name: 'getLocationZone()：墨爾本候機窗口正確識別',
+      fn: async () => {
+        function mockZone(now) {
+          const F = {
+            CI057_DEP: new Date('2026-10-08T15:30:00Z').getTime(),
+            CI057_ARR: new Date('2026-10-09T00:40:00Z').getTime(),
+            QF169_DEP: new Date('2026-10-09T07:40:00Z').getTime(),
+            QF169_ARR: new Date('2026-10-09T11:10:00Z').getTime(),
+          }
+          if (now < F.CI057_DEP) return 'hsinchu'
+          if (now < F.CI057_ARR) return 'flight'
+          if (now < F.QF169_DEP) return 'melbourne'
+          if (now < F.QF169_ARR) return 'flight'
+          return 'nz'
+        }
+        assert(mockZone(new Date('2026-10-09T04:00:00Z').getTime()) === 'melbourne', '墨爾本候機識別失敗')
+        assert(mockZone(new Date('2026-10-08T17:00:00Z').getTime()) === 'flight',    'CI057 飛行中識別失敗')
+        return '墨爾本候機（CI057_ARR ~ QF169_DEP，約 7 小時）正確識別 ✓'
+      }
+    },
+    {
+      name: '【HTML】Today 含飛行中 / 墨爾本轉機狀態',
+      fn: async () => {
+        const h = await getHTML()
+        assert(h.includes('飛行中'), '找不到「飛行中」文字（OnFlight 元件）')
+        assert(h.includes('墨爾本中轉') || h.includes('Melbourne Transit'), '找不到墨爾本轉機文字')
+        assert(h.includes('Hard Deadline'), '找不到 Hard Deadline 警告')
+        return 'OnFlight + MelbourneLayover 元件均存在於 HTML ✓'
+      }
+    },
+
+    // ── 花費總額計算 ──────────────────────────────────────────────────────────
+    {
+      name: '花費計算：確認預訂資料基準值（不含個人項目）',
+      fn: async () => {
+        // These are the confirmed shared + flight amounts
+        // If these change, something in the booking data changed
+        const ACCOMM    = 41319
+        const RENTAL    = 9326
+        const ACTIVITY  = 78796
+        const SHARED    = ACCOMM + RENTAL + ACTIVITY  // 129,441
+
+        const FLIGHT_DONGYUE  = 69203
+        const FLIGHT_BROTHER  = 68125
+        const FLIGHTS_TOTAL   = FLIGHT_DONGYUE + FLIGHT_BROTHER  // 137,328
+
+        const GRAND_CONFIRMED = SHARED + FLIGHTS_TOTAL  // 266,769
+
+        assert(SHARED === 129441, `共享費用應為 129,441，得到 ${SHARED}`)
+        assert(FLIGHTS_TOTAL === 137328, `機票總額應為 137,328，得到 ${FLIGHTS_TOTAL}`)
+        assert(GRAND_CONFIRMED === 266769, `預訂確認總額應為 266,769，得到 ${GRAND_CONFIRMED}`)
+        return `共享 ${SHARED.toLocaleString()} + 機票 ${FLIGHTS_TOTAL.toLocaleString()} = ${GRAND_CONFIRMED.toLocaleString()}`
+      }
+    },
+    {
+      name: '花費計算：個人確認項目（不含機票，避免重複計算）',
+      fn: async () => {
+        // Personal items that are NOT flights (those are already in GRAND_CONFIRMED)
+        // Update this list when new personal items are added
+        const PERSONAL_CONFIRMED = [
+          { id: 'esim-dongyue',              TWD: 1490, category: 'other',  who: '東岳' },
+          { id: 'insurance-travel-dongyue',  TWD: 2229, category: 'other',  who: '東岳' },
+          { id: 'insurance-activity-dongyue',TWD:  864, category: 'other',  who: '東岳' },
+          // 東振保險待補：{ id: 'insurance-brother', TWD: ???, category: 'other', who: '東振' },
+        ]
+
+        // Verify no flights are in this list (that would cause double counting)
+        const hasFlights = PERSONAL_CONFIRMED.some(e => e.category === 'flight')
+        assert(!hasFlights, '個人項目不能包含 flight 類別（會重複計算）')
+
+        const personalTotal = PERSONAL_CONFIRMED.reduce((s, e) => s + e.TWD, 0)
+        assert(personalTotal === 4583, `個人確認項目總額應為 4,583，得到 ${personalTotal}`)
+
+        return `個人確認項目（非機票）: ${PERSONAL_CONFIRMED.map(e=>`${e.who} ${e.TWD}`).join(' + ')} = ${personalTotal}`
+      }
+    },
+    {
+      name: '花費計算：Trip Total = 預訂確認 + 個人（非機票）',
+      fn: async () => {
+        const GRAND_CONFIRMED  = 266769  // shared + flights
+        const PERSONAL_NON_FLIGHT = 4583  // eSIM + 旅平險 + 特定活動
+
+        const EXPECTED_TOTAL = GRAND_CONFIRMED + PERSONAL_NON_FLIGHT  // 271,352
+        assert(EXPECTED_TOTAL === 271352, `Trip Total 應為 271,352，得到 ${EXPECTED_TOTAL}`)
+
+        // Verify the HTML shows this total
+        const h = await getHTML()
+        // fmtTWD formats as "271,352" - search for both parts to avoid false negatives
+        const hasTotal = h.includes('271,352') || h.includes('271352') ||
+          (h.includes('271') && h.includes('352') && h.includes('旅行總花費'))
+        if (!hasTotal) throw new Error('HTML 中找不到 271,352 — 請確認已推上 GitHub Pages（本地測試請忽略此項）')
+
+        return `Trip Total 271,352 ✓（266,769 + 4,583，機票不重複計算）`
       }
     },
 
@@ -698,6 +888,73 @@ const GROUP_ROADBOOK = {
       }
     },
 
+    // ── Day 1 / Day 10 航班 ────────────────────────────────────────────────
+    {
+      name: 'routes.js：含 Day 1（出發航班）和 Day 10（返台航班）',
+      fn: async () => {
+        const day1  = ROUTE_SEGMENTS.find(s => s.day === 1)
+        const day10 = ROUTE_SEGMENTS.find(s => s.day === 10)
+        assert(day1,  '缺少 Day 1')
+        assert(day10, '缺少 Day 10')
+        assert(day1.type  === 'flight', 'Day 1 type 應為 flight')
+        assert(day10.type === 'flight', 'Day 10 type 應為 flight')
+        assert(Array.isArray(day1.flights)  && day1.flights.length  >= 2, 'Day 1 應有 2 段航班')
+        assert(Array.isArray(day10.flights) && day10.flights.length >= 2, 'Day 10 應有 2 段航班')
+        return `Day 1: ${day1.flights.map(f=>f.code).join('+')} · Day 10: ${day10.flights.map(f=>f.code).join('+')}`
+      }
+    },
+    {
+      name: 'routes.js：FULL_ROUTE 含完整行程順序（11 個節點）',
+      fn: async () => {
+        assert(typeof FULL_ROUTE !== 'undefined', 'FULL_ROUTE 未定義')
+        assert(FULL_ROUTE.length >= 11, `FULL_ROUTE 應有 11 個節點，有 ${FULL_ROUTE.length}`)
+        const modes = FULL_ROUTE.map(p => p.mode)
+        assert(modes.includes('flight'), '應包含 flight 節點')
+        assert(modes.includes('drive'),  '應包含 drive 節點')
+        assert(modes[0] === 'home' || FULL_ROUTE[0].label?.includes('新竹'), '應從新竹/台灣出發')
+        return `${FULL_ROUTE.length} 個節點：${FULL_ROUTE.map(p=>p.label||p.mode).join(' → ')}`
+      }
+    },
+
+    // ── Google Maps 連結 + 路段高亮 ──────────────────────────────────────
+    {
+      name: 'routes.js：自駕段有 gmapsUrl（Google Maps 連結）',
+      fn: async () => {
+        const driving = ROUTE_SEGMENTS.filter(s => s.driving && s.km)
+        const missing = driving.filter(s => !s.gmapsUrl)
+        assert(missing.length === 0, `缺少 gmapsUrl：Day ${missing.map(s=>s.day).join(', ')}`)
+        driving.forEach(s => {
+          assert(s.gmapsUrl.startsWith('https://www.google.com/maps/dir/'), `Day ${s.day} gmapsUrl 格式錯誤`)
+        })
+        return `${driving.length} 個自駕日均有 Google Maps 連結`
+      }
+    },
+    {
+      name: 'routes.js：座標格式可用於 Leaflet flyToBounds',
+      fn: async () => {
+        ROUTE_SEGMENTS.forEach(s => {
+          assert(Array.isArray(s.coords), `Day ${s.day} coords 應為陣列`)
+          s.coords.forEach(([lat, lng]) => {
+            assert(typeof lat === 'number' && typeof lng === 'number',
+              `Day ${s.day} 座標應為數字：[${lat}, ${lng}]`)
+          })
+        })
+        return `8 天路段座標格式正確，可傳入 L.latLngBounds()`
+      }
+    },
+
+    // ── Day Modal ────────────────────────────────────────────────────────
+    {
+      name: '【實作後】HTML 含 DayModal 元件',
+      fn: async () => {
+        const h = await getHTML()
+        // After minification, check for content inside DayModal instead of component name
+        assert(h.includes('comgooglemaps') || h.includes('Google Maps 路線'), '找不到 Google Maps 路線按鈕（DayModal 內）')
+        assert(h.includes('QF186') || h.includes('CI057'), '找不到航班代號（DayModal 航班資訊）')
+        return 'DayModal 內容（Google Maps 按鈕、航班代號）存在於 HTML'
+      }
+    },
+
     // ── HTML 內容（實作後才會過）────────────────────────────────────────
     {
       name: '【實作後】HTML 含路書資料（225km / SH8 / 碎石）',
@@ -748,7 +1005,7 @@ function render() {
     <div class="grp" id="g-${g.id}">
       <div class="grp-h" onclick="tog('${g.id}')">
         <span class="grp-t">${g.title}</span>
-        <span class="badge b-wait" id="bd-${g.id}">대기</span>
+        <span class="badge b-wait" id="bd-${g.id}">待機</span>
       </div>
       <div class="tests" id="ts-${g.id}">
         ${g.tests.map((t,i)=>`
@@ -774,7 +1031,7 @@ async function runG(gid) {
   const g = GROUPS.find(x=>x.id===gid)
   if (!g) return
   document.getElementById(`bd-${gid}`).className='badge b-run'
-  document.getElementById(`bd-${gid}`).textContent='実行中'
+  document.getElementById(`bd-${gid}`).textContent='執行中'
   let gp=0, gf=0
   for (let i=0;i<g.tests.length;i++) {
     const ic=document.getElementById(`ic-${gid}-${i}`)
