@@ -1065,12 +1065,77 @@ function mockWeatherAdvice(o, w) {
   if (w.tmax != null && w.tmax >= 20) tips.push(`☀️ 白天最高 ${Math.round(w.tmax)}°C，熱了可以脫到短袖`)
   return tips
 }
+// 紫外線：WHO 分級（四捨五入後）0–2 低 / 3–5 中 / 6–7 高 / 8–10 很高 / 11+ 極高；SunSmart NZ：3 以上要防曬
+const UV_LEVELS = ['low', 'moderate', 'high', 'veryHigh', 'extreme']
+function mockUvLevel(uv) {
+  const u = Math.round(uv)
+  return u >= 11 ? 'extreme' : u >= 8 ? 'veryHigh' : u >= 6 ? 'high' : u >= 3 ? 'moderate' : 'low'
+}
+// 雪地 / 冰川日：反射＋海拔 → 往上加一級（最高到 extreme）
+function mockSunLevel(uv, snow) {
+  const i = UV_LEVELS.indexOf(mockUvLevel(uv))
+  return UV_LEVELS[Math.min(i + (snow ? 1 : 0), UV_LEVELS.length - 1)]
+}
+// 防曬時段：當天每小時 UV ≥ 3 的第一個小時 ～ 最後一個小時 +1h；沒有就 null
+function mockSunWindow(hourly, date) {
+  const hrs = hourly.filter(h => h.time.startsWith(date) && h.uv >= 3).map(h => Number(h.time.slice(11, 13)))
+  if (!hrs.length) return null
+  const pad = n => String(n).padStart(2, '0')
+  return `${pad(Math.min(...hrs))}:00–${pad(Math.max(...hrs) + 1)}:00`
+}
+// 電話自動變成可按：+國碼 或 0800 開頭；+64 後面多寫的 0 撥號時要拿掉
+const PHONE_RE = /(\+\d{1,3}(?:[ -]?\d){7,12}|\b0800(?:[ -]?\d){6})/g
+function mockTelHref(num) {
+  let d = num.replace(/[^\d+]/g, '')
+  if (d.startsWith('+640')) d = '+64' + d.slice(4)
+  return 'tel:' + d
+}
+function mockPhones(text) { return (text.match(PHONE_RE) || []).map(mockTelHref) }
 const OUTFIT_THEMES = ['FLIGHT DAY', 'CITY & SHOPPING', 'STARGAZING NIGHT', 'GLACIER DAY', 'ROAD DAY',
   'TOWN DAY', 'SKYDIVE DAY', 'FIORD DAY', 'TRAVEL DAY', 'HOME DAY']
 
 const GROUP_OUTFIT = {
   id:'outfit', title:'E. 每日穿搭 / 行李',
   tests: [
+    {
+      name: '電話可按：抓出 +64 / 0800 號碼，時間和金額不誤判',
+      fn: async () => {
+        const got = mockPhones('Christchurch Airport · Budget · 📞 +64 3 357 0231')
+        assert(JSON.stringify(got) === '["tel:+6433570231"]', `取車電話錯：${got}`)
+        assert(mockPhones('+64 03 7400428')[0] === 'tel:+6437400428', '+64 後面的 0 應去掉')
+        assert(mockPhones('免付費 0800 283 438')[0] === 'tel:0800283438', '0800 號碼沒抓到')
+        assert(mockPhones('07:15 集合 · 週末 NZ$9 · 10:00–17:00 · 2026-10-10').length === 0, '時間 / 金額 / 日期不該被當成電話')
+        return '取車 / 還車 / 0800 / 去掉多餘 0 ✓，時間金額不誤判 ✓'
+      }
+    },
+    {
+      name: '紫外線分級：2.4 低 / 2.5 中 / 6 高 / 8 很高 / 11 極高',
+      fn: async () => {
+        const cases = [[2.4, 'low'], [2.5, 'moderate'], [5.4, 'moderate'], [6, 'high'], [7.4, 'high'], [8, 'veryHigh'], [10.4, 'veryHigh'], [11, 'extreme']]
+        for (const [uv, want] of cases) assert(mockUvLevel(uv) === want, `UV ${uv} 應為 ${want}，得到 ${mockUvLevel(uv)}`)
+        return 'WHO 5 級分界（四捨五入）正確 ✓'
+      }
+    },
+    {
+      name: '冰川日 / 雪地：防曬等級往上加一級',
+      fn: async () => {
+        assert(mockSunLevel(5, true) === 'high', 'UV 5 雪地應升為 high')
+        assert(mockSunLevel(2, true) === 'moderate', 'UV 2 雪地應升為 moderate（仍要防曬）')
+        assert(mockSunLevel(11, true) === 'extreme', '已是 extreme 不再往上')
+        assert(mockSunLevel(5, false) === 'moderate', '非雪地不加級')
+        return '雪地 +1 級，上限 extreme ✓'
+      }
+    },
+    {
+      name: '防曬時段：UV ≥ 3 的時間範圍',
+      fn: async () => {
+        const d = '2026-10-12'
+        const hourly = [7, 8, 9, 10, 11, 12, 13, 14, 15, 16].map(h => ({ time: `${d}T${String(h).padStart(2, '0')}:00`, uv: [0.5, 1.5, 2.6, 4, 6, 7, 6.5, 5, 3.1, 1.8][h - 7] }))
+        assert(mockSunWindow(hourly, d) === '10:00–16:00', `應為 10:00–16:00（09:00 是 2.6 未達 3），得到 ${mockSunWindow(hourly, d)}`)
+        assert(mockSunWindow(hourly.map(h => ({ ...h, uv: 1 })), d) === null, '整天 < 3 應回傳 null')
+        return '10:00 起 ≥ 3、15:00 最後一小時 ≥ 3 → 10:00–16:00 ✓'
+      }
+    },
     {
       name: '洋蔥層數條：穿上 / 帶著 / 不需要',
       fn: async () => {
@@ -1175,6 +1240,42 @@ const GROUP_OUTFIT = {
                          '409 Main South Road', '10:00–17:00', '10:00–18:00'])
           assert(h.includes(k), `找不到「${k}」`)
         return 'Macpac / Barkers / Huffer / The Crossing 停車場 / Dress-Smart 資料都在 ✓'
+      }
+    },
+    {
+      name: '【HTML】紐西蘭購買清單：件數清楚（共 2 件）',
+      fn: async () => {
+        const h = await getHTML()
+        for (const k of ['紐西蘭要買', 'Fleece / Mid-layer ×1', '上衣 ×1', '二選一', '台灣帶 70%'])
+          assert(h.includes(k), `找不到「${k}」`)
+        return '購買清單：Fleece ×1（Macpac）＋上衣 ×1（Huffer / Barkers 二選一）✓'
+      }
+    },
+    {
+      name: '【HTML】洗衣計畫：10/14 Nomads 主洗、10/12 Haka House 備案、洗衣片＋髒衣袋',
+      fn: async () => {
+        const h = await getHTML()
+        for (const k of ['🧺 洗衣', 'Nomads 自助洗衣', '用烘衣機', 'Haka House', '洗衣備案', '洗衣片 / 髒衣袋'])
+          assert(h.includes(k), `找不到「${k}」`)
+        return '10/14 主洗＋10/12 備案＋Checklist 洗衣用品 ✓'
+      }
+    },
+    {
+      name: '【HTML】UV＋防曬建議：預報抓 UV、穿搭卡防曬列、Checklist 帽子＋護唇膏',
+      fn: async () => {
+        const h = await getHTML()
+        for (const k of ['uv_index_max', 'hourly=uv_index', '🧴', '防曬時段', 'SPF30+', '每 2 小時補擦', '雪地反射', '鴨舌帽 / 遮陽帽', 'SPF 護唇膏'])
+          assert(h.includes(k), `找不到「${k}」`)
+        return 'UV 資料、防曬建議、冰川加強、Checklist 用品都在 ✓'
+      }
+    },
+    {
+      name: '【HTML】電話自動轉成可按連結（行程備註 / 緊急聯絡）',
+      fn: async () => {
+        const h = await getHTML()
+        assert(h.includes('(?:[ -]?\\d){7,12}'), '找不到電話辨識規則')
+        assert(h.includes('+640'), '找不到 +64 後去 0 的處理')
+        return '行程備註裡的取車 / 還車電話可以直接按 ✓'
       }
     },
   ]
