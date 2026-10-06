@@ -57,6 +57,7 @@
   <button class="btn-grp" onclick="runG('api')">Google Sheets</button>
   <button class="btn-grp" onclick="runG('console')">Console 腳本</button>
   <button class="btn-grp" onclick="runG('roadbook')">路書功能</button>
+  <button class="btn-grp" onclick="runG('outfit')">穿搭</button>
   <button class="btn-red"  onclick="cleanupTests()">🗑 清除測試資料</button>
 </div>
 
@@ -70,7 +71,7 @@ const SHEETS  = 'https://script.google.com/macros/s/AKfycby77tqTUtsjUFWwnrySQy2a
 let html = null
 async function getHTML() {
   if (html) return html
-  const r = await fetch(SITE)
+  const r = await fetch(SITE, { cache: 'no-store' })   // 不吃瀏覽器快取，確保抓到最新部署
   html = await r.text()
   return html
 }
@@ -254,6 +255,36 @@ const GROUP_HTML = {
         assert(h.includes('openstreetmap'), '找不到 OpenStreetMap')
         assert(h.includes('Leaflet'), '找不到 Leaflet')
         return 'Leaflet + OpenStreetMap 元件存在'
+      }
+    },
+    {
+      name: '【HTML】含版本號 build-id（主畫面 app 偵測新版用）',
+      fn: async () => {
+        const h = await getHTML()
+        const m = h.match(/<meta name="build-id" content="(\d+)"/)
+        assert(m, '找不到 <meta name="build-id">')
+        const t = new Date(Number(m[1]))
+        assert(!isNaN(t) && t.getFullYear() >= 2026, `build-id 格式不對：${m[1]}`)
+        return `部署版本 build 時間：${t.toLocaleString('zh-TW', { hour12: false })}`
+      }
+    },
+    {
+      name: '【HTML】含新版本檢查＋更新提示',
+      fn: async () => {
+        const h = await getHTML()
+        assert(h.includes('visibilitychange'), '找不到 visibilitychange（回到 app 時檢查新版）')
+        assert(h.includes('有新版本'), '找不到「有新版本」更新提示')
+        return '回到前景時會檢查新版，有新版顯示更新提示 ✓'
+      }
+    },
+    {
+      name: '【HTML】DayModal 含加油按鈕＋狀態列安全區',
+      fn: async () => {
+        const h = await getHTML()
+        assert(h.includes('附近加油站'), '找不到「附近加油站」按鈕')
+        assert(h.includes('comgooglemaps://?q=petrol+station'), '找不到 iOS 加油站 deep link')
+        assert(h.includes('env(safe-area-inset-top)'), '找不到 safe-area-inset-top（✕ 會被狀態列蓋住）')
+        return '加油按鈕 + ✕ 安全區處理均存在 ✓'
       }
     },
 
@@ -479,13 +510,13 @@ const ROUTE_SEGMENTS = [
     from: 'Christchurch', to: 'Lake Tekapo', date: '2026-10-11',
     coords: [[-43.5321, 172.6362], [-44.0053, 170.4778]],
     km: 225, hours: 2.5, highway: 'SH1 → SH79 → SH8', driving: true },
-  { day: 4, gmapsUrl: 'https://www.google.com/maps/dir/-44.0053,170.4778/-43.5965,170.1418',
+  { day: 4, gmapsUrl: 'https://www.google.com/maps/dir/-44.0053,170.4778/-43.7357,170.0964',
     from: 'Lake Tekapo', to: 'Aoraki / Mt Cook', date: '2026-10-12',
-    coords: [[-44.0053, 170.4778], [-43.5965, 170.1418]],
+    coords: [[-44.0053, 170.4778], [-43.7357, 170.0964]],
     km: 105, hours: 1.5, highway: 'SH8 → SH80', driving: true,
     warning: 'SH80 後段為碎石路面，低速行駛' },
-  { day: 5, gmapsUrl: 'https://www.google.com/maps/dir/-43.5965,170.1418/-44.7031,169.1317', from: 'Aoraki / Mt Cook', to: 'Wanaka', date: '2026-10-13',
-    coords: [[-43.5965, 170.1418], [-44.7031, 169.1317]],
+  { day: 5, gmapsUrl: 'https://www.google.com/maps/dir/-43.7357,170.0964/-44.7031,169.1317', from: 'Aoraki / Mt Cook', to: 'Wanaka', date: '2026-10-13',
+    coords: [[-43.7357, 170.0964], [-44.7031, 169.1317]],
     km: 260, hours: 3.5, highway: 'SH80 → SH8 → SH6', driving: true },
   { day: 6, gmapsUrl: 'https://www.google.com/maps/dir/-44.7031,169.1317/-45.0312,168.6626', from: 'Wanaka', to: 'Queenstown', date: '2026-10-14',
     coords: [[-44.7031, 169.1317], [-45.0312, 168.6626]],
@@ -721,7 +752,9 @@ const GROUP_ROADBOOK = {
           { id: 'esim-dongyue',              TWD: 1490, category: 'other',  who: '東岳' },
           { id: 'insurance-travel-dongyue',  TWD: 2229, category: 'other',  who: '東岳' },
           { id: 'insurance-activity-dongyue',TWD:  864, category: 'other',  who: '東岳' },
-          // 東振保險待補：{ id: 'insurance-brother', TWD: ???, category: 'other', who: '東振' },
+          { id: 'esim-brother',              TWD: 1490, category: 'other',  who: '東振' },
+          { id: 'insurance-travel-brother',  TWD: 2229, category: 'other',  who: '東振' },
+          { id: 'insurance-activity-brother',TWD:  864, category: 'other',  who: '東振' },
         ]
 
         // Verify no flights are in this list (that would cause double counting)
@@ -729,7 +762,7 @@ const GROUP_ROADBOOK = {
         assert(!hasFlights, '個人項目不能包含 flight 類別（會重複計算）')
 
         const personalTotal = PERSONAL_CONFIRMED.reduce((s, e) => s + e.TWD, 0)
-        assert(personalTotal === 4583, `個人確認項目總額應為 4,583，得到 ${personalTotal}`)
+        assert(personalTotal === 9166, `個人確認項目總額應為 9,166，得到 ${personalTotal}`)
 
         return `個人確認項目（非機票）: ${PERSONAL_CONFIRMED.map(e=>`${e.who} ${e.TWD}`).join(' + ')} = ${personalTotal}`
       }
@@ -738,19 +771,20 @@ const GROUP_ROADBOOK = {
       name: '花費計算：Trip Total = 預訂確認 + 個人（非機票）',
       fn: async () => {
         const GRAND_CONFIRMED  = 266769  // shared + flights
-        const PERSONAL_NON_FLIGHT = 4583  // eSIM + 旅平險 + 特定活動
+        const PERSONAL_NON_FLIGHT = 9166  // 東岳＋東振：eSIM 1,490 + 旅平險 2,229 + 特定活動 864（各 4,583）
 
-        const EXPECTED_TOTAL = GRAND_CONFIRMED + PERSONAL_NON_FLIGHT  // 271,352
-        assert(EXPECTED_TOTAL === 271352, `Trip Total 應為 271,352，得到 ${EXPECTED_TOTAL}`)
+        const EXPECTED_TOTAL = GRAND_CONFIRMED + PERSONAL_NON_FLIGHT  // 275,935
+        assert(EXPECTED_TOTAL === 275935, `Trip Total 應為 275,935，得到 ${EXPECTED_TOTAL}`)
 
-        // Verify the HTML shows this total
+        // Trip Total 是網頁執行時才算出來的，HTML 原始碼裡不會有 275,935 這個字串；
+        // 改為確認 6 筆個人項目（含東振 3 筆）都已部署在網站資料中
         const h = await getHTML()
-        // fmtTWD formats as "271,352" - search for both parts to avoid false negatives
-        const hasTotal = h.includes('271,352') || h.includes('271352') ||
-          (h.includes('271') && h.includes('352') && h.includes('旅行總花費'))
-        if (!hasTotal) throw new Error('HTML 中找不到 271,352 — 請確認已推上 GitHub Pages（本地測試請忽略此項）')
+        const ids = ['esim-dongyue', 'insurance-travel-dongyue', 'insurance-activity-dongyue',
+                     'esim-brother', 'insurance-travel-brother', 'insurance-activity-brother']
+        const miss = ids.filter(id => !h.includes(id))
+        assert(miss.length === 0, `網站資料缺少：${miss.join('、')}`)
 
-        return `Trip Total 271,352 ✓（266,769 + 4,583，機票不重複計算）`
+        return `Trip Total 275,935 ✓（266,769 + 9,166，機票不重複計算；6 筆個人項目都在網站資料中）`
       }
     },
 
@@ -862,7 +896,7 @@ const GROUP_ROADBOOK = {
       }
     },
     {
-      name: '方案 C：Open-Meteo 抓蒂卡波→庫克山段天氣',
+      name: '方案 C：Open-Meteo 抓蒂卡波→庫克山段天氣（庫克山村莊座標）',
       fn: async () => {
         const date = '2026-10-12'
         const inRange = isWithin16Days(date)
@@ -870,7 +904,7 @@ const GROUP_ROADBOOK = {
           return `Oct 12 尚未進入預報範圍 → UI 顯示「出發前 16 天起可查看」`
         }
         // forecast_days=16 抓最大範圍，再用日期找 index
-        const url = `https://api.open-meteo.com/v1/forecast?latitude=-43.59&longitude=170.14&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_sum,snowfall_sum,windspeed_10m_max&timezone=auto&forecast_days=16`
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=-43.7357&longitude=170.0964&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_sum,snowfall_sum,windspeed_10m_max&timezone=auto&forecast_days=16`
         const r = await fetch(url)
         assert(r.ok, `HTTP ${r.status}`)
         const d = await r.json()
@@ -984,7 +1018,123 @@ const GROUP_ROADBOOK = {
   ]
 }
 
-const GROUPS = [GROUP_HTML, GROUP_API, GROUP_CONSOLE, GROUP_ROADBOOK]
+
+// ════════════════════════════════════════════════════════════════════════════
+// GROUP E — 每日穿搭 / 行李（outfits.js + Checklist 衣物）
+// 下面的 mock 函式 = 網站實作的規格，網站 outfits.js 必須用同樣的規則
+// ════════════════════════════════════════════════════════════════════════════
+const OUTFIT_LAYERS = ['base', 'mid', 'insulation', 'shell']
+// 洋蔥層數條：穿上 wear / 帶著備用 carry / 不需要 none
+function mockLayerBar(o) {
+  return OUTFIT_LAYERS.map(k => o.layers[k] ? 'wear' : (o.carry || []).includes(k) ? 'carry' : 'none')
+}
+// 一天兩段：NZ 時間 18:00 之後切到晚上那套
+function mockPickSession(o, hhmm) {
+  return o.night && hhmm >= o.night.from ? { ...o, ...o.night } : o
+}
+// 天氣連動：依使用者的 4 級規則微調
+function mockWeatherAdvice(o, w) {
+  const tips = []
+  if (w.tmin != null && w.tmin < 5 && !o.layers.insulation) tips.push(`🥶 預報最低 ${Math.round(w.tmin)}°C，輕羽絨直接穿上`)
+  if (((w.precip ?? 0) >= 5 || (w.snow ?? 0) > 0) && !o.layers.shell) tips.push('🌧️ 預報有雨雪，穿上防風防水外套')
+  else if ((w.wind ?? 0) > 40 && !o.layers.shell) tips.push(`🌬️ 預報強風 ${Math.round(w.wind)}km/h，加上防風外套`)
+  if (w.tmax != null && w.tmax >= 20) tips.push(`☀️ 白天最高 ${Math.round(w.tmax)}°C，熱了可以脫到短袖`)
+  return tips
+}
+const OUTFIT_THEMES = ['FLIGHT DAY', 'CITY & SHOPPING', 'STARGAZING NIGHT', 'GLACIER DAY', 'ROAD DAY',
+  'TOWN DAY', 'SKYDIVE DAY', 'FIORD DAY', 'TRAVEL DAY', 'HOME DAY']
+
+const GROUP_OUTFIT = {
+  id:'outfit', title:'E. 每日穿搭 / 行李',
+  tests: [
+    {
+      name: '洋蔥層數條：穿上 / 帶著 / 不需要',
+      fn: async () => {
+        const glacier = { layers: { base: '保暖排汗長袖', mid: 'Fleece', insulation: null, shell: '防風防水外套' }, carry: ['insulation'] }
+        const town    = { layers: { base: '短袖', mid: 'Fleece', insulation: null, shell: null }, carry: [] }
+        assert(JSON.stringify(mockLayerBar(glacier)) === '["wear","wear","carry","wear"]', '冰川日層數條錯誤')
+        assert(JSON.stringify(mockLayerBar(town))    === '["wear","wear","none","none"]',  '市區日層數條錯誤')
+        return '冰川日 ▰▰▱▰（羽絨備用）、市區日 ▰▰ ✓'
+      }
+    },
+    {
+      name: '10/11 觀星：18:00 後自動切到晚上穿搭',
+      fn: async () => {
+        const o = { theme: '白天', layers: { base: '短袖' }, night: { from: '18:00', theme: '21:45 觀星', layers: { base: '保暖長袖', insulation: '輕羽絨' } } }
+        assert(mockPickSession(o, '17:59').theme === '白天', '17:59 應該還是白天')
+        assert(mockPickSession(o, '18:00').theme === '21:45 觀星', '18:00 應切到觀星')
+        assert(mockPickSession({ theme: 'x', layers: {} }, '23:00').theme === 'x', '沒有晚上那套的日子不應切換')
+        return '17:59 白天 → 18:00 觀星 ✓'
+      }
+    },
+    {
+      name: '天氣連動：冷 → 羽絨、雨 → 外套、風 → 外套、熱 → 短袖',
+      fn: async () => {
+        const noIns   = { layers: { base: 'a', mid: 'b', insulation: null, shell: null } }
+        const withAll = { layers: { base: 'a', mid: 'b', insulation: 'c', shell: 'd' } }
+        assert(mockWeatherAdvice(noIns, { tmin: 2, tmax: 9 }).some(t => t.includes('輕羽絨直接穿上')), '最低 2°C 應提醒穿羽絨')
+        assert(!mockWeatherAdvice(withAll, { tmin: 2, tmax: 9 }).some(t => t.includes('輕羽絨')), '已穿羽絨不應重複提醒')
+        assert(mockWeatherAdvice(noIns, { tmin: 8, tmax: 14, precip: 8 }).some(t => t.includes('防風防水外套')), '8mm 雨應提醒外套')
+        assert(mockWeatherAdvice(noIns, { tmin: 8, tmax: 14, wind: 50 }).some(t => t.includes('強風')), '50km/h 應提醒防風')
+        const both = mockWeatherAdvice(noIns, { tmin: 8, tmax: 14, precip: 8, wind: 50 })
+        assert(both.filter(t => t.includes('外套')).length === 1, '雨＋風只需提醒一次外套')
+        assert(mockWeatherAdvice(noIns, { tmin: 12, tmax: 22 }).some(t => t.includes('短袖')), '最高 22°C 應提醒可脫')
+        assert(mockWeatherAdvice(noIns, { tmin: 8, tmax: 15, precip: 0, wind: 10 }).length === 0, '舒適天氣不應有提醒')
+        return '5°C / 5mm / 40km/h / 20°C 門檻皆正確 ✓'
+      }
+    },
+    {
+      name: '【HTML】今日穿搭卡＋穿搭總覽＋洋蔥說明',
+      fn: async () => {
+        const h = await getHTML()
+        for (const k of ['今日穿搭', '穿搭總覽', '看 10 天總覽', 'Base Layer', 'Mid Layer', 'Insulation', 'Shell'])
+          assert(h.includes(k), `找不到「${k}」`)
+        return 'Today 卡片、總覽、洋蔥 4 層說明都在 ✓'
+      }
+    },
+    {
+      name: '【HTML】10 天穿搭資料齊全',
+      fn: async () => {
+        const h = await getHTML()
+        const miss = OUTFIT_THEMES.filter(t => !h.includes(t))
+        assert(miss.length === 0, `缺少：${miss.join('、')}`)
+        assert(h.includes('牛仔褲'), '冰川日缺少「避免牛仔褲」')
+        return `10 天主題都在：${OUTFIT_THEMES.join(' / ')}`
+      }
+    },
+    {
+      name: '【HTML】Christchurch 採購＋70/30 行李策略',
+      fn: async () => {
+        const h = await getHTML()
+        for (const k of ['Macpac', 'Huffer', 'Barkers', '70%', '30%'])
+          assert(h.includes(k), `找不到「${k}」`)
+        return 'Macpac / Huffer / Barkers + 70/30 策略 ✓'
+      }
+    },
+    {
+      name: '【HTML】天氣連動提醒文字',
+      fn: async () => {
+        const h = await getHTML()
+        for (const k of ['輕羽絨直接穿上', '穿上防風防水外套', '熱了可以脫到短袖'])
+          assert(h.includes(k), `找不到「${k}」`)
+        return '冷 / 雨 / 熱 三種提醒都在 ✓'
+      }
+    },
+    {
+      name: '【HTML】Checklist 新增「衣物」類別，舊的重複項目已移除',
+      fn: async () => {
+        const h = await getHTML()
+        assert(h.includes('衣物'), '找不到「衣物」類別')
+        for (const k of ['短袖 T-shirt ×4', '輕羽絨 ×1', '防風防水外套 ×1', '毛帽 ×1', '厚襪 ×2'])
+          assert(h.includes(k), `衣物清單缺少「${k}」`)
+        assert(!h.includes('防水保暖衣物'), '「裝備」裡的「防水保暖衣物」應已移除（改由衣物清單取代）')
+        return '衣物類別與件數都在，裝備類別不再重複 ✓'
+      }
+    },
+  ]
+}
+
+const GROUPS = [GROUP_HTML, GROUP_API, GROUP_CONSOLE, GROUP_ROADBOOK, GROUP_OUTFIT]
 
 // ── Runner ────────────────────────────────────────────────────────────────────
 let pass=0, fail=0, total=0
