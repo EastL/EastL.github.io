@@ -58,6 +58,7 @@
   <button class="btn-grp" onclick="runG('console')">Console 腳本</button>
   <button class="btn-grp" onclick="runG('roadbook')">路書功能</button>
   <button class="btn-grp" onclick="runG('outfit')">穿搭</button>
+  <button class="btn-grp" onclick="runG('aurora')">極光</button>
   <button class="btn-red"  onclick="cleanupTests()">🗑 清除測試資料</button>
 </div>
 
@@ -75,9 +76,18 @@ async function getHTML() {
   html = await r.text()
   return html
 }
+// Apps Script 出錯時會回 HTML 錯誤頁 → 把標題和開頭內容顯示出來，方便判斷原因
+async function parseSheets(r) {
+  const text = await r.text()
+  try { return JSON.parse(text) } catch {
+    const title = (text.match(/<title>([^<]*)<\/title>/i) || [])[1] || ''
+    const body = text.replace(/<style[\s\S]*?<\/style>|<script[\s\S]*?<\/script>/gi, ' ').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 160)
+    throw new Error(`Apps Script 回傳 HTML（HTTP ${r.status}）${title ? `「${title}」` : ''}：${body}`)
+  }
+}
 const api = {
-  get: () => fetch(SHEETS).then(r=>r.json()),
-  post: d => fetch(SHEETS, {method:'POST', body:JSON.stringify(d)}).then(r=>r.json()),
+  get: () => fetch(SHEETS).then(parseSheets),
+  post: d => fetch(SHEETS, {method:'POST', body:JSON.stringify(d)}).then(parseSheets),
 }
 
 // POST with timeout — 避免 hang 住卡死後續測試
@@ -272,6 +282,108 @@ const GROUP_HTML = {
       }
     },
     {
+      name: '【HTML】天氣取消 Plan B：觀星 / 冰川 / 跳傘 / 米爾福德',
+      fn: async () => {
+        const h = await getHTML()
+        for (const k of ['取消的話', 'Mt John', 'Astro Café', 'Tasman Glacier View', 'Tasman Lake', '10/17 上午', 'TSS Earnslaw'])
+          assert(h.includes(k), `找不到「${k}」`)
+        return '4 個天氣敏感活動都有替代方案 ✓'
+      }
+    },
+    {
+      name: '【HTML】入境申報：紐西蘭＋墨爾本、保健品 / 零食 / 鞋子',
+      fn: async () => {
+        const h = await getHTML()
+        for (const k of ['入境申報：保健品', '有申報不會被罰', '飛機餐', '墨爾本', '入境卡勾選申報'])
+          assert(h.includes(k), `找不到「${k}」`)
+        return 'Checklist 申報項目＋Day 1 墨爾本 / Day 2 基督城入境提醒 ✓'
+      }
+    },
+    {
+      name: '【HTML】加油：信用卡 PIN、Pump 號碼櫃台付款、油種看油箱蓋',
+      fn: async () => {
+        const h = await getHTML()
+        for (const k of ['信用卡 4 位數 PIN', 'Pump', '91 / 95 / 98 / 柴油', '油箱蓋'])
+          assert(h.includes(k), `找不到「${k}」`)
+        return 'Checklist PIN＋DayModal 加油提醒＋取車確認油種 ✓'
+      }
+    },
+    {
+      name: '【HTML】順路停靠：10/11–10/13 沿途＋皇后鎮空檔',
+      fn: async () => {
+        const h = await getHTML()
+        for (const k of ['順路停靠', 'Fairlie Bakehouse', '74 Main Street', 'Church of the Good Shepherd', 'Mt Cook Alpine Salmon',
+                         "Peter's Lookout", 'The Wrinkly Rams', '10 Twizel-Omarama Road', 'Lindis Pass', 'Wanaka Tree',
+                         'Patagonia', '2 Rees Street', 'Deer Park Heights', '432 Peninsula Road'])
+          assert(h.includes(k), `找不到「${k}」`)
+        return '10/11 鹹派＋教堂、10/12 鮭魚＋Pukaki、10/13 Wrinkly Rams＋Lindis＋Wanaka Tree、皇后鎮 Patagonia＋Deer Park ✓'
+      }
+    },
+    {
+      name: '【HTML】右駕卡：圓環打燈、STOP 完全停、停車標誌',
+      fn: async () => {
+        const h = await getHTML()
+        for (const k of ['圓環左轉（第一個出口）', '圓環直走', '圓環右轉', '前一個出口打左燈', 'STOP 要完全停住', 'P120', '停車標誌'])
+          assert(h.includes(k), `找不到「${k}」`)
+        return 'NZ Road Code 圓環 3 種情況＋STOP＋P 標誌 ✓'
+      }
+    },
+    {
+      name: '【HTML】右駕卡：巴士專用道、中央緩衝區',
+      fn: async () => {
+        const h = await getHTML()
+        for (const k of ['巴士專用道', '沒寫時間 = 24 小時', '50 公尺', '中央緩衝區', '不能拿來超車', '不能停車'])
+          assert(h.includes(k), `找不到「${k}」`)
+        return 'Bus lane 50m / 24h＋Flush median ✓'
+      }
+    },
+    {
+      name: '【HTML】右駕卡：單線橋、斑馬線',
+      fn: async () => {
+        const h = await getHTML()
+        for (const k of ['單線橋', '紅色圓形', '藍色方形', '斑馬線', '橘色圓盤', '沒有安全島', '不能超車'])
+          assert(h.includes(k), `找不到「${k}」`)
+        return 'One-lane bridge 紅 / 藍標誌＋行人穿越道 ✓'
+      }
+    },
+    {
+      name: '【HTML】Checklist：購物袋、拖鞋、乳液、現金、行李秤',
+      fn: async () => {
+        const h = await getHTML()
+        for (const k of ['環保購物袋', '沒有免費塑膠袋', '拖鞋', '護手霜 / 乳液', '每人約 NZ$100', '行李秤', '密封袋'])
+          assert(h.includes(k), `找不到「${k}」`)
+        return 'PDF 第 6 項物品 ✓'
+      }
+    },
+    {
+      name: '【HTML】瓦納卡 → 皇后鎮：Crown Range 68 km＋SH6 經 Cromwell 備案',
+      fn: async () => {
+        const h = await getHTML()
+        for (const k of ['Crown Range Road（經 Cardrona）', 'SH6 經 Cromwell（113 km', 'Cardrona+Hotel'])
+          assert(h.includes(k), `找不到「${k}」`)
+        assert(!/km:67\b/.test(h), '還是舊的 67 km')
+        return '主線 Crown Range、下雪改 SH6 ✓'
+      }
+    },
+    {
+      name: '【HTML】10/14 順路停靠：Cardrona Hotel、Crown Range 觀景台、Arrowtown',
+      fn: async () => {
+        const h = await getHTML()
+        for (const k of ['Cardrona Hotel', '1863', 'Crown Range Summit', 'Arrow Junction Lookout', 'Arrowtown', '華人淘金村'])
+          assert(h.includes(k), `找不到「${k}」`)
+        return 'Crown Range 沿路 3 站 ✓'
+      }
+    },
+    {
+      name: '【HTML】Checklist：極光預報、Waze',
+      fn: async () => {
+        const h = await getHTML()
+        for (const k of ['極光預報', 'Tassie Aurora', 'id1586329995', 'aurora-30-minute-forecast', 'Waze', 'id323229106'])
+          assert(h.includes(k), `找不到「${k}」`)
+        return 'Tassie Aurora（iOS）＋NOAA 備援＋Waze ✓'
+      }
+    },
+    {
       name: '【HTML】Checklist App 下載連結（CamperMate / MetService / NZTA 官網）',
       fn: async () => {
         const h = await getHTML()
@@ -334,6 +446,8 @@ const GROUP_API = {
       fn: async () => {
         const id = tid('add')
         const r = await api.post({action:'add', id, date:'2026-10-10', item:'API測試-TWD', category:'food', TWD:350, currency:'TWD', paidBy:'東岳'})
+        if (r.success !== true && Array.isArray(r.expenses) && r.expenses.some(e => e.id === id))
+          throw new Error(`資料有寫入，但 Apps Script 回傳格式是 {expenses:[…]} 而不是 {success:true}（疑似冷啟動 / 重新導向）`)
         assert(r.success === true, `失敗：${JSON.stringify(r)}`)
         return 'success: true'
       }
@@ -1281,7 +1395,102 @@ const GROUP_OUTFIT = {
   ]
 }
 
-const GROUPS = [GROUP_HTML, GROUP_API, GROUP_CONSOLE, GROUP_ROADBOOK, GROUP_OUTFIT]
+// ════════════════════════════════════════════════════════════════════════════
+// GROUP F — 今晚極光（NOAA Kp 預報＋Open-Meteo 雲量）
+// 下面的 mock 函式 = 網站 data/aurora.js 的規格
+// ════════════════════════════════════════════════════════════════════════════
+const KP_URL = 'https://services.swpc.noaa.gov/products/noaa-planetary-k-index-forecast.json'
+function mockParseKp(json) {
+  let rows = json
+  if (Array.isArray(json[0])) { const h = json[0].map(x => String(x).toLowerCase()); rows = json.slice(1).map(r => Object.fromEntries(h.map((k, i) => [k, r[i]]))) }
+  return rows.map(r => { const iso = String(r.time_tag).replace(' ', 'T'); return { t: Date.parse(/Z|[+-]\d\d:?\d\d$/.test(iso) ? iso : iso + 'Z'), kp: Number(r.kp) } })
+    .filter(r => Number.isFinite(r.t) && Number.isFinite(r.kp))
+}
+// 今晚 = NZ 20:00 ～ 隔天 03:00；10 月是夏令時間 UTC+13 → UTC 當天 07:00 ～ 14:00；3 小時區段有重疊就算
+function mockTonightKp(list, date) {
+  const s = Date.parse(date + 'T07:00:00Z'), e = Date.parse(date + 'T14:00:00Z')
+  const hit = list.filter(x => x.t + 3 * 3600e3 > s && x.t < e)
+  return hit.length ? Math.max(...hit.map(x => x.kp)) : null
+}
+function mockTonightCloud(hourly, date, next) {
+  const v = hourly.filter(h => { const hh = +h.time.slice(11, 13); return (h.time.startsWith(date) && hh >= 20) || (h.time.startsWith(next) && hh < 3) }).map(h => h.cloud)
+  return v.length ? Math.round(v.reduce((a, b) => a + b, 0) / v.length) : null
+}
+function mockAuroraLevel(kp, cloud) {
+  const base = kp >= 7 ? 'high' : kp >= 5 ? 'chance' : 'low'
+  return base !== 'low' && cloud != null && cloud >= 70 ? 'cloudy' : base
+}
+const KP_SAMPLE = [['time_tag', 'kp', 'observed', 'noaa_scale'],
+  ['2026-10-11 03:00:00', '6.00', 'predicted', 'G2'],  // NZ 16:00–19:00，不算今晚
+  ['2026-10-11 06:00:00', '3.33', 'predicted', null],  // NZ 19:00–22:00，有重疊
+  ['2026-10-11 09:00:00', '5.33', 'predicted', 'G1'],
+  ['2026-10-11 12:00:00', '4.00', 'predicted', null],
+  ['2026-10-11 15:00:00', '8.00', 'predicted', 'G4']]  // NZ 04:00 之後，不算
+
+const GROUP_AURORA = {
+  id:'aurora', title:'F. 今晚極光',
+  tests: [
+    {
+      name: 'Kp 解析：表頭陣列格式＋物件格式都吃',
+      fn: async () => {
+        const a = mockParseKp(KP_SAMPLE)
+        assert(a.length === 5 && a[2].kp === 5.33, '表頭陣列格式解析錯')
+        assert(a[0].t === Date.parse('2026-10-11T03:00:00Z'), '時間要當 UTC')
+        const b = mockParseKp([{ time_tag: '2026-10-11T09:00:00', kp: 5.33 }])
+        assert(b.length === 1 && b[0].kp === 5.33, '物件格式解析錯')
+        return '兩種 NOAA 格式 ✓，時間以 UTC 解讀 ✓'
+      }
+    },
+    {
+      name: '今晚範圍：NZ 20:00–03:00（10/11 → 最高 Kp 5.33，不含傍晚 6 和清晨 8）',
+      fn: async () => {
+        const kp = mockTonightKp(mockParseKp(KP_SAMPLE), '2026-10-11')
+        assert(kp === 5.33, `今晚最高 Kp 應為 5.33，得到 ${kp}`)
+        return '夏令時間換算、3 小時區段重疊判斷 ✓'
+      }
+    },
+    {
+      name: '今晚雲量：當天 20–23 點＋隔天 0–2 點平均',
+      fn: async () => {
+        const h = [['2026-10-11T19:00', 100], ['2026-10-11T20:00', 20], ['2026-10-11T23:00', 40], ['2026-10-12T02:00', 60], ['2026-10-12T03:00', 100]]
+          .map(([time, cloud]) => ({ time, cloud }))
+        const c = mockTonightCloud(h, '2026-10-11', '2026-10-12')
+        assert(c === 40, `平均雲量應為 40，得到 ${c}`)
+        return '19 點、03 點不算 ✓'
+      }
+    },
+    {
+      name: '極光分級：Kp<5 低 / 5 有機會 / 7 高 / 雲量 ≥70% 被雲擋住',
+      fn: async () => {
+        const cases = [[4.67, 10, 'low'], [5, 10, 'chance'], [6.67, 69, 'chance'], [7, null, 'high'], [5.33, 70, 'cloudy'], [8, 90, 'cloudy'], [3, 90, 'low']]
+        for (const [kp, c, want] of cases) assert(mockAuroraLevel(kp, c) === want, `Kp ${kp} 雲 ${c} 應為 ${want}，得到 ${mockAuroraLevel(kp, c)}`)
+        return '門檻與雲量降級 ✓'
+      }
+    },
+    {
+      name: 'NOAA Kp 預報：瀏覽器可直接抓（CORS）',
+      fn: async () => {
+        const ctrl = new AbortController(); const t = setTimeout(() => ctrl.abort(), 8000)
+        const r = await fetch(KP_URL, { signal: ctrl.signal, cache: 'no-store' }); clearTimeout(t)
+        assert(r.ok, `HTTP ${r.status}`)
+        const list = mockParseKp(await r.json())
+        assert(list.length > 0, '解析後沒有資料（NOAA 可能改了格式）')
+        return `CORS 可直接抓 ✓，${list.length} 筆，最新 Kp ${list[list.length - 1].kp}`
+      }
+    },
+    {
+      name: '【HTML】Today 今晚極光卡：NOAA Kp＋雲量＋Tassie Aurora',
+      fn: async () => {
+        const h = await getHTML()
+        for (const k of ['noaa-planetary-k-index-forecast', 'cloud_cover', '今晚極光', '朝南方地平線', '被雲擋住', '強極光通知', 'Pacific/Auckland'])
+          assert(h.includes(k), `找不到「${k}」`)
+        return '極光卡元件、資料來源、App 連結都在 ✓'
+      }
+    },
+  ]
+}
+
+const GROUPS = [GROUP_HTML, GROUP_API, GROUP_CONSOLE, GROUP_ROADBOOK, GROUP_OUTFIT, GROUP_AURORA]
 
 // ── Runner ────────────────────────────────────────────────────────────────────
 let pass=0, fail=0, total=0
