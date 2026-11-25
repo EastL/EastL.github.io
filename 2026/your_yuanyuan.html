@@ -677,6 +677,22 @@ body.cover-closed { overflow:auto !important; height:auto !important; width:auto
 .tw-txt small{font-size:10.5px;opacity:.8;font-weight:500;letter-spacing:.02em}
 .tw-arrow{font-size:11px;opacity:.85;margin-left:2px}
 .twitch-btn.m{display:none}
+/* 大事記按鈕 */
+.chron-btn{display:inline-flex;align-items:center;gap:12px;margin-top:14px;margin-left:8px;padding:9px 18px 9px 10px;border-radius:999px;
+  background:#fffaf2;border:2px solid var(--orange);color:var(--brown);text-decoration:none;vertical-align:top;
+  box-shadow:0 4px 14px rgba(232,144,58,.18);transition:transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s;
+  animation:popIn .6s .6s cubic-bezier(.34,1.56,.64,1) both;-webkit-tap-highlight-color:transparent}
+.chron-btn:hover{transform:translateY(-3px) scale(1.03);box-shadow:0 8px 22px rgba(232,144,58,.3)}
+.chron-btn:active{transform:scale(.97)}
+.chron-btn .ch-ico{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--red),var(--orange));display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.chron-btn .tw-txt b{color:var(--brown)}
+.chron-btn .tw-txt small{color:var(--sub);opacity:1}
+.chron-btn .tw-arrow{color:var(--orange)}
+.chron-btn.m{display:none}
+@media(max-width:768px){
+  .chron-btn.m{display:flex;width:100%;margin:8px 0 4px;padding:9px 18px 9px 12px}
+  .chron-btn.m .tw-txt{flex:1}
+}
 @media(max-width:768px){
   .twitch-btn.m{display:flex;width:100%;justify-content:center;margin:14px 0 4px;padding:11px 18px 11px 12px}
   .twitch-btn.m .tw-txt{flex:1}
@@ -921,6 +937,10 @@ body.cover-closed { overflow:auto !important; height:auto !important; width:auto
       <span class="tw-ico"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714z"/></svg></span>
       <span class="tw-txt"><b>前往直播間</b><small>twitch.tv/your_yuanyuan</small></span>
       <span class="tw-arrow">▶</span>
+    </a><a class="chron-btn" href="https://eastl.github.io/chronicle.html">
+      <span class="ch-ico">📜</span>
+      <span class="tw-txt"><b>原原大事記</b><small>開台以來的每個重要時刻</small></span>
+      <span class="tw-arrow">▶</span>
     </a><br>
     <div class="dual-clock">
       <div class="clock-chip">
@@ -934,6 +954,11 @@ body.cover-closed { overflow:auto !important; height:auto !important; width:auto
   <a class="twitch-btn m" href="https://www.twitch.tv/your_yuanyuan" target="_blank" rel="noopener">
       <span class="tw-ico"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714z"/></svg></span>
       <span class="tw-txt"><b>前往直播間</b><small>twitch.tv/your_yuanyuan</small></span>
+      <span class="tw-arrow">▶</span>
+    </a>
+  <a class="chron-btn m" href="https://eastl.github.io/chronicle.html">
+      <span class="ch-ico">📜</span>
+      <span class="tw-txt"><b>原原大事記</b><small>開台以來的每個重要時刻</small></span>
       <span class="tw-arrow">▶</span>
     </a>
 
